@@ -47,7 +47,7 @@ With the exception of unit definitions, the order in which statements are define
 
 ## Limitations/Bugs
 
-I'm still working on things so there are some thins that are know to not work fully yet:
+I'm still working on things so there are some things that are know to not work fully yet:
 
 - Dependent systems of equations: Currently only direct propagation is supported.
 - Even roots: To avoid dealing with the +/- issue, only odd roots are solved for.
