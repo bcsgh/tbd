@@ -1,0 +1,3 @@
+a := 1 [foo];  // Unit 'foo' is not defined
+b := [fig];  // Unit 'fig' is not defined
+a = b + c;

@@ -1,0 +1,2 @@
+[m] := 1 [s];  // Unit 'm' already defined at
+[s] := 1 [A];  // Unit 's' already defined at

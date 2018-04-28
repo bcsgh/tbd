@@ -1,0 +1,8 @@
+m := 1 [m];
+s := 1 [s];
+
+m = s; // Equality expression.s terms have different dimensionality. \\[m\\] and \\[s\\]
+
+x = m + s;  // Addition expression's terms have different dimensionality: \\[m\\] and \\[s\\]
+y = m - s;  // Subtraction expression's terms have different dimensionality: \\[m\\] and \\[s\\]
+

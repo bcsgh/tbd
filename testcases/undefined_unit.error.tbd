@@ -1,0 +1,3 @@
+[known] := 1 [s];
+[mine] := 1 [unknown]; // Unit 'unknown' is not defined
+[new] := 5 [known];

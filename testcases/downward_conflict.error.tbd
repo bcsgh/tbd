@@ -1,0 +1,11 @@
+m := 1 [m];
+s := 1 [s];
+
+m = -x;           // Negation expression's dimensionality is deduced as both \\[m\\] and \\[s\\]
+m = x - x;     // Subtraction expression's dimensionality is deduced as both \\[m\\] and \\[s\\]
+m = x + x;        // Addition expression's dimensionality is deduced as both \\[m\\] and \\[s\\]
+m = x * 1;  // Multiplication expression's dimensionality is deduced as both \\[m\\] and \\[s\\]
+m = x / 1;        // Division expression's dimensionality is deduced as both \\[m\\] and \\[s\\]
+m = x ^ 1;     // Exponential expression's dimensionality is deduced as both \\[m\\] and \\[s\\]
+
+x = s; 

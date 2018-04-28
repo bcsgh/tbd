@@ -1,0 +1,3 @@
+[mine] := 1 [s];
+[mine] := 1 [s]; // Unit 'mine' already defined at
+[mine] := 1 [m]; // Unit 'mine' already defined at

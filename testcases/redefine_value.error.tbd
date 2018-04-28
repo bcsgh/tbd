@@ -1,0 +1,8 @@
+a := 5;
+b := [in];
+
+a := 5; // duplicate definition for 'a'. Prior definition at testcases/redefine_value.error.tbd:1
+a := [in];  // duplicate specification for 'a'. Prior definition at testcases/redefine_value.error.tbd:1
+b := [in];  // duplicate specification for 'b'. Prior specification at testcases/redefine_value.error.tbd:2
+
+b = a;

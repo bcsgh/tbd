@@ -1,0 +1,7 @@
+
+
+a := 5; // Unused definition for 'a'.
+
+b := 5;
+c = b;
+
