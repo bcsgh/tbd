@@ -101,6 +101,7 @@ void LogBase::DumpStack(std::ostream& o) {
     o << names[i] << '\n';
   }
   o << std::endl;
+  free(names);
 }
 
 namespace logging_internal {
