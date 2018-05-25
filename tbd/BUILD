@@ -31,14 +31,23 @@ cc_library(
 )
 
 cc_library(
+  name = "test_main",
+  srcs = ["test_main.cc"],
+  deps = [
+    "@com_github_gflags_gflags//:gflags",
+    "@com_google_googletest//:gtest",
+  ],
+)
+
+cc_library(
   name = "ast",
   srcs = ["ast.cc"],
   hdrs = ["ast.h"],
   deps = [
     ":common",
     ":dimensions",
-     "@com_google_absl//absl/base:core_headers", 
-     "@com_google_absl//absl/memory", 
+    "@com_google_absl//absl/base:core_headers", 
+    "@com_google_absl//absl/memory", 
   ],
 )
 
@@ -49,8 +58,8 @@ cc_test(
   deps = [
     ":ast",
     ":common",
+    ":test_main",
     "@com_google_googletest//:gtest",
-    "@com_google_googletest//:gtest_main",
   ],
 )
 
@@ -74,8 +83,8 @@ cc_test(
     ":ast",
     ":common",
     ":semantic",
+    ":test_main",
     "@com_google_googletest//:gtest",
-    "@com_google_googletest//:gtest_main",
   ],
 )
 
@@ -96,8 +105,8 @@ cc_test(
   timeout = "short",
   deps = [
     ":common",
+    ":test_main",
     "@com_google_googletest//:gtest",
-    "@com_google_googletest//:gtest_main",
   ],
 )
 
@@ -140,8 +149,8 @@ cc_test(
   deps = [
     ":common",
     ":parser_support",
+    ":test_main",
     "@com_google_googletest//:gtest",
-    "@com_google_googletest//:gtest_main",
   ],
 )
 
@@ -205,8 +214,8 @@ cc_test(
   deps = [
     ":common",
     ":dimensions",
+    ":test_main",
     "@com_google_googletest//:gtest",
-    "@com_google_googletest//:gtest_main",
   ],
 )
 
@@ -234,8 +243,8 @@ cc_test(
     ":common",
     ":resolve_units",
     ":semantic",
+    ":test_main",
     "@com_google_googletest//:gtest",
-    "@com_google_googletest//:gtest_main",
   ],
 )
 
@@ -283,8 +292,8 @@ cc_test(
   deps = [
     ":common",
     ":graphviz",
+    ":test_main",
     "@com_google_absl//absl/strings",
     "@com_google_googletest//:gtest",
-    "@com_google_googletest//:gtest_main",
   ],
 )
