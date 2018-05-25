@@ -260,6 +260,19 @@ cc_library(
   ],
 )
 
+cc_test(
+  name = "validate_test",
+  srcs = ["validate_test.cc"],
+  deps = [
+    ":common",
+    ":evaluate",
+    ":validate",
+    ":test_main",
+    "@com_google_absl//absl/memory", 
+    "@com_google_googletest//:gtest",
+  ],
+)
+
 cc_library(
   name = "evaluate",
   srcs = ["evaluate.cc"],
