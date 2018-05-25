@@ -162,7 +162,7 @@ std::ostream& operator<<(std::ostream& out, const SemanticDocument::Exp& node) {
   }
 
   if (node.node != nullptr) {
-    out << x << " " << node.node->location();
+    out << x << " " << node.node->location().line();
     x = "";
   }
 

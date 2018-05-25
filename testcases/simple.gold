@@ -1,0 +1,4 @@
+a = 5;	// [in] testcases/simple.tbd:1
+b = 0.254;	// [m] testcases/simple.tbd:3
+c = 0.01;	// [m] testcases/simple.tbd:4
+

@@ -36,6 +36,7 @@
 
 #include "absl/base/attributes.h"
 #include "absl/memory/memory.h"
+#include "absl/strings/str_cat.h"
 #include "tbd/common.h"
 #include "tbd/dimensions.h"
 
@@ -60,6 +61,8 @@ struct Loc {
                 << " to " << l.line_end << ":" << l.col_end;
     }
   }
+
+  std::string line() const { return absl::StrCat(filename, ":", line_begin); }
 
   std::string filename = "??";
   int line_begin = 0, line_end = 0;
