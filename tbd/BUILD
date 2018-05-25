@@ -271,6 +271,7 @@ cc_library(
     ":common",
     ":semantic",
     "@com_google_absl//absl/strings",
+    "@com_google_absl//absl/time",
     "@com_google_absl//absl/types:optional"
   ],
 )

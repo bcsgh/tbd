@@ -50,6 +50,15 @@ class GraphVizTest : public ::testing::Test {
 
 namespace {
 
+void RemoveTimestamp(std::set<std::string>* lines) {
+  for (auto i = lines->begin(); i != lines->end(); i++) {
+    if (i->find("_date_time_") != std::string::npos) {
+      lines->erase(i);
+      break;
+    }
+  }
+}
+
 TEST_F(GraphVizTest, Blank) {
   SemanticDocument sem;
   std::stringstream out(std::ios_base::out);
@@ -57,7 +66,9 @@ TEST_F(GraphVizTest, Blank) {
     // Force destruction
     RenderAsGraphViz gv(&sem, out);
   }
-  EXPECT_EQ(out.str(), "digraph {\n\n}\n");
+  std::set<std::string> lines = absl::StrSplit(out.str(), "\n");
+  RemoveTimestamp(&lines);
+  EXPECT_THAT(lines, testing::UnorderedElementsAre("digraph {", "", "}"));
 }
 
 TEST_F(GraphVizTest, Pop) {
@@ -70,6 +81,7 @@ TEST_F(GraphVizTest, Pop) {
   }
 
   std::set<std::string> lines = absl::StrSplit(out.str(), "\n");
+  RemoveTimestamp(&lines);
   EXPECT_THAT(
       lines,
       testing::UnorderedElementsAre(                                          //

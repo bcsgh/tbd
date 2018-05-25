@@ -31,6 +31,8 @@
 #include <set>
 
 #include "absl/strings/str_cat.h"
+#include "absl/time/clock.h"
+#include "absl/time/time.h"
 #include "tbd/ast.h"
 #include "tbd/common.h"
 #include "tbd/semantic.h"
@@ -41,11 +43,16 @@ void RenderAsGraphViz::Dump(std::ostream& out) {
   out_ << "digraph {\n";
   for (const auto& e : all_edges_) {
     out << "  " << e.first.first << "->" << e.first.second << " [dir=none";
-    if (e.second.equ) out << " color=blue";
+    if (e.second.equ) out << R"( color="black:black")";
     out << "];\n";
   }
 
-  out << "\n";
+  constexpr auto kFmt = R"(
+
+  _date_time_ [label="%Y-%m-%d %H:%M:%S" color=green style=filled];
+
+)";
+  out << absl::FormatTime(kFmt, absl::Now(), absl::LocalTimeZone());
 
   for (auto& s : all_nodes_) {
     std::string label = s.second.label;
