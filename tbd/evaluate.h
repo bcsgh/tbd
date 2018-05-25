@@ -39,14 +39,8 @@ class Evaluate final : public VisitNodes {
   Evaluate(SemanticDocument* doc) : doc_(doc){};
 
  private:
-  bool operator()(const UnitExp&) override {
-    LOG(FATAL);
-    return true;
-  }
-  bool operator()(const UnitDef&) override {
-    LOG(FATAL);
-    return true;
-  }
+  bool operator()(const UnitExp&) override { LOG(FATAL); }
+  bool operator()(const UnitDef&) override { LOG(FATAL); }
 
   bool operator()(const Equality&) override;
   bool operator()(const LiteralValue&) override;
