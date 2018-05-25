@@ -36,6 +36,29 @@
 
 namespace tbd {
 
+Loc Join(std::vector<Loc> loc) {
+  CHECK(!loc.empty());
+  Loc ret = *loc.begin();
+  for (const auto& l : loc) {
+    CHECK(ret.filename == l.filename) << ret.filename << "!=" << l.filename;
+
+    if (l.line_begin < ret.line_begin) {
+      ret.line_begin = l.line_begin;
+      ret.col_begin = l.col_begin;
+    } else if (l.line_begin == ret.line_begin) {
+      ret.col_begin = std::min(ret.col_begin, l.col_begin);
+    }
+
+    if (l.line_end > ret.line_end) {
+      ret.line_end = l.line_end;
+      ret.col_end = l.col_end;
+    } else if (l.line_end == ret.line_end) {
+      ret.col_end = std::max(ret.col_end, l.col_end);
+    }
+  }
+  return ret;
+}
+
 void UnitExp::Mul(std::unique_ptr<UnitExp::UnitT> o) {
   bits_.push_back(std::move(*o));
 }
@@ -48,14 +71,16 @@ void UnitExp::Div(std::unique_ptr<UnitExp::UnitT> o) {
 UnitDef::UnitDef(Loc loc, std::unique_ptr<std::string> name,
                  std::unique_ptr<LiteralValue> lit,
                  std::unique_ptr<UnitExp> unit)
-    : NodeI(loc),
+    : NodeI(Join(loc, lit->location(), unit->location())),
       name_(std::move(*name)),
       value_(lit->value()),
       unit_(std::move(unit)) {}
 
-Equality::Equality(std::unique_ptr<ExpressionNode> l,
+Equality::Equality(Loc loc, std::unique_ptr<ExpressionNode> l,
                    std::unique_ptr<ExpressionNode> r)
-    : ExpressionNode(l->location()), l_(std::move(l)), r_(std::move(r)) {}
+    : ExpressionNode(Join(loc, l->location(), r->location())),
+      l_(std::move(l)),
+      r_(std::move(r)) {}
 
 NamedValue::NamedValue(Loc loc, std::unique_ptr<std::string> s)
     : ExpressionNode(loc), name_(std::move(*s)) {}
@@ -63,15 +88,17 @@ NamedValue::NamedValue(Loc loc, std::unique_ptr<std::string> s)
 NamedValue::NamedValue(Loc loc, std::string s)
     : ExpressionNode(loc), name_(std::move(s)) {}
 
-PowerExp::PowerExp(std::unique_ptr<ExpressionNode> b, int e)
-    : ExpressionNode(b->location()), b_(std::move(b)), e_(e) {}
+PowerExp::PowerExp(Loc loc, std::unique_ptr<ExpressionNode> b, int e)
+    : ExpressionNode(Join(loc, b->location())), b_(std::move(b)), e_(e) {}
 
 BinaryExpression::BinaryExpression(std::unique_ptr<ExpressionNode> l,
                                    std::unique_ptr<ExpressionNode> r)
-    : ExpressionNode(l->location()), l_(std::move(l)), r_(std::move(r)) {}
+    : ExpressionNode(Join(l->location(), r->location())),
+      l_(std::move(l)),
+      r_(std::move(r)) {}
 
-NegativeExp::NegativeExp(std::unique_ptr<ExpressionNode> e)
-    : ExpressionNode(e->location()), e_(std::move(e)) {}
+NegativeExp::NegativeExp(Loc loc, std::unique_ptr<ExpressionNode> e)
+    : ExpressionNode(Join(loc, e->location())), e_(std::move(e)) {}
 
 Define::Define(Loc loc, std::unique_ptr<std::string> name,
                std::unique_ptr<LiteralValue> val, std::unique_ptr<UnitExp> unit)
@@ -87,7 +114,9 @@ Define::Define(Loc loc, std::string name, double val)
 
 Specification::Specification(Loc loc, std::unique_ptr<std::string> name,
                              std::unique_ptr<UnitExp> unit)
-    : NodeI(loc), name_(std::move(*name)), unit_(std::move(unit)) {}
+    : NodeI(Join(loc, unit->location())),
+      name_(std::move(*name)),
+      unit_(std::move(unit)) {}
 
 ////////
 

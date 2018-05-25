@@ -43,16 +43,35 @@ namespace tbd {
 // Generaric location type.
 struct Loc {
   template <class L>
-  Loc(L l) : filename(*l.begin.filename), line(l.begin.line) {}
+  Loc(L l)
+      : filename(*l.begin.filename),
+        line_begin(l.begin.line),
+        line_end(l.end.line),
+        col_begin(l.begin.column),
+        col_end(l.end.column) {}
   Loc() = default;
 
   friend ::std::ostream& operator<<(::std::ostream& os, const Loc& l) {
-    return os << l.filename << ":" << l.line;
+    if (l.line_begin == l.line_end) {
+      return os << l.filename << ":" << l.line_begin << ":[" << l.col_begin
+                << "," << l.col_end << "]";
+    } else {
+      return os << l.filename << ":" << l.line_begin << ":" << l.col_begin
+                << " to " << l.line_end << ":" << l.col_end;
+    }
   }
 
   std::string filename = "??";
-  int line = 0;
+  int line_begin = 0, line_end = 0;
+  int col_begin = 0, col_end = 0;
 };
+
+Loc Join(std::vector<Loc> loc);
+
+template <class... T>
+Loc Join(const Loc& l, const T&... v) {
+  return Join({l, Loc{v}...});
+}
 
 class VisitNodes;
 class LiteralValue;
@@ -64,8 +83,9 @@ class NodeI {
   virtual ~NodeI() = default;
 
   const Loc& location() const { return loc_; }
+  void set_location(const Loc& l) { loc_ = l; }
   const std::string& source_file() const { return loc_.filename; }
-  int source_line() const { return loc_.line; }
+  int source_line() const { return loc_.line_begin; }
 
   ABSL_MUST_USE_RESULT bool VisitNode(VisitNodes* v) const { return Visit(v); }
 
@@ -155,7 +175,7 @@ class Equality final : public ExpressionNode {
   ABSL_MUST_USE_RESULT bool Visit(VisitNodes*) const override;
 
  public:
-  Equality(std::unique_ptr<ExpressionNode> l,
+  Equality(Loc loc, std::unique_ptr<ExpressionNode> l,
            std::unique_ptr<ExpressionNode> r);
 
   ExpressionNode* left() const { return l_.get(); }
@@ -196,7 +216,7 @@ class PowerExp final : public ExpressionNode {
   ABSL_MUST_USE_RESULT bool Visit(VisitNodes*) const override;
 
  public:
-  PowerExp(std::unique_ptr<ExpressionNode> b, int e);
+  PowerExp(Loc loc, std::unique_ptr<ExpressionNode> b, int e);
 
   ExpressionNode* base() const { return b_.get(); }
   int exp() const { return e_; }
@@ -238,7 +258,7 @@ class NegativeExp final : public ExpressionNode {
   ABSL_MUST_USE_RESULT bool Visit(VisitNodes*) const override;
 
  public:
-  NegativeExp(std::unique_ptr<ExpressionNode> e);
+  NegativeExp(Loc loc, std::unique_ptr<ExpressionNode> e);
   ExpressionNode* value() const { return e_.get(); }
 
  private:

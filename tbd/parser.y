@@ -46,6 +46,7 @@ void parser::error(tbd_parser::location const& loc, std::string const& msg) {
 using absl::WrapUnique;
 using absl::make_unique;
 
+using tbd::Join;
 using tbd::Define;
 using tbd::DifExp;
 using tbd::Equality;
@@ -135,27 +136,27 @@ Unit : Unit '*' UnitT  { ($$ = $1)->Mul(WrapUnique($3)); }
      ;
 
 UnitT : ID              { $$ = new UnitExp::UnitT{std::move(*WrapUnique($1)), 1, @1}; }
-      | ID '^' Int      { $$ = new UnitExp::UnitT{std::move(*WrapUnique($1)), $3, @1}; }
-      | ID '^' '-' Int  { $$ = new UnitExp::UnitT{std::move(*WrapUnique($1)), -$4, @1}; }
+      | ID '^' Int      { $$ = new UnitExp::UnitT{std::move(*WrapUnique($1)), $3, Join(@1, @3)}; }
+      | ID '^' '-' Int  { $$ = new UnitExp::UnitT{std::move(*WrapUnique($1)), -$4, Join(@1, @4)}; }
       ;
 
-Def : ID DEF Num ';'              { $$ = new Define(@1, WrapUnique($1), WrapUnique($3), make_unique<UnitExp>(@4)); }
-    | ID DEF Num '[' ']' ';'      { $$ = new Define(@1, WrapUnique($1), WrapUnique($3), make_unique<UnitExp>(@4)); }
-    | ID DEF Num '[' Unit ']' ';' { $$ = new Define(@1, WrapUnique($1), WrapUnique($3), WrapUnique($5)); }
+Def : ID DEF Num ';'              { $$ = new Define(Join(@1, @4), WrapUnique($1), WrapUnique($3), make_unique<UnitExp>(@4)); }
+    | ID DEF Num '[' ']' ';'      { $$ = new Define(Join(@1, @6), WrapUnique($1), WrapUnique($3), make_unique<UnitExp>(@4)); }
+    | ID DEF Num '[' Unit ']' ';' { $$ = new Define(Join(@1, @7), WrapUnique($1), WrapUnique($3), WrapUnique($5)); }
     ;
 
-Spec : ID DEF '[' Unit ']' ';' { $$ = new tbd::Specification(@1, WrapUnique($1), WrapUnique($4)); }
-     | ID DEF '[' ']' ';'      { $$ = new tbd::Specification(@1, WrapUnique($1), make_unique<UnitExp>(@3));}
+Spec : ID DEF '[' Unit ']' ';' { $$ = new tbd::Specification(Join(@1, @6), WrapUnique($1), WrapUnique($4)); }
+     | ID DEF '[' ']' ';'      { $$ = new tbd::Specification(Join(@1, @5), WrapUnique($1), make_unique<UnitExp>(@3));}
      ;
 
-DefUnit : '[' ID ']' DEF Num '[' Unit ']' ';' { $$ = new UnitDef(@2, WrapUnique($2), WrapUnique($5), WrapUnique($7)); }
+DefUnit : '[' ID ']' DEF Num '[' Unit ']' ';' { $$ = new UnitDef(Join(@1, @9), WrapUnique($2), WrapUnique($5), WrapUnique($7)); }
         ;
 
-Equ : AddExp '=' AddExp ';' { $$ = new Equality(WrapUnique($1), WrapUnique($3)); }
+Equ : AddExp '=' AddExp ';' { $$ = new Equality(@4, WrapUnique($1), WrapUnique($3)); }
     ;
 
 ExpExp : PriExp          { $$ = $1; }
-       | PriExp '^' Int  { $$ = new PowerExp(WrapUnique($1), $3); }
+       | PriExp '^' Int  { $$ = new PowerExp(@3, WrapUnique($1), $3); }
        ;
 
 MulExp : MulExp '*' ExpExp  { $$ = new ProductExp(WrapUnique($1), WrapUnique($3)); }
@@ -168,9 +169,9 @@ AddExp : AddExp '+' MulExp { $$ = new SumExp(WrapUnique($1), WrapUnique($3)); }
        | MulExp            { $$ = $1; }
        ;
 
-PriExp : '(' AddExp ')'  { $$ = $2; }
+PriExp : '(' AddExp ')'  { ($$ = $2)->set_location(Join(@1, @3)); }
        | Num             { $$ = $1; }
        | ID              { $$ = new NamedValue(@1, WrapUnique($1)); }
-       | '+' PriExp      { $$ = $2; }
-       | '-' PriExp      { $$ = new NegativeExp(WrapUnique($2)); }
+       | '+' PriExp      { ($$ = $2)->set_location(Join(@1, $2->location())); }
+       | '-' PriExp      { $$ = new NegativeExp(Join(@1, @2), WrapUnique($2)); }
        ;

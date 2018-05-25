@@ -39,9 +39,11 @@ static const std::string fn = "foo";
 struct loc_p {
   const std::string* filename = &fn;
   int line = 123;
+  int column = 456;
 };
 struct loc {
   loc_p begin;
+  loc_p end;
 };
 
 struct TestNode final : NodeI {
