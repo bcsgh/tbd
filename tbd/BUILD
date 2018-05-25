@@ -285,6 +285,17 @@ cc_library(
   ],
 )
 
+cc_test(
+  name = "evaluate_test",
+  srcs = ["evaluate_test.cc"],
+  deps = [
+    ":common",
+    ":evaluate",
+    ":test_main",
+    "@com_google_googletest//:gtest",
+  ],
+)
+
 cc_library(
   name = "graphviz",
   srcs = ["graphviz.cc"],
