@@ -38,8 +38,8 @@ namespace tbd {
 bool Evaluate::operator()(const Equality& e) {
   auto l = doc_->TryGetNode(e.left());
   auto r = doc_->TryGetNode(e.right());
-  CHECK(l != nullptr) << e.left();
-  CHECK(r != nullptr) << e.right();
+  CHECK(l != nullptr) << e.left()->location();
+  CHECK(r != nullptr) << e.right()->location();
 
   if (l->value.has_value() && r->value.has_value()) {
     if (*l->value != *r->value) ReportConflict(e);
@@ -65,8 +65,8 @@ bool Evaluate::operator()(const Equality& e) {
 
 bool Evaluate::operator()(const LiteralValue& l) {
   auto node = doc_->TryGetNode(&l);
-  CHECK(node != nullptr);
-  CHECK(!node->value.has_value());
+  CHECK(node != nullptr) << l.location();
+  CHECK(!node->value.has_value()) << l.location();
 
   node->value = l.value();
   progress_ = true;
@@ -76,15 +76,15 @@ bool Evaluate::operator()(const LiteralValue& l) {
 
 bool Evaluate::operator()(const NamedValue& n) {
   auto node = doc_->TryGetNamedNode(n.name());
-  CHECK(node != nullptr);
+  CHECK(node != nullptr) << n.location();
   return node->value.has_value();
 }
 
 bool Evaluate::operator()(const PowerExp& e) {
   auto b = doc_->TryGetNode(e.base());
   auto exp = doc_->TryGetNode(&e);
-  CHECK(b != nullptr);
-  CHECK(exp != nullptr);
+  CHECK(b != nullptr) << e.location();
+  CHECK(exp != nullptr) << e.location();
 
   if (b->value.has_value() && exp->value.has_value()) {
     if (*exp->value != std::pow(*b->value, e.exp())) ReportConflict(e);
@@ -263,8 +263,8 @@ bool Evaluate::operator()(const DifExp& d) {
 bool Evaluate::operator()(const NegativeExp& n) {
   auto b = doc_->TryGetNode(n.value());
   auto exp = doc_->TryGetNode(&n);
-  CHECK(b != nullptr);
-  CHECK(exp != nullptr);
+  CHECK(b != nullptr) << n.value()->location();
+  CHECK(exp != nullptr) << n.location();
 
   if (b->value.has_value() && exp->value.has_value()) {
     if (*exp->value != -*b->value) ReportConflict(n);
@@ -290,9 +290,9 @@ bool Evaluate::operator()(const NegativeExp& n) {
 
 bool Evaluate::operator()(const Define& d) {
   auto node = doc_->TryGetNamedNode(d.name());
-  CHECK(node != nullptr);
-  CHECK(!node->value.has_value());
-  CHECK(node->unit.has_value());
+  CHECK(node != nullptr) << d.location();
+  CHECK(!node->value.has_value()) << d.location();
+  CHECK(node->unit.has_value()) << d.location();
 
   node->value = d.value() * node->unit->scale;
   progress_ = true;
