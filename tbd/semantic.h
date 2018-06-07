@@ -55,6 +55,8 @@ class SemanticDocument final {
     absl::optional<Unit> unit = absl::nullopt;
     std::string unit_name = "?";
 
+    bool resolved = false;       // A way to solve for this has been found.
+    bool equ_processed = false;  // This equation has been used.
     absl::optional<double> value = absl::nullopt;
 
     bool referenced = false;

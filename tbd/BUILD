@@ -65,6 +65,30 @@ cc_test(
 )
 
 cc_library(
+  name = "ops",
+  srcs = ["ops.cc"],
+  hdrs = ["ops.h"],
+  deps = [
+    ":common",
+    ":semantic",
+    "@com_google_absl//absl/base:core_headers", 
+  ],
+)
+
+cc_test(
+  name = "ops_test",
+  srcs = ["ops_test.cc"],
+  timeout = "short",
+  deps = [
+    ":ast",
+    ":ops",
+    ":common",
+    ":test_main",
+    "@com_google_googletest//:gtest",
+  ],
+)
+
+cc_library(
   name = "semantic",
   srcs = ["semantic.cc"],
   hdrs = ["semantic.h"],
@@ -281,6 +305,7 @@ cc_library(
   deps = [
     ":ast",
     ":common",
+    ":ops",
     ":semantic",
   ],
 )

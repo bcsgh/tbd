@@ -25,59 +25,28 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef TBD_EVALUATE_H_
-#define TBD_EVALUATE_H_
+#include "tbd/ops.h"
 
-#include <memory>
-#include <set>
-#include <vector>
-
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 #include "tbd/ast.h"
 #include "tbd/common.h"
-#include "tbd/ops.h"
 #include "tbd/semantic.h"
 
 namespace tbd {
+namespace {
+const int _i = logging::InstallSignalhandler();
 
-class Evaluate final : public VisitNodes {
- public:
-  Evaluate(SemanticDocument* doc) : doc_(doc){};
+TEST(TestOp, VisitAdd) {
+  SemanticDocument::Exp R, A, B;
+  OpAdd a(&R, &A, &B);
+  EXPECT_FALSE(a.VisitOp(DirectEvaluate{}.as_ptr()));
 
-  struct Stage {
-    // The ops that directly solve for the parts where that works for.
-    std::vector<std::unique_ptr<OpI>> direct_ops;
-  };
+  A.value = 1;
+  B.value = 2;
+  EXPECT_TRUE(a.VisitOp(DirectEvaluate{}.as_ptr()));
+  ASSERT_TRUE(R.value.has_value());
+}
 
- private:
-  bool operator()(const UnitExp&) override { LOG(FATAL); }
-  bool operator()(const UnitDef&) override { LOG(FATAL); }
-
-  bool operator()(const Equality&) override;
-  bool operator()(const LiteralValue&) override;
-  bool operator()(const NamedValue&) override;
-  bool operator()(const PowerExp&) override;
-  bool operator()(const ProductExp&) override;
-  bool operator()(const QuotientExp&) override;
-  bool operator()(const SumExp&) override;
-  bool operator()(const DifExp&) override;
-  bool operator()(const NegativeExp&) override;
-
-  bool operator()(const Define&) override;
-  bool operator()(const Specification&) override { return false; }
-  bool operator()(const Document&) override;
-
-  bool DirectEvaluateNodes(std::set<const ExpressionNode*>* nodes);
-
-  SemanticDocument* doc_;
-
-  bool error_ = false;     // Set if an expression evaluation yields an error.
-  bool progress_ = false;  // Set when a expressions value it found.
-
-  std::vector<Stage> stages_;
-
-  std::vector<std::unique_ptr<OpI>>* ops_;
-};
-
+}  // namespace
 }  // namespace tbd
-
-#endif  // TBD_EVALUATE_H_

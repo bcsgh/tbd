@@ -31,31 +31,46 @@
 
 #include "tbd/ast.h"
 #include "tbd/common.h"
+#include "tbd/ops.h"
 #include "tbd/semantic.h"
 
 namespace tbd {
 
 bool Evaluate::operator()(const Equality& e) {
+  auto i = doc_->TryGetNode(&e);
   auto l = doc_->TryGetNode(e.left());
   auto r = doc_->TryGetNode(e.right());
+  CHECK(i != nullptr) << e.location();
   CHECK(l != nullptr) << e.left()->location();
   CHECK(r != nullptr) << e.right()->location();
 
-  if (l->value.has_value() && r->value.has_value()) {
-    if (*l->value != *r->value) ReportConflict(e);
+  if (l->resolved && r->resolved) {
+    if (!i->equ_processed) {
+      SYM_ERROR(e) << "Conflicting result";
+      error_ = true;
+      return false;
+    }
     return true;
   }
 
-  if (l->value.has_value()) {
-    CHECK(!r->value.has_value());
-    r->value = *l->value;
+  if (l->resolved) {
+    CHECK(!r->resolved);
+    ops_->emplace_back(absl::make_unique<OpAssign>(i, l));
+    ops_->emplace_back(absl::make_unique<OpAssign>(r, l));
+    i->equ_processed = true;
+    i->resolved = true;
+    r->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (r->value.has_value()) {
-    CHECK(!l->value.has_value());
-    l->value = *r->value;
+  if (r->resolved) {
+    CHECK(!l->resolved);
+    ops_->emplace_back(absl::make_unique<OpAssign>(i, r));
+    ops_->emplace_back(absl::make_unique<OpAssign>(l, r));
+    i->equ_processed = true;
+    i->resolved = true;
+    l->resolved = true;
     progress_ = true;
     return true;
   }
@@ -66,9 +81,11 @@ bool Evaluate::operator()(const Equality& e) {
 bool Evaluate::operator()(const LiteralValue& l) {
   auto node = doc_->TryGetNode(&l);
   CHECK(node != nullptr) << l.location();
-  CHECK(!node->value.has_value()) << l.location();
+  CHECK(!node->resolved) << l.location();
 
   node->value = l.value();
+  node->equ_processed = true;
+  node->resolved = true;
   progress_ = true;
 
   return true;
@@ -77,7 +94,8 @@ bool Evaluate::operator()(const LiteralValue& l) {
 bool Evaluate::operator()(const NamedValue& n) {
   auto node = doc_->TryGetNamedNode(n.name());
   CHECK(node != nullptr) << n.location();
-  return node->value.has_value();
+  node->equ_processed = node->resolved;
+  return node->resolved;
 }
 
 bool Evaluate::operator()(const PowerExp& e) {
@@ -86,26 +104,34 @@ bool Evaluate::operator()(const PowerExp& e) {
   CHECK(b != nullptr) << e.location();
   CHECK(exp != nullptr) << e.location();
 
-  if (b->value.has_value() && exp->value.has_value()) {
-    if (*exp->value != std::pow(*b->value, e.exp())) ReportConflict(e);
+  if (b->resolved && exp->resolved) {
+    if (!exp->equ_processed) {
+      SYM_ERROR(e) << "Conflicting result";
+      error_ = true;
+      return false;
+    }
     return true;
   }
 
-  if (b->value.has_value()) {
-    CHECK(!exp->value.has_value());
-    exp->value = std::pow(*b->value, e.exp());
+  if (b->resolved) {
+    CHECK(!exp->resolved);
+    ops_->emplace_back(absl::make_unique<OpExp>(exp, b, e.exp()));
+    exp->equ_processed = true;
+    exp->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (exp->value.has_value()) {
-    CHECK(!b->value.has_value());
+  if (exp->resolved) {
+    CHECK(!b->resolved);
     if (e.exp() % 2 == 1) {
-      b->value = std::pow(*exp->value, 1.0 / e.exp());
+      ops_->emplace_back(absl::make_unique<OpExp>(b, exp, 1.0 / e.exp()));
+      exp->equ_processed = true;
+      b->resolved = true;
       progress_ = true;
       return true;
     } else {
-      LOG(INFO) << "^ " << exp->value.has_value() << b->value.has_value();
+      LOG(INFO) << "^ " << exp->resolved << b->resolved;
     }
   }
 
@@ -120,28 +146,38 @@ bool Evaluate::operator()(const ProductExp& p) {
   CHECK(r != nullptr) << p.right()->location();
   CHECK(n != nullptr) << p.location();
 
-  if (n->value.has_value() && l->value.has_value() && r->value.has_value()) {
-    if (*n->value != *l->value * *r->value) ReportConflict(p);
+  if (n->resolved && l->resolved && r->resolved) {
+    if (!n->equ_processed) {
+      SYM_ERROR(p) << "Conflicting result";
+      error_ = true;
+      return false;
+    }
     return true;
   }
 
-  if (l->value.has_value() && r->value.has_value()) {
-    CHECK(!n->value.has_value());
-    n->value = *l->value * *r->value;
+  if (l->resolved && r->resolved) {
+    CHECK(!n->resolved);
+    ops_->emplace_back(absl::make_unique<OpMul>(n, l, r));
+    n->equ_processed = true;
+    n->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (n->value.has_value() && l->value.has_value()) {
-    CHECK(!r->value.has_value());
-    r->value = *n->value / *l->value;
+  if (n->resolved && l->resolved) {
+    CHECK(!r->resolved);
+    ops_->emplace_back(absl::make_unique<OpDiv>(r, n, l));
+    n->equ_processed = true;
+    r->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (n->value.has_value() && r->value.has_value()) {
-    CHECK(!l->value.has_value());
-    l->value = *n->value / *r->value;
+  if (n->resolved && r->resolved) {
+    CHECK(!l->resolved);
+    ops_->emplace_back(absl::make_unique<OpDiv>(l, n, r));
+    n->equ_processed = true;
+    l->resolved = true;
     progress_ = true;
     return true;
   }
@@ -157,28 +193,38 @@ bool Evaluate::operator()(const QuotientExp& q) {
   CHECK(r != nullptr) << q.right()->location();
   CHECK(n != nullptr) << q.location();
 
-  if (n->value.has_value() && l->value.has_value() && r->value.has_value()) {
-    if (*n->value != *l->value / *r->value) ReportConflict(q);
+  if (n->resolved && l->resolved && r->resolved) {
+    if (!n->equ_processed) {
+      SYM_ERROR(q) << "Conflicting result";
+      error_ = true;
+      return false;
+    }
     return true;
   }
 
-  if (l->value.has_value() && r->value.has_value()) {
-    CHECK(!n->value.has_value());
-    n->value = *l->value / *r->value;
+  if (l->resolved && r->resolved) {
+    CHECK(!n->resolved);
+    ops_->emplace_back(absl::make_unique<OpDiv>(n, l, r));
+    n->equ_processed = true;
+    n->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (n->value.has_value() && r->value.has_value()) {
-    CHECK(!l->value.has_value());
-    l->value = *n->value * *r->value;
+  if (n->resolved && r->resolved) {
+    CHECK(!l->resolved);
+    ops_->emplace_back(absl::make_unique<OpMul>(l, n, r));
+    n->equ_processed = true;
+    l->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (n->value.has_value() && l->value.has_value()) {
-    CHECK(!r->value.has_value());
-    r->value = *l->value / *n->value;
+  if (n->resolved && l->resolved) {
+    CHECK(!r->resolved);
+    ops_->emplace_back(absl::make_unique<OpDiv>(r, l, n));
+    n->equ_processed = true;
+    r->resolved = true;
     progress_ = true;
     return true;
   }
@@ -194,28 +240,38 @@ bool Evaluate::operator()(const SumExp& s) {
   CHECK(r != nullptr) << s.right()->location();
   CHECK(n != nullptr) << s.location();
 
-  if (n->value.has_value() && l->value.has_value() && r->value.has_value()) {
-    if (*n->value != *l->value + *r->value) ReportConflict(s);
+  if (n->resolved && l->resolved && r->resolved) {
+    if (!n->equ_processed) {
+      SYM_ERROR(s) << "Conflicting result";
+      error_ = true;
+      return false;
+    }
     return true;
   }
 
-  if (l->value.has_value() && r->value.has_value()) {
-    CHECK(!n->value.has_value());
-    n->value = *l->value + *r->value;
+  if (l->resolved && r->resolved) {
+    CHECK(!n->resolved);
+    ops_->emplace_back(absl::make_unique<OpAdd>(n, l, r));
+    n->equ_processed = true;
+    n->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (n->value.has_value() && l->value.has_value()) {
-    CHECK(!r->value.has_value());
-    r->value = *n->value - *l->value;
+  if (n->resolved && l->resolved) {
+    CHECK(!r->resolved);
+    ops_->emplace_back(absl::make_unique<OpSub>(r, n, l));
+    n->equ_processed = true;
+    r->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (n->value.has_value() && r->value.has_value()) {
-    CHECK(!l->value.has_value());
-    l->value = *n->value - *r->value;
+  if (n->resolved && r->resolved) {
+    CHECK(!l->resolved);
+    ops_->emplace_back(absl::make_unique<OpSub>(l, n, r));
+    n->equ_processed = true;
+    l->resolved = true;
     progress_ = true;
     return true;
   }
@@ -231,28 +287,38 @@ bool Evaluate::operator()(const DifExp& d) {
   CHECK(r != nullptr) << d.right()->location();
   CHECK(n != nullptr) << d.location();
 
-  if (n->value.has_value() && l->value.has_value() && r->value.has_value()) {
-    if (*n->value != *l->value - *r->value) ReportConflict(d);
+  if (n->resolved && l->resolved && r->resolved) {
+    if (!n->equ_processed) {
+      SYM_ERROR(d) << "Conflicting result";
+      error_ = true;
+      return false;
+    }
     return true;
   }
 
-  if (l->value.has_value() && r->value.has_value()) {
-    CHECK(!n->value.has_value());
-    n->value = *l->value - *r->value;
+  if (l->resolved && r->resolved) {
+    CHECK(!n->resolved);
+    ops_->emplace_back(absl::make_unique<OpSub>(n, l, r));
+    n->equ_processed = true;
+    n->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (n->value.has_value() && l->value.has_value()) {
-    CHECK(!r->value.has_value());
-    r->value = *l->value - *n->value;
+  if (n->resolved && l->resolved) {
+    CHECK(!r->resolved);
+    ops_->emplace_back(absl::make_unique<OpSub>(r, l, n));
+    n->equ_processed = true;
+    r->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (n->value.has_value() && r->value.has_value()) {
-    CHECK(!l->value.has_value());
-    l->value = *r->value + *n->value;
+  if (n->resolved && r->resolved) {
+    CHECK(!l->resolved);
+    ops_->emplace_back(absl::make_unique<OpAdd>(l, r, n));
+    n->equ_processed = true;
+    l->resolved = true;
     progress_ = true;
     return true;
   }
@@ -266,21 +332,29 @@ bool Evaluate::operator()(const NegativeExp& n) {
   CHECK(b != nullptr) << n.value()->location();
   CHECK(exp != nullptr) << n.location();
 
-  if (b->value.has_value() && exp->value.has_value()) {
-    if (*exp->value != -*b->value) ReportConflict(n);
+  if (b->resolved && exp->resolved) {
+    if (!exp->equ_processed) {
+      SYM_ERROR(n) << "Conflicting result";
+      error_ = true;
+      return false;
+    }
     return true;
   }
 
-  if (b->value.has_value()) {
-    CHECK(!exp->value.has_value());
-    exp->value = -*b->value;
+  if (b->resolved) {
+    CHECK(!exp->resolved);
+    ops_->emplace_back(absl::make_unique<OpNeg>(exp, b));
+    exp->equ_processed = true;
+    exp->resolved = true;
     progress_ = true;
     return true;
   }
 
-  if (exp->value.has_value()) {
-    CHECK(!b->value.has_value());
-    b->value = -*exp->value;
+  if (exp->resolved) {
+    CHECK(!b->resolved);
+    ops_->emplace_back(absl::make_unique<OpNeg>(b, exp));
+    exp->equ_processed = true;
+    b->resolved = true;
     progress_ = true;
     return true;
   }
@@ -291,13 +365,37 @@ bool Evaluate::operator()(const NegativeExp& n) {
 bool Evaluate::operator()(const Define& d) {
   auto node = doc_->TryGetNamedNode(d.name());
   CHECK(node != nullptr) << d.location();
-  CHECK(!node->value.has_value()) << d.location();
+  CHECK(!node->resolved) << d.location();
   CHECK(node->unit.has_value()) << d.location();
 
   node->value = d.value() * node->unit->scale;
+  node->equ_processed = true;
+  node->resolved = true;
   progress_ = true;
 
   return true;
+}
+
+bool Evaluate::DirectEvaluateNodes(std::set<const ExpressionNode*>* nodes) {
+  // For every pass where progress is made, at least one node is
+  // removed from nodes so watching that bounds the number of passes.
+  bool made_progress = false;
+  progress_ = true;
+  for (int p = 0; (progress_ && !nodes->empty()); p++) {
+    LOG(INFO) << "Pass " << p << ", " << nodes->size() << " nodes un-resolved";
+    progress_ = false;
+    for (auto it = nodes->begin(); it != nodes->end();) {
+      if ((*it)->VisitNode(this)) {
+        it = nodes->erase(it);
+        progress_ = true;
+        made_progress = true;
+      } else {
+        ++it;
+      }
+    }
+  }
+  LOG(INFO) << nodes->size() << " nodes not resolved";
+  return made_progress;
 }
 
 bool Evaluate::operator()(const Document& d) {
@@ -315,32 +413,21 @@ bool Evaluate::operator()(const Document& d) {
 
   if (error_) return false;
 
-  progress_ = true;
-  LOG(INFO) << nodes.size();
-  // For every pass where progress is made, at least one node is
-  // removed from nodes_ so wathing that bounds the number of passes.
-  for (int p = 0; (progress_ && !nodes.empty()); p++) {
-    LOG(INFO) << "==== pass " << p << " ====";
-    progress_ = false;
-    for (auto it = nodes.begin(); it != nodes.end();) {
-      if ((*it)->VisitNode(this)) {
-        it = nodes.erase(it);
-        progress_ = true;
-      } else {
-        ++it;
-      }
-    }
-    LOG(INFO) << nodes.size() << " nodes un-resolved";
-    if (error_) return false;
-  }
+  // The sequence of ops that solve for all the direct solutions.
+  stages_.emplace_back();
+  auto& stage = stages_.back();
+  ops_ = &stage.direct_ops;
 
-  for (const auto* c : conflicts_) {
-    SYM_ERROR(*c) << "Conflicting result";
-  }
+  DirectEvaluateNodes(&nodes);
 
+  if (error_) return false;
+
+  // Run the evaluation plan.
+  DirectEvaluate eval;
+  for (const auto& op : stage.direct_ops) (void)op->VisitOp(&eval);
   LOG(INFO) << "==== DONE ====";
 
-  return conflicts_.empty();
+  return !error_;
 }
 
 }  // namespace tbd
