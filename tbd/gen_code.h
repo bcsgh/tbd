@@ -25,66 +25,44 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef TBD_EVALUATE_H_
-#define TBD_EVALUATE_H_
+#ifndef TBD_GEN_CODE_H_
+#define TBD_GEN_CODE_H_
 
-#include <memory>
-#include <set>
-#include <vector>
+#include <map>
+#include <ostream>
+#include <string>
 
-#include "tbd/ast.h"
-#include "tbd/common.h"
+#include "absl/strings/string_view.h"
 #include "tbd/ops.h"
 #include "tbd/semantic.h"
 
 namespace tbd {
 
-class Evaluate final : public VisitNodes {
+////////////////////////////////////////////
+
+// Direct in place evaluation.
+class CodeEvaluate final : public VisitOps {
  public:
-  Evaluate(SemanticDocument* doc) : doc_(doc){};
+  CodeEvaluate(std::ostream& out) : out_(out) {}
 
-  struct Stage {
-    // The ops that directly solve for the parts where that works for.
-    std::vector<std::unique_ptr<OpI>> direct_ops;
-  };
-
-  std::vector<const Stage*> GetStages() const {
-    std::vector<const Stage*> ret;
-    ret.reserve(stages_.size());
-    for (const auto& s : stages_) ret.push_back(&s);
-    return ret;
-  }
+  ABSL_MUST_USE_RESULT bool operator()(const OpAdd&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpSub&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpMul&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpDiv&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpNeg&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpExp&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpAssign&) override;
 
  private:
-  bool operator()(const UnitExp&) override { LOG(FATAL); }
-  bool operator()(const UnitDef&) override { LOG(FATAL); }
+  using ExpP = const SemanticDocument::Exp*;
 
-  bool operator()(const Equality&) override;
-  bool operator()(const LiteralValue&) override;
-  bool operator()(const NamedValue&) override;
-  bool operator()(const PowerExp&) override;
-  bool operator()(const ProductExp&) override;
-  bool operator()(const QuotientExp&) override;
-  bool operator()(const SumExp&) override;
-  bool operator()(const DifExp&) override;
-  bool operator()(const NegativeExp&) override;
+  bool BinaryOp(ExpP r, ExpP a, ExpP b, absl::string_view op);
+  bool Add(ExpP, std::string);
 
-  bool operator()(const Define&) override;
-  bool operator()(const Specification&) override { return false; }
-  bool operator()(const Document&) override;
-
-  bool DirectEvaluateNodes(std::set<const ExpressionNode*>* nodes);
-
-  SemanticDocument* doc_;
-
-  bool error_ = false;     // Set if an expression evaluation yields an error.
-  bool progress_ = false;  // Set when a expressions value it found.
-
-  std::vector<Stage> stages_;
-
-  std::vector<std::unique_ptr<OpI>>* ops_;
+  std::ostream& out_;
+  std::map<const SemanticDocument::Exp*, std::string> expressions_;
 };
 
 }  // namespace tbd
 
-#endif  // TBD_EVALUATE_H_
+#endif  // TBD_GEN_CODE_H_

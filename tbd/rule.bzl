@@ -25,7 +25,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-def gen_tbd(name=None, srcs=None, dot=None, out=None, warnings_as_errors=False):
+def gen_tbd(name=None, srcs=None, cpp=None, dot=None, out=None,
+            warnings_as_errors=False):
   if not srcs:
     fail("srcs must be provided")
   if not name:
@@ -39,6 +40,10 @@ def gen_tbd(name=None, srcs=None, dot=None, out=None, warnings_as_errors=False):
   cmd += " > $(location " + out + ")"
 
   outs = [out]
+
+  if cpp:
+    cmd += " --cpp_output=$(location " + cpp +")"
+    outs += [cpp]
 
   if dot:
     cmd += " --graphviz_output=$(location " + dot +")"

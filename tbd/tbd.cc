@@ -37,6 +37,7 @@
 #include "tbd/ast.h"
 #include "tbd/common.h"
 #include "tbd/evaluate.h"
+#include "tbd/gen_code.h"
 #include "tbd/graphviz.h"
 #include "tbd/parser.h"
 #include "tbd/preamble_emebed_data.h"
@@ -46,6 +47,9 @@
 DEFINE_string(graphviz_output, "",
               "Output the sysyem of equations in GraphVis format. "
               "Mostly for debugging");
+DEFINE_string(cpp_output, "",
+              "Output the sequnce of operation for solving for the unknowns as "
+              "C++ assignment expressions.");
 DEFINE_bool(dump_units, false, "Dump the set of know units to stdout");
 
 namespace tbd {
@@ -73,7 +77,8 @@ bool Process(const std::string& src, const std::string& file_string) {
   }
   if (FLAGS_dump_units) sem.LogUnits(std::cout);
 
-  if (!doc.VisitNode(Evaluate(&sem).as_ptr())) {
+  Evaluate eva(&sem);
+  if (!doc.VisitNode(&eva)) {
     LOG(ERROR) << "Failed to Evaluate values for '" << src << "'";
     return false;
   }
@@ -92,6 +97,24 @@ bool Process(const std::string& src, const std::string& file_string) {
     if (node->node && node->node->location().filename == kPreamble) continue;
     std::cout << *node;
   }
+
+  if (!FLAGS_cpp_output.empty()) {
+    std::ofstream out;
+    out.open(FLAGS_cpp_output, std::ios::out);
+    CHECK(!out.fail()) << FLAGS_cpp_output << ": " << std::strerror(errno);
+
+    CodeEvaluate code(out);
+    for (const auto s : eva.GetStages()) {
+      out << "// Simple\n";
+      for (const auto& op : s->direct_ops) {
+        if (!op->VisitOp(&code)) {
+          LOG(ERROR) << "Error generateding C++ for opertion at "
+                     << op->location();
+        }
+      }
+    }
+  }
+
   std::cout << std::endl;
 
   return true;

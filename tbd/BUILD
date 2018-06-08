@@ -193,6 +193,7 @@ cc_library(
     ":ast",
     ":common",
     ":evaluate",
+    ":gen_code",
     ":graphviz",
     ":parser_lib",
     ":preamble",
@@ -344,6 +345,29 @@ cc_test(
     ":graphviz",
     ":test_main",
     "@com_google_absl//absl/strings",
+    "@com_google_googletest//:gtest",
+  ],
+)
+
+cc_library(
+  name = "gen_code",
+  srcs = ["gen_code.cc"],
+  hdrs = ["gen_code.h"],
+  deps = [
+    ":common",
+    ":ops",
+  ],
+)
+
+cc_test(
+  name = "gen_code_test",
+  srcs = ["gen_code_test.cc"],
+  timeout = "short",
+  deps = [
+    ":common",
+    ":gen_code",
+    ":ops",
+    ":test_main",
     "@com_google_googletest//:gtest",
   ],
 )

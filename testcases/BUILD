@@ -46,6 +46,7 @@ load("//tbd:rule.bzl", "gen_tbd")
     name = "gen_" + c.replace(".", "_"),
     srcs = [c],
     out = c.replace("tbd", "txt"),
+    cpp = c.replace("tbd", "cpp"),
     dot = c.replace("tbd", "dot"),
     warnings_as_errors = True,
 ) for c in SUCCESS_CASES]
@@ -67,7 +68,12 @@ load("//tools:build.bzl", "build_test")
   name = g.replace(".", "_"),
   args = ["$(location %s)" % g, "$(location %s)" % g.replace(".gold", ".txt")],
   srcs = ["gold_test.sh"],
-  data = [g, g.replace(".gold", ".txt")],
+  data = [
+      g,
+      g.replace(".gold", ".txt"),
+      g.replace(".gold", ".cpp"),
+      g.replace(".gold", ".gold.cpp"),
+  ],
   timeout="short",
 ) for g in glob(["*.gold"])]
 
