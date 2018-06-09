@@ -125,6 +125,30 @@ class OpAssign final : public OpI {
   const ExpP d, s;
 };
 
+class OpLoad final : public OpI {
+  ABSL_MUST_USE_RESULT bool Visit(VisitOps*) const override;
+  Loc location() const override { return n->node->location(); }
+
+ public:
+  OpLoad(ExpP n_, int i_) : n(n_), i(i_) {}
+
+  const ExpP n;
+  const int i;
+};
+
+class OpCheck final : public OpI {
+  ABSL_MUST_USE_RESULT bool Visit(VisitOps*) const override;
+  Loc location() const override { return {}; }  // TODO where to get this from?
+
+ public:
+  OpCheck(int i_, ExpP a_, ExpP b_) : i(i_), a(a_), b(b_) {}
+
+  const int i;
+  const ExpP a, b;
+};
+
+////////////////////////////////////////////
+
 struct VisitOps {
   // Get the address of the object as a pointer, even if it's a temporary.
   VisitOps* as_ptr() { return this; }
@@ -136,6 +160,8 @@ struct VisitOps {
   ABSL_MUST_USE_RESULT virtual bool operator()(const OpNeg&) = 0;
   ABSL_MUST_USE_RESULT virtual bool operator()(const OpExp&) = 0;
   ABSL_MUST_USE_RESULT virtual bool operator()(const OpAssign&) = 0;
+  ABSL_MUST_USE_RESULT virtual bool operator()(const OpLoad&) = 0;
+  ABSL_MUST_USE_RESULT virtual bool operator()(const OpCheck&) = 0;
 
   // Only exact matches are allowed. Suppress all conversions.
   template <class T>
@@ -146,7 +172,8 @@ struct VisitOps {
 
 // Direct in place evaluation.
 struct DirectEvaluate final : public VisitOps {
-  DirectEvaluate() = default;
+  DirectEvaluate(std::vector<double>* in, std::vector<double>* out)
+      : in_(in), out_(out) {}
 
   ABSL_MUST_USE_RESULT bool operator()(const OpAdd&) override;
   ABSL_MUST_USE_RESULT bool operator()(const OpSub&) override;
@@ -155,6 +182,12 @@ struct DirectEvaluate final : public VisitOps {
   ABSL_MUST_USE_RESULT bool operator()(const OpNeg&) override;
   ABSL_MUST_USE_RESULT bool operator()(const OpExp&) override;
   ABSL_MUST_USE_RESULT bool operator()(const OpAssign&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpLoad&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpCheck&) override;
+
+ private:
+  std::vector<double>* in_;
+  std::vector<double>* out_;
 };
 
 }  // namespace tbd

@@ -73,6 +73,17 @@ bool DirectEvaluate::operator()(const OpAssign& o) {
   return true;
 }
 
+bool DirectEvaluate::operator()(const OpLoad& o) {
+  o.n->value = (*in_)[o.i];
+  return true;
+}
+
+bool DirectEvaluate::operator()(const OpCheck& o) {
+  if (!o.a->value.has_value() || !o.b->value.has_value()) return false;
+  (*out_)[o.i] = *o.a->value - *o.b->value;
+  return true;
+}
+
 /////////////////////////////////////////////////////////////////////////
 
 bool OpAdd::Visit(VisitOps* v) const { return (*v)(*this); }
@@ -82,5 +93,7 @@ bool OpDiv::Visit(VisitOps* v) const { return (*v)(*this); }
 bool OpNeg::Visit(VisitOps* v) const { return (*v)(*this); }
 bool OpExp::Visit(VisitOps* v) const { return (*v)(*this); }
 bool OpAssign::Visit(VisitOps* v) const { return (*v)(*this); }
+bool OpLoad::Visit(VisitOps* v) const { return (*v)(*this); }
+bool OpCheck::Visit(VisitOps* v) const { return (*v)(*this); }
 
 }  // namespace tbd

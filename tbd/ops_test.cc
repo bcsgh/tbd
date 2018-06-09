@@ -40,11 +40,11 @@ const int _i = logging::InstallSignalhandler();
 TEST(TestOp, VisitAdd) {
   SemanticDocument::Exp R, A, B;
   OpAdd a(&R, &A, &B);
-  EXPECT_FALSE(a.VisitOp(DirectEvaluate{}.as_ptr()));
+  EXPECT_FALSE(a.VisitOp(DirectEvaluate{nullptr, nullptr}.as_ptr()));
 
   A.value = 1;
   B.value = 2;
-  EXPECT_TRUE(a.VisitOp(DirectEvaluate{}.as_ptr()));
+  EXPECT_TRUE(a.VisitOp(DirectEvaluate{nullptr, nullptr}.as_ptr()));
   ASSERT_TRUE(R.value.has_value());
 }
 

@@ -52,6 +52,8 @@ class CodeEvaluate final : public VisitOps {
   ABSL_MUST_USE_RESULT bool operator()(const OpNeg&) override;
   ABSL_MUST_USE_RESULT bool operator()(const OpExp&) override;
   ABSL_MUST_USE_RESULT bool operator()(const OpAssign&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpLoad&) override;
+  ABSL_MUST_USE_RESULT bool operator()(const OpCheck&) override;
 
  private:
   using ExpP = const SemanticDocument::Exp*;

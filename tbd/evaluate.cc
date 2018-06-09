@@ -435,7 +435,8 @@ bool Evaluate::operator()(const Document& d) {
   }
 
   // Run the evaluation plan.
-  DirectEvaluate eval;
+  std::vector<double> in, out;
+  DirectEvaluate eval(&in, &out);
   for (const auto& op : stage.direct_ops) (void)op->VisitOp(&eval);
   LOG(INFO) << "==== DONE ====";
 

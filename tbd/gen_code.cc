@@ -128,4 +128,29 @@ bool CodeEvaluate::operator()(const OpAssign& o) {
   return Add(o.d, it->second);
 }
 
+bool CodeEvaluate::operator()(const OpLoad& o) {
+  auto it = expressions_.find(o.n);
+  CHECK(it == expressions_.end()) << it->second << " is already loaded";
+  CHECK(!o.n->name.empty());
+  CHECK(expressions_.emplace(o.n, o.n->name).second);
+
+  out_ << o.n->name << " = @src[" << o.i << "];\n";
+  return true;
+}
+
+bool CodeEvaluate::operator()(const OpCheck& o) {
+  std::string a = "?", b = "?";
+  if (o.a) {
+    auto it = expressions_.find(o.a);
+    if (it != expressions_.end()) a = it->second;
+  }
+  if (o.b) {
+    auto it = expressions_.find(o.b);
+    if (it != expressions_.end()) b = it->second;
+  }
+
+  out_ << "@des[" << o.i << "] = (" << a << " - " << b << ");\n";
+  return true;
+}
+
 }  // namespace tbd
