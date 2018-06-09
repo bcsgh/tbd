@@ -27,9 +27,9 @@
 
 #include "tbd/evaluate.h"
 
-#include <utility>
 #include <set>
 #include <string>
+#include <utility>
 
 #include "tbd/ast.h"
 #include "tbd/common.h"
