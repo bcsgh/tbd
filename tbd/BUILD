@@ -137,6 +137,27 @@ cc_test(
 )
 
 cc_library(
+  name = "newton_raphson",
+  srcs = ["newton_raphson.cc"],
+  hdrs = ["newton_raphson.h"],
+  deps = [
+    ":common",
+  ],
+)
+
+cc_test(
+  name = "newton_raphson_test",
+  srcs = ["newton_raphson_test.cc"],
+  timeout = "short",
+  deps = [
+    ":common",
+    ":newton_raphson",
+    "@com_google_googletest//:gtest",
+    ":test_main",
+  ],
+)
+
+cc_library(
   name = "common",
   srcs = ["common.cc"],
   hdrs = ["common.h"],
