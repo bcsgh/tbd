@@ -87,7 +87,7 @@ int RenderAsGraphViz::AddDefault(const ExpressionNode* n) {
   auto sem = doc_->TryGetNode(n);
   if (sem) {
     it.dim = sem->dim;
-    it.has_value = sem->value.has_value();
+    it.has_value = sem->resolved;
   }
   CHECK(id_.emplace(n, ret).second);
   return ret;
@@ -126,7 +126,7 @@ bool RenderAsGraphViz::operator()(const NamedValue& n) {
   if (r.second) it.label = n.name();
   if (sem) {
     it.dim = sem->dim;
-    it.has_value = sem->value.has_value();
+    it.has_value = sem->resolved;
   }
 
   id_.emplace(&n, r.first->second);
