@@ -39,4 +39,39 @@ TEST(Evaluate, Smoke) {
   Evaluate roots{&doc};
 }
 
+TEST(FindUnsolvedRoots, Smoke) {
+  SemanticDocument doc;
+  FindUnsolvedRoots roots{&doc};
+}
+
+TEST(FindUnsolvedRoots, Try) {
+  auto ua = absl::make_unique<NamedValue>(Loc{}, "a");
+  auto ub = absl::make_unique<NamedValue>(Loc{}, "b");
+  auto a = ua.get();
+  auto b = ub.get();
+
+  auto us = absl::make_unique<SumExp>(std::move(ua), std::move(ub));
+  auto ul = absl::make_unique<LiteralValue>(Loc{}, 2);
+  auto s = us.get();
+  auto l = ul.get();
+  Equality e{Loc{}, std::move(us), std::move(ul)};
+
+  SemanticDocument doc;
+  doc.RefernceNamedNode(a);
+  doc.RefernceNamedNode(b);
+  doc.GetUnnamedNode(s);
+  doc.GetUnnamedNode(l)->equ_processed = true;
+  doc.GetUnnamedNode(&e)->equ_processed = true;
+
+  FindUnsolvedRoots roots{&doc};
+  (void)e.VisitNode(&roots);
+
+  const auto& all = roots.Unsolved();
+  ASSERT_EQ(all.size(), 1);
+
+  auto& it = *all.begin();
+  EXPECT_EQ(it.first, s);
+  EXPECT_EQ(it.second.size(), 2);
+}
+
 }  // namespace tbd

@@ -28,6 +28,7 @@
 #ifndef TBD_EVALUATE_H_
 #define TBD_EVALUATE_H_
 
+#include <map>
 #include <memory>
 #include <set>
 #include <vector>
@@ -83,6 +84,38 @@ class Evaluate final : public VisitNodes {
   std::vector<Stage> stages_;
 
   std::vector<std::unique_ptr<OpI>>* ops_;
+};
+
+class FindUnsolvedRoots final : public VisitNodes {
+ public:
+  FindUnsolvedRoots(SemanticDocument* doc) : doc_(doc){};
+
+  const std::map<const ExpressionNode*, std::set<std::string>>& Unsolved() {
+    return unsolved_;
+  }
+
+ private:
+  bool operator()(const UnitExp&) override { return false; }
+  bool operator()(const UnitDef&) override { return false; }
+
+  bool Resolved(const ExpressionNode*);
+
+  bool operator()(const Equality&) override;
+  bool operator()(const LiteralValue&) override { return false; }
+  bool operator()(const NamedValue&) override { return false; }
+  bool operator()(const PowerExp&) override;
+  bool operator()(const ProductExp&) override;
+  bool operator()(const QuotientExp&) override;
+  bool operator()(const SumExp&) override;
+  bool operator()(const DifExp&) override;
+  bool operator()(const NegativeExp&) override;
+
+  bool operator()(const Define&) override { return false; }
+  bool operator()(const Specification&) override { return false; }
+  bool operator()(const Document&) override { return false; }
+
+  SemanticDocument* doc_;
+  std::map<const ExpressionNode*, std::set<std::string>> unsolved_;
 };
 
 }  // namespace tbd

@@ -246,6 +246,25 @@ cc_test(
 )
 
 cc_library(
+  name = "find",
+  hdrs = ["find.h"],
+  deps = [
+    ":ast",
+  ],
+)
+
+cc_test(
+  name = "find_test",
+  srcs = ["find_test.cc"],
+  timeout = "short",
+  deps = [
+    ":find",
+    ":test_main",
+    "@com_google_googletest//:gtest",
+  ],
+)
+
+cc_library(
   name = "resolve_units",
   srcs = ["resolve_units.cc"],
   hdrs = ["resolve_units.h"],
@@ -306,6 +325,7 @@ cc_library(
   deps = [
     ":ast",
     ":common",
+    ":find",
     ":ops",
     ":semantic",
   ],

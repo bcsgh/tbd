@@ -27,10 +27,13 @@
 
 #include "tbd/evaluate.h"
 
+#include <utility>
 #include <set>
+#include <string>
 
 #include "tbd/ast.h"
 #include "tbd/common.h"
+#include "tbd/find.h"
 #include "tbd/ops.h"
 #include "tbd/semantic.h"
 
@@ -422,12 +425,80 @@ bool Evaluate::operator()(const Document& d) {
 
   if (error_) return false;
 
+  if (!nodes.empty()) {
+    LOG(INFO) << "Finding solvable systems";
+
+    FindUnsolvedRoots roots{doc_};
+    for (const auto* e : d.equality()) (void)e->VisitNode(&roots);
+    const auto& all = roots.Unsolved();
+    LOG(INFO) << "Found " << all.size() << " unresolved components.";
+  }
+
   // Run the evaluation plan.
   DirectEvaluate eval;
   for (const auto& op : stage.direct_ops) (void)op->VisitOp(&eval);
   LOG(INFO) << "==== DONE ====";
 
   return !error_;
+}
+
+bool FindUnsolvedRoots::Resolved(tbd::ExpressionNode const* e) {
+  // If this node is resolved, keep searching.
+  auto n = doc_->TryGetNode(e);
+  CHECK(n != nullptr) << e->location();
+  if (n->equ_processed) return false;
+
+  // This is a root, so find the free variables.
+  Find<NamedValue> find_named;
+  (void)e->VisitNode(&find_named);
+
+  // filter to the free ones.
+  auto free_named = find_named.NodesWhere([this](const tbd::NamedValue* n) {
+    return !doc_->TryGetNode(n)->resolved;
+  });
+
+  // Extract names.
+  std::set<std::string> vars;
+  for (const auto* n : free_named) vars.insert(n->name());
+
+  CHECK(unsolved_.emplace(e, std::move(vars)).second) << e->location();
+
+  return true;
+}
+
+bool FindUnsolvedRoots::operator()(const Equality& e) {
+  return Resolved(&e) ||  //
+         e.left()->VisitNode(this) || e.right()->VisitNode(this);
+}
+
+bool FindUnsolvedRoots::operator()(const PowerExp& e) {
+  return Resolved(&e) ||  //
+         e.base()->VisitNode(this);
+}
+
+bool FindUnsolvedRoots::operator()(const ProductExp& p) {
+  return Resolved(&p) ||  //
+         p.left()->VisitNode(this) || p.right()->VisitNode(this);
+}
+
+bool FindUnsolvedRoots::operator()(const QuotientExp& q) {
+  return Resolved(&q) ||  //
+         q.left()->VisitNode(this) || q.right()->VisitNode(this);
+}
+
+bool FindUnsolvedRoots::operator()(const SumExp& s) {
+  return Resolved(&s) ||  //
+         s.left()->VisitNode(this) || s.right()->VisitNode(this);
+}
+
+bool FindUnsolvedRoots::operator()(const DifExp& d) {
+  return Resolved(&d) ||  //
+         d.left()->VisitNode(this) || d.right()->VisitNode(this);
+}
+
+bool FindUnsolvedRoots::operator()(const NegativeExp& n) {
+  return Resolved(&n) ||  //
+         n.value()->VisitNode(this);
 }
 
 }  // namespace tbd
