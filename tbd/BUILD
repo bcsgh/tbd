@@ -114,6 +114,29 @@ cc_test(
 )
 
 cc_library(
+  name = "select_solvable",
+  srcs = ["select_solvable.cc"],
+  hdrs = ["select_solvable.h"],
+  deps = [
+    ":common",
+  ],
+)
+
+cc_test(
+  name = "select_solvable_test",
+  srcs = ["select_solvable_test.cc"],
+  timeout = "short",
+  deps = [
+    ":common",
+    ":select_solvable",
+    "@com_google_absl//absl/strings",
+    "@com_google_absl//absl/time",
+    "@com_google_googletest//:gtest",
+    ":test_main",
+  ],
+)
+
+cc_library(
   name = "common",
   srcs = ["common.cc"],
   hdrs = ["common.h"],
