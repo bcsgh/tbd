@@ -69,6 +69,9 @@ struct Loc {
   int col_begin = 0, col_end = 0;
 };
 
+bool operator==(const Loc&, const Loc&);
+bool operator<(const Loc&, const Loc&);
+
 Loc Join(std::vector<Loc> loc);
 
 template <class... T>
@@ -96,6 +99,10 @@ class NodeI {
   ABSL_MUST_USE_RESULT virtual bool Visit(VisitNodes*) const = 0;
 
   Loc loc_;
+};
+
+struct StableNodeCompare {
+  bool operator()(NodeI const* l, NodeI const* r);
 };
 
 /////////////////////////////

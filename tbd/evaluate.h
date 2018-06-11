@@ -74,7 +74,8 @@ class Evaluate final : public VisitNodes {
   bool operator()(const Specification&) override { return false; }
   bool operator()(const Document&) override;
 
-  bool DirectEvaluateNodes(std::set<const ExpressionNode*>* nodes);
+  bool DirectEvaluateNodes(
+      std::set<const ExpressionNode*, StableNodeCompare>* nodes);
 
   SemanticDocument* doc_;
 

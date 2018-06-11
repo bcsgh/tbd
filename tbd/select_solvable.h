@@ -55,9 +55,15 @@ bool FindSolution(std::map<int, std::set<int>>& from_to,  //
 
 // A templated version that maps a generic
 // problem to and from an abstract version.
-template <class F, class T>
-bool FindSolution(std::map<F, std::set<T>> from_to,  //
-                  std::set<F>* from, std::set<T>* to) {
+template <class M, class FS, class TS>
+bool FindSolution(const M& from_to, FS* from, TS* to) {
+  using F = typename FS::value_type;
+  using T = typename TS::value_type;
+  static_assert(std::is_same<typename M::key_type, F>::value,
+                "Type mis-match for 'From'");
+  static_assert(std::is_same<typename M::mapped_type::value_type, T>::value,
+                "Type mis-match for 'To'");
+
   std::map<int, F> mf;
   std::map<int, T> mt;
   std::map<T, int> tm;

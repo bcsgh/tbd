@@ -36,6 +36,22 @@
 
 namespace tbd {
 
+bool operator==(const Loc& l, const Loc& r) {
+  auto lt =
+      std::tie(l.filename, l.line_begin, l.line_end, l.col_begin, l.col_end);
+  auto rt =
+      std::tie(r.filename, r.line_begin, r.line_end, r.col_begin, r.col_end);
+  return lt == rt;
+}
+
+bool operator<(const Loc& l, const Loc& r) {
+  auto lt =
+      std::tie(l.filename, l.line_begin, l.line_end, l.col_begin, l.col_end);
+  auto rt =
+      std::tie(r.filename, r.line_begin, r.line_end, r.col_begin, r.col_end);
+  return lt < rt;
+}
+
 Loc Join(std::vector<Loc> loc) {
   CHECK(!loc.empty());
   Loc ret = *loc.begin();
@@ -57,6 +73,12 @@ Loc Join(std::vector<Loc> loc) {
     }
   }
   return ret;
+}
+
+bool StableNodeCompare::operator()(NodeI const* l, NodeI const* r) {
+  auto& loc_l = l->location();
+  auto& loc_r = r->location();
+  return loc_l == loc_r ? (l < r) : (loc_l < loc_r);
 }
 
 void UnitExp::Mul(std::unique_ptr<UnitExp::UnitT> o) {

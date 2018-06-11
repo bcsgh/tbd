@@ -379,7 +379,8 @@ bool Evaluate::operator()(const Define& d) {
   return true;
 }
 
-bool Evaluate::DirectEvaluateNodes(std::set<const ExpressionNode*>* nodes) {
+bool Evaluate::DirectEvaluateNodes(
+    std::set<const ExpressionNode*, StableNodeCompare>* nodes) {
   // For every pass where progress is made, at least one node is
   // removed from nodes so watching that bounds the number of passes.
   bool made_progress = false;
@@ -403,7 +404,7 @@ bool Evaluate::DirectEvaluateNodes(std::set<const ExpressionNode*>* nodes) {
 
 bool Evaluate::operator()(const Document& d) {
   // Collect the set of expressions.
-  std::set<const ExpressionNode*> nodes;
+  std::set<const ExpressionNode*, StableNodeCompare> nodes;
   for (auto* exp : doc_->nodes()) {
     if (exp && exp->node) nodes.insert(exp->node);
   }
