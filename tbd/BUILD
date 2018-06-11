@@ -370,7 +370,9 @@ cc_library(
     ":ast",
     ":common",
     ":find",
+    ":newton_raphson",
     ":ops",
+    ":select_solvable",
     ":semantic",
   ],
 )

@@ -1,0 +1,21 @@
+Gs = 1.185e+07;	// [lbf/in^2] testcases/spring.tbd:7
+small_mass = 4;	// [g] testcases/spring.tbd:25
+small_vel = 900;	// [m/s] testcases/spring.tbd:26
+large_mass = 1;	// [lb] testcases/spring.tbd:27
+ID = 0.8;	// [in] testcases/spring.tbd:41
+stroke = 6.575;	// [in] testcases/spring.tbd:42
+L_min = 0.95;	// [in] testcases/spring.tbd:43
+WD = 0.05;	// [in] testcases/spring.tbd:44
+N = 15;	// [] testcases/spring.tbd:45
+spring_index = 17;	// [] testcases/spring.tbd:11
+MD = 0.02159;	// [m] testcases/spring.tbd:11
+K = 176;	// [kg,s^-2] testcases/spring.tbd:14
+L_solid = 0.02032;	// [m] testcases/spring.tbd:15
+OD = 0.02286;	// [m] testcases/spring.tbd:18
+L_free = 23.2054;	// [in] testcases/spring.tbd:20
+F_max = 22.3664;	// [lbf] testcases/spring.tbd:20
+L_max = 0.191135;	// [m] testcases/spring.tbd:21
+F_min = 15.7586;	// [lbf] testcases/spring.tbd:21
+large_vel = 7.86726;	// [m,s^-1] testcases/spring.tbd:30
+large_energy = 14.1611;	// [m^2,kg,s^-2] testcases/spring.tbd:33
+

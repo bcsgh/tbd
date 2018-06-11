@@ -47,6 +47,10 @@ class Evaluate final : public VisitNodes {
   struct Stage {
     // The ops that directly solve for the parts where that works for.
     std::vector<std::unique_ptr<OpI>> direct_ops;
+    // The ops that go from guesses of variables to errors.
+    std::vector<std::unique_ptr<OpI>> solve_ops;
+    // The number of variables to solve for.
+    int count = 0;
   };
 
   std::vector<const Stage*> GetStages() const {
@@ -81,9 +85,13 @@ class Evaluate final : public VisitNodes {
 
   bool error_ = false;     // Set if an expression evaluation yields an error.
   bool progress_ = false;  // Set when a expressions value it found.
+  bool allow_conflict_ = false;  // Make OpCheck op rather than error on conflit
 
   std::vector<Stage> stages_;
 
+  // The count of set vars and checked equarions
+  // handled so far. Used to assign indexes to them.
+  int in_idx_ = 0, out_idx_ = 0;
   std::vector<std::unique_ptr<OpI>>* ops_;
 };
 

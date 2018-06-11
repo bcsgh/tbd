@@ -1,0 +1,51 @@
+// Given:
+// - A first mass at a know velocity inelastically collides with a second mass.
+// - The combined masses recol into a pre compressed spring of known size.
+// Find:
+// - Find the free length of the spring to stop the masses in a know stroke.
+
+Gs := 11.85e6 [lbf/in^2];       // A228, Shigley 8e, p508
+
+// (Spring equations from Shigley 8e)
+
+spring_index = MD/WD;     // eq. 10-2 [Hold between 6 and 12]
+
+// Spring rate
+K = WD^4 * Gs / (8 * MD^3 * N);  // eq. 10-9
+L_solid = WD*(N+1);   // tbl. 10-2
+
+MD - WD = ID;
+MD + WD = OD;
+
+(L_free + -L_min) * K = F_max;
+(L_free + -L_max) * K = F_min;
+
+//// The problem
+
+small_mass := 4 [g];
+small_vel  := 900 [m/s];
+large_mass := 1 [lb];
+
+// Momentum balance of an inelastic collision
+small_mass * small_vel = (large_mass + small_mass) * large_vel;
+
+// Solve for energy.
+large_energy = (large_mass + small_mass) * large_vel^2 / 2;
+
+////////////////////////////
+
+// Constrain F_{max,min}
+large_energy = (F_min + F_max) / 2 * stroke;
+
+// Constrain spring size
+ID     := 0.800 [in];
+stroke := 6.575 [in];
+L_min  := 0.950 [in];
+WD     := 0.05 [in];
+N      := 15;
+
+L_max = L_min + stroke;
+
+L_free := [in];
+F_min := [lbf];
+F_max := [lbf];

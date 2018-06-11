@@ -121,6 +121,13 @@ Exp* SemanticDocument::GetUnnamedNode(const ExpressionNode* node) {
   return ret;
 }
 
+Exp* SemanticDocument::GetNode() {
+  auto n = absl::make_unique<Exp>();
+  auto* ret = n.get();
+  nodes_.emplace_back(std::move(n));
+  return ret;
+}
+
 Exp* SemanticDocument::TryGetNode(ExpressionNode const* n) {
   auto it = id_nodes_.find(n);
   if (it == id_nodes_.end()) return nullptr;

@@ -112,6 +112,13 @@ bool Process(const std::string& src, const std::string& file_string) {
                      << op->location();
         }
       }
+      out << "// system\n";
+      for (const auto& op : s->solve_ops) {
+        if (!op->VisitOp(&code)) {
+          LOG(ERROR) << "Error generateding C++ for opertion at "
+                     << op->location();
+        }
+      }
     }
   }
 

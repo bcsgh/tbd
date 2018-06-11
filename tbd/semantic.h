@@ -71,9 +71,10 @@ class SemanticDocument final {
   // Reference a named node, creating it if needed.
   Exp* RefernceNamedNode(const NamedValue* node);
 
-  // Get or create a new node (named or unnamed).
+  // Get or create a new node (named, unnamed or anon).
   Exp* GetNamedNode(const Define* node);
   Exp* GetUnnamedNode(const ExpressionNode* node);
+  Exp* GetNode();
 
   // Get a named/unnamed node or null.
   Exp* TryGetNamedNode(std::string name);
