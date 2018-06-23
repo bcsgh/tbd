@@ -28,26 +28,25 @@
 #include "tbd/newton_raphson.h"
 
 #include <cmath>
-#include <vector>
 
+#include "Eigen/Core"
+#include "Eigen/Geometry"
 #include "tbd/common.h"
 
 namespace tbd {
 
-std::vector<double> NewtonRaphson(SystemFunction fn, int dim) {
+VXd NewtonRaphson(SystemFunction fn, int dim) {
   CHECK(dim >= 1);
-  CHECK(dim == 1) << dim;  // TODO generalize this to higher dim.
 
-  std::vector<double> ret;
   // TODO find a better way to get intial guesses
-  ret.resize(dim);  // Populate (with zeros) for the first guess
+  VXd ret = VXd::Constant(dim, 1, 0.0);  // Populate (with 0) as the first guess
 
   double error_mag;
-  auto y_ret = fn(ret);  // get the inital result at the guess
+  VXd y_ret = fn(ret);  // get the inital result at the guess
   do {
     auto x_2 = ret;
     // TODO make the mutation here adapt to scales
-    for (double& d : x_2) d += 0.1;  // mutate from the guess
+    x_2[0] += 0.1;  // mutate from the guess
     auto y_2 = fn(x_2);              // find the next result
 
     // Compute the next guess

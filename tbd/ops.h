@@ -28,6 +28,7 @@
 #ifndef TBD_OPS_H_
 #define TBD_OPS_H_
 
+#include "Eigen/Core"
 #include "absl/base/attributes.h"
 #include "tbd/semantic.h"
 
@@ -172,7 +173,7 @@ struct VisitOps {
 
 // Direct in place evaluation.
 struct DirectEvaluate final : public VisitOps {
-  DirectEvaluate(std::vector<double>* in, std::vector<double>* out)
+  DirectEvaluate(Eigen::VectorXd* in, Eigen::VectorXd* out)
       : in_(in), out_(out) {}
 
   ABSL_MUST_USE_RESULT bool operator()(const OpAdd&) override;
@@ -186,8 +187,8 @@ struct DirectEvaluate final : public VisitOps {
   ABSL_MUST_USE_RESULT bool operator()(const OpCheck&) override;
 
  private:
-  std::vector<double>* in_;
-  std::vector<double>* out_;
+  Eigen::VectorXd* in_;
+  Eigen::VectorXd* out_;
 };
 
 }  // namespace tbd

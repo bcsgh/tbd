@@ -28,8 +28,8 @@
 #include "tbd/newton_raphson.h"
 
 #include <cmath>
-#include <vector>
 
+#include "Eigen/Core"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "tbd/common.h"
@@ -39,16 +39,29 @@ const int _i = logging::InstallSignalhandler();
 
 using testing::ElementsAre;
 using testing::DoubleNear;
-using V = std::vector<double>;
+
+TEST(NewtonRaphson, OneDimLin) {
+  VXd exp = VXd::Constant(1, 1, -1.00000);
+  auto fn = [](VXd d) { return VXd::Constant(1, 1, d[0] + 1); };
+  // Validate that the zero is where it's expected.
+  ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
+
+  auto res = NewtonRaphson(fn, /*dim=*/1);
+  EXPECT_LT((res - exp).array().abs().maxCoeff(), 1e-5)
+      << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
+      << (res - exp).transpose() << "]";
+}
 
 TEST(NewtonRaphson, OneDim) {
-  LOG(INFO) << "x^1";
-  EXPECT_THAT(NewtonRaphson([](V d) { return V{d[0] + 1}; }, 1),
-              ElementsAre(DoubleNear(-1.00000, 1e-5)));
+  VXd exp = VXd::Constant(1, 1, +0.793700526);
+  auto fn = [](VXd d) { return VXd::Constant(1, 1, std::pow(d[0], 3) - 0.5); };
+  // Validate that the zero is where it's expected.
+  ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
 
-  LOG(INFO) << "x^3";
-  EXPECT_THAT(NewtonRaphson([](V d) { return V{std::pow(d[0], 3) - 0.5}; }, 1),
-              ElementsAre(DoubleNear(+0.79395, 1e-5)));
+  auto res = NewtonRaphson(fn, /*dim=*/1);
+  EXPECT_LT((res - exp).array().abs().maxCoeff(), 3e-4)
+      << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
+      << (res - exp).transpose() << "]";
 }
 
 }  // namespace tbd

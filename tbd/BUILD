@@ -71,7 +71,8 @@ cc_library(
   deps = [
     ":common",
     ":semantic",
-    "@com_google_absl//absl/base:core_headers", 
+    "@com_google_absl//absl/base:core_headers",
+    "@eigen//:eigen",
   ],
 )
 
@@ -140,8 +141,10 @@ cc_library(
   name = "newton_raphson",
   srcs = ["newton_raphson.cc"],
   hdrs = ["newton_raphson.h"],
+  copts = ["-Wno-int-in-bool-context"],
   deps = [
     ":common",
+    "@eigen//:eigen",
   ],
 )
 
@@ -149,11 +152,13 @@ cc_test(
   name = "newton_raphson_test",
   srcs = ["newton_raphson_test.cc"],
   timeout = "short",
+  copts = ["-Wno-int-in-bool-context"],
   deps = [
     ":common",
     ":newton_raphson",
-    "@com_google_googletest//:gtest",
     ":test_main",
+    "@com_google_googletest//:gtest",
+    "@eigen//:eigen",
   ],
 )
 
@@ -366,6 +371,7 @@ cc_library(
   name = "evaluate",
   srcs = ["evaluate.cc"],
   hdrs = ["evaluate.h"],
+  copts = ["-Wno-int-in-bool-context"],
   deps = [
     ":ast",
     ":common",
@@ -374,6 +380,7 @@ cc_library(
     ":ops",
     ":select_solvable",
     ":semantic",
+    "@eigen//:eigen",
   ],
 )
 

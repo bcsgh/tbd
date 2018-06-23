@@ -545,7 +545,7 @@ bool Evaluate::operator()(const Document& d) {
   }
 
   // Run the evaluation plan.
-  std::vector<double> in, out;
+  VXd in, out;
   DirectEvaluate eval(&in, &out);
   for (const auto& op : stage.direct_ops) (void)op->VisitOp(&eval);
 
@@ -554,9 +554,8 @@ bool Evaluate::operator()(const Document& d) {
     out.resize(stage.count);
 
     // Convert a vector of values guesses into a vector or errors.
-    auto fn = [&stage, &in, &out, &eval](const std::vector<double>& in_p) {
-      CHECK(static_cast<size_t>(stage.count) == in_p.size())
-          << stage.count << "!=" << in_p.size();
+    auto fn = [&stage, &in, &out, &eval](const VXd& in_p) {
+      CHECK(stage.count == in_p.size()) << stage.count << "!=" << in_p.size();
       in = in_p;
       for (const auto& op : stage.solve_ops) (void)op->VisitOp(&eval);
       return out;

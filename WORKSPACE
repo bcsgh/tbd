@@ -21,3 +21,11 @@ git_repository(
     commit = "26b789f9a53d086c8b8c9c2668efb251e37861cd",  # current as of 2018/5/5
     remote = "git://github.com/abseil/abseil-cpp.git",
 )
+
+#############################################
+new_git_repository(
+    name = "eigen",
+    tag = "3.3.4",  # current as of 2018/5/5
+    remote = "git://github.com/eigenteam/eigen-git-mirror.git",
+    build_file = "BUILD.eigen",
+)

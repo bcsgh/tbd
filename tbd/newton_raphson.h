@@ -29,19 +29,22 @@
 #define TBD_NEWTON_RAPHSON_H_
 
 #include <functional>
-#include <vector>
+
+#include "Eigen/Core"
 
 namespace tbd {
 
-using SystemFunction =
-    std::function<std::vector<double>(const std::vector<double>&)>;
+using VXd = Eigen::VectorXd;
+using MXd = Eigen::MatrixXd;
+
+using SystemFunction = std::function<VXd(const VXd&)>;
 
 // A NewtonRaphson solver.
 //
 // Takes a function that accepts a vector of size dim and returns
 // another vector of size dim with residual errors. The solver
 // seeks for an input that results in residual errors of zeros.
-std::vector<double> NewtonRaphson(SystemFunction fn, int dim);
+VXd NewtonRaphson(SystemFunction fn, int dim);
 
 }  // namespace tbd
 
