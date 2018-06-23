@@ -37,6 +37,7 @@ namespace tbd {
 
 VXd NewtonRaphson(SystemFunction fn, int dim) {
   CHECK(dim >= 1);
+  CHECK(dim == 1) << dim;  // TODO generalize this to higher dim.
 
   // TODO find a better way to get intial guesses
   VXd ret = VXd::Constant(dim, 1, 0.0);  // Populate (with 0) as the first guess
