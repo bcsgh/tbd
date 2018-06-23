@@ -561,7 +561,7 @@ bool Evaluate::operator()(const Document& d) {
       return out;
     };
 
-    NewtonRaphson(fn, stage.count);
+    NewtonRaphson(fn, /*dim=*/stage.count, /*count=*/10, /*tol=*/1e-4);
   }
   LOG(INFO) << "==== DONE ====";
 

@@ -35,31 +35,36 @@
 
 namespace tbd {
 
-VXd NewtonRaphson(SystemFunction fn, int dim) {
+VXd NewtonRaphson(SystemFunction fn, int dim, int count, double tol) {
   CHECK(dim >= 1);
-  CHECK(dim == 1) << dim;  // TODO generalize this to higher dim.
 
   // TODO find a better way to get intial guesses
   VXd ret = VXd::Constant(dim, 1, 0.0);  // Populate (with 0) as the first guess
 
-  double error_mag;
+  MXd delta = MXd::Identity(dim, dim);
+
   VXd y_ret = fn(ret);  // get the inital result at the guess
-  do {
-    auto x_2 = ret;
-    // TODO make the mutation here adapt to scales
-    x_2[0] += 0.1;  // mutate from the guess
-    auto y_2 = fn(x_2);              // find the next result
+  for (int cycle = 0; cycle < count; cycle++) {
+    Eigen::MatrixXd d_x{dim, dim};
+
+    // TODO scale delta based on how much we expect to need to mutate.
+    auto y_0 = fn(ret);
+    for (int i = 0; i < dim; i++) {
+      d_x.col(i) = fn(ret + delta.col(i)) - y_0;
+    }
 
     // Compute the next guess
-    auto a = (y_2[0] - y_ret[0]) / (x_2[0] - ret[0]);
-    auto b = y_ret[0] - a * ret[0];
-    ret[0] = -b / a;
+    VXd update = d_x.inverse() * y_ret;
+    ret -= update;
 
     y_ret = fn(ret);  // get the next result at the guess
 
-    error_mag = std::fabs(y_ret[0]);
-  } while (error_mag > 0.001);  // TODO get a better end condition
-
+    if (y_ret.array().abs().maxCoeff() < tol) {
+      return ret;
+    }
+  }
+  LOG(INFO) << "Did not converge in " << count << " steps ["  //
+            << y_ret.transpose() << "]";
   return ret;
 }
 

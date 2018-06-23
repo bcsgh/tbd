@@ -44,7 +44,7 @@ using SystemFunction = std::function<VXd(const VXd&)>;
 // Takes a function that accepts a vector of size dim and returns
 // another vector of size dim with residual errors. The solver
 // seeks for an input that results in residual errors of zeros.
-VXd NewtonRaphson(SystemFunction fn, int dim);
+VXd NewtonRaphson(SystemFunction fn, int dim, int count, double tol);
 
 }  // namespace tbd
 

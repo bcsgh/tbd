@@ -46,7 +46,7 @@ TEST(NewtonRaphson, OneDimLin) {
   // Validate that the zero is where it's expected.
   ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
 
-  auto res = NewtonRaphson(fn, /*dim=*/1);
+  auto res = NewtonRaphson(fn, /*dim=*/1, /*count=*/1, /*tol=*/0.001);
   EXPECT_LT((res - exp).array().abs().maxCoeff(), 1e-5)
       << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
       << (res - exp).transpose() << "]";
@@ -58,8 +58,50 @@ TEST(NewtonRaphson, OneDim) {
   // Validate that the zero is where it's expected.
   ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
 
-  auto res = NewtonRaphson(fn, /*dim=*/1);
-  EXPECT_LT((res - exp).array().abs().maxCoeff(), 3e-4)
+  auto res = NewtonRaphson(fn, /*dim=*/1, /*count=*/19, /*tol=*/0.0001);
+  EXPECT_LT((res - exp).array().abs().maxCoeff(), 1e-4)
+      << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
+      << (res - exp).transpose() << "]";
+}
+
+TEST(NewtonRaphson, TwoDimLin) {
+  VXd exp(2);
+  exp << 1, 2;
+
+  auto fn = [](VXd d) {
+    CHECK(d.size() == 2);
+    double a = (d[0] * 5 + d[1] * 7 - 19);
+    double b = (d[0] * 2 + d[1] * 3 - 8);
+    VXd r(2);
+    r << a, b;
+    return r;
+  };
+  // Validate that the zero is where it's expected.
+  ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
+
+  auto res = NewtonRaphson(fn, /*dim=*/2, /*count=*/1, /*tol=*/0.001);
+  EXPECT_LT((res - exp).array().abs().maxCoeff(), 1e-5)
+      << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
+      << (res - exp).transpose() << "]";
+}
+
+TEST(NewtonRaphson, TwoDim) {
+  VXd exp(2);
+  exp << 1, 2;
+
+  auto fn = [](VXd d) {
+    CHECK(d.size() == 2);
+    double a = std::pow(2, d[0]) + (d[1] * d[1] * d[1] + d[1] * 10) / 2 - 16;
+    double b = (d[0] * 2 + d[1] * 3 - 8);
+    VXd r(2);
+    r << a, b;
+    return r;
+  };
+  // Validate that the zero is where it's expected.
+  ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
+
+  auto res = NewtonRaphson(fn, /*dim=*/2, /*count=*/10, /*tol=*/1e-4);
+  EXPECT_LT((res - exp).array().abs().maxCoeff(), 1e-5)
       << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
       << (res - exp).transpose() << "]";
 }
