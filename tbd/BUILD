@@ -82,8 +82,8 @@ cc_test(
   timeout = "short",
   deps = [
     ":ast",
-    ":ops",
     ":common",
+    ":ops",
     ":test_main",
     "@com_google_googletest//:gtest",
   ],
@@ -130,10 +130,10 @@ cc_test(
   deps = [
     ":common",
     ":select_solvable",
+    ":test_main",
     "@com_google_absl//absl/strings",
     "@com_google_absl//absl/time",
     "@com_google_googletest//:gtest",
-    ":test_main",
   ],
 )
 
