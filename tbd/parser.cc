@@ -52,7 +52,7 @@ int Parse(std::string filename, absl::string_view file, Document* doc) {
   tbdlex_init(&scanner);
   auto buffer_state = tbd_scan_bytes(file.data(), file.size(), scanner);
   tbdset_lineno(1, scanner);
-  tbdset_column(0, scanner);
+  tbdset_column(1, scanner);
   tbdset_extra(&filename, scanner);
   int ret = 0;
   {
