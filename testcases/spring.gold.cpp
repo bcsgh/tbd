@@ -3,9 +3,9 @@ large_vel = ((small_mass * small_vel) / (large_mass + small_mass));
 MD = (WD + ID);
 OD = (MD + WD);
 L_max = (L_min + stroke);
+L_solid = (WD * (N + 1));
 large_energy = (((large_mass + small_mass) * std::pow(large_vel, 2)) / 2);
 spring_index = (MD / WD);
-L_solid = (WD * (N + 1));
 K = ((std::pow(WD, 4) * Gs) / ((8 * std::pow(MD, 3)) * N));
 // system
 F_max = @src[0];

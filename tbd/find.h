@@ -39,9 +39,11 @@ namespace tbd {
 // Also includes a filter function that returns a list of found nodes
 // that match a given predicate.
 
-template<class N>
+template <class N>
 class Find final : public VisitNodes {
  public:
+  std::vector<const N*>& nodes() { return nodes_; }
+
   template <class FN>
   std::vector<const N*> NodesWhere(FN fn) {
     std::vector<const N*> ret;

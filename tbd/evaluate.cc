@@ -492,6 +492,21 @@ bool Evaluate::operator()(const Document& d) {
   auto& stage = stages_.back();
   ops_ = &stage.direct_ops;
 
+  {
+    // Find all the literals.
+    Find<LiteralValue> literal;
+    for (auto const* e : nodes) {
+      (void)e->VisitNode(&literal);
+    }
+    std::set<const ExpressionNode*, StableNodeCompare> l = {
+        literal.nodes().begin(), literal.nodes().end()};
+
+    // Process and remove them first becasue they will always
+    // process and it makes the error message better.
+    for (const auto* n : l) nodes.erase(n);
+    DirectEvaluateNodes(&l);
+    CHECK(l.empty());
+  }
   allow_conflict_ = false;
   DirectEvaluateNodes(&nodes);
 
