@@ -94,6 +94,7 @@ class Private {
   // so restrict this to an API the just does names of built in types.
   static std::string Demangle(const char* name);
 
+  friend class ::logging::LogBase;
   template <class T>
   friend std::string logging::Demangle();
 };

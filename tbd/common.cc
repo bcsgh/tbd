@@ -31,6 +31,7 @@
 #include <execinfo.h>
 #include <signal.h>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -98,7 +99,19 @@ void LogBase::DumpStack(std::ostream& o) {
   int size = absl::GetStackTrace(array, depth, 1);
   auto names = backtrace_symbols(array, size);
   for (int i = 0; i < size; i++) {
-    o << names[i] << '\n';
+    const char *pr, *pl = std::strstr(names[i], "(");
+    if (pl) pr = std::strstr(pl + 1, "+");
+
+    if (nullptr != pl && pl + 1 < pr && pr != nullptr) {
+      using logging_internal::Private;
+      pl += 1;
+      o << Private::Demangle(std::string(pl, pr - pl).c_str());
+      auto* c = std::strstr(pr + 1, ")");
+      if (c) o << std::string(pr, c - pr);
+      o << '\n';
+    } else {
+      o << names[i] << '\n';
+    }
   }
   o << std::endl;
   free(names);
