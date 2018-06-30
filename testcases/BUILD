@@ -93,3 +93,11 @@ test_suite(
   name = "success_tests",
   tests = [":" + c.replace(".tbd", "_success_test") for c in SUCCESS_CASES],
 )
+
+filegroup(
+  name = "outputs",
+  srcs = [c.replace("tbd", "txt") for c in SUCCESS_CASES] +
+         [c.replace("tbd", "cpp") for c in SUCCESS_CASES] +
+         [c.replace("tbd", "dot") for c in SUCCESS_CASES] +
+         [c.replace("tbd", "png") for c in SUCCESS_CASES]
+)
