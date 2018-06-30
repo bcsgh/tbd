@@ -71,6 +71,18 @@ load("//tools:build.bzl", "build_test")
   data = [
       g,
       g.replace(".gold", ".txt"),
+  ],
+  timeout="short",
+) for g in glob(["*.gold"])]
+
+[sh_test(
+  name = g.replace(".", "_") + "_cpp",
+  args = [
+      "$(location %s)" % g.replace(".gold", ".gold.cpp"),
+      "$(location %s)" % g.replace(".gold", ".cpp"),
+  ],
+  srcs = ["gold_test.sh"],
+  data = [
       g.replace(".gold", ".cpp"),
       g.replace(".gold", ".gold.cpp"),
   ],

@@ -27,9 +27,11 @@
 
 #include "tbd/tbd.h"
 
+#include <algorithm>
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "absl/memory/memory.h"
@@ -93,10 +95,15 @@ bool Process(const std::string& src, const std::string& file_string) {
     }
   }
 
+  std::vector<std::string> lines;
   for (const auto* node : sem.nodes()) {
     if (node->node && node->node->location().filename == kPreamble) continue;
-    std::cout << *node;
+    std::stringstream out(std::ios_base::out);
+    out << *node;
+    lines.emplace_back(std::move(out.str()));
   }
+  std::sort(lines.begin(), lines.end());
+  for (const auto& l : lines) std::cout << l;
 
   if (!FLAGS_cpp_output.empty()) {
     std::ofstream out;
