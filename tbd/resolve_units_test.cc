@@ -39,7 +39,6 @@
 #include "tbd/semantic.h"
 
 namespace tbd {
-const int _i = logging::InstallSignalhandler();
 
 class ResolveUnitsTest : public ::testing::Test {
  public:

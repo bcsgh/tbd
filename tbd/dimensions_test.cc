@@ -32,7 +32,6 @@
 #include "tbd/common.h"
 
 namespace tbd {
-const int _i = logging::InstallSignalhandler();
 
 class DimensionTest : public ::testing::Test {
  public:

@@ -34,7 +34,6 @@
 #include "tbd/common.h"
 
 namespace tbd {
-const int _i = logging::InstallSignalhandler();
 
 TEST(ParserSupport, Reference) {
   std::string s = "hello";

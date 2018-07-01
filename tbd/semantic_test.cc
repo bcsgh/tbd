@@ -36,7 +36,6 @@
 
 namespace tbd {
 namespace {
-const int _i = logging::InstallSignalhandler();
 
 TEST(SemanticDocument, Basic) {
   SemanticDocument doc;

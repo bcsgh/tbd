@@ -34,7 +34,6 @@
 #include "tbd/semantic.h"
 
 namespace tbd {
-const int _i = logging::InstallSignalhandler();
 
 class GraphVizTest : public ::testing::Test {
  protected:

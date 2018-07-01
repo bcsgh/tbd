@@ -32,7 +32,6 @@
 
 namespace tbd {
 namespace {
-const int _i = logging::InstallSignalhandler();
 
 // Some types to check things out.
 static const std::string fn = "foo";

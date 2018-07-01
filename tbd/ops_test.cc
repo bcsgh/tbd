@@ -37,7 +37,6 @@
 
 namespace tbd {
 namespace {
-const int _i = logging::InstallSignalhandler();
 
 TEST(TestOp, VisitAdd) {
   SemanticDocument::Exp R, A, B;

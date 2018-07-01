@@ -25,11 +25,26 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+#include <cstdlib>
+
+#include "absl/time/clock.h"
+#include "absl/time/time.h"
 #include "gflags/gflags.h"
 #include "gtest/gtest.h"
+#include "tbd/common.h"
+
+DEFINE_int32(test_srand_seed, 0, "The seed used for random");
 
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   gflags::ParseCommandLineFlags(&argc, &argv, true);
+  logging::InstallSignalhandler();
+
+  if (FLAGS_test_srand_seed == 0) {
+    FLAGS_test_srand_seed = absl::ToUnixMicros(absl::Now());
+  }
+  LOG(WARNING) << "--test_srand_seed=" << FLAGS_test_srand_seed;
+  std::srand(FLAGS_test_srand_seed);
+
   return RUN_ALL_TESTS();
 }

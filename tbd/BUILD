@@ -34,7 +34,9 @@ cc_library(
   name = "test_main",
   srcs = ["test_main.cc"],
   deps = [
+    ":common",
     "@com_github_gflags_gflags//:gflags",
+    "@com_google_absl//absl/time",
     "@com_google_googletest//:gtest",
   ],
 )
@@ -133,7 +135,6 @@ cc_test(
     ":select_solvable",
     ":test_main",
     "@com_google_absl//absl/strings",
-    "@com_google_absl//absl/time",
     "@com_google_googletest//:gtest",
   ],
 )

@@ -35,7 +35,6 @@
 #include "tbd/common.h"
 
 namespace tbd {
-const int _i = logging::InstallSignalhandler();
 
 using testing::ElementsAre;
 using testing::DoubleNear;

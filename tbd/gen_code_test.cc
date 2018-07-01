@@ -35,7 +35,6 @@
 
 namespace tbd {
 namespace {
-const int _i = logging::InstallSignalhandler();
 
 TEST(TestCodeEvaluate, VisitAdd) {
   std::stringstream out(std::ios_base::out);

@@ -35,8 +35,6 @@
 namespace tbd {
 namespace {
 
-const int _i = logging::InstallSignalhandler();
-
 std::unique_ptr<LiteralValue> Make(float l) {
   return absl::make_unique<LiteralValue>(Loc{}, l);
 }

@@ -30,8 +30,6 @@
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
 #include "absl/strings/strip.h"
-#include "absl/time/clock.h"
-#include "absl/time/time.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "tbd/common.h"
@@ -39,9 +37,6 @@
 namespace tbd {
 
 namespace {
-const int _i = (                                  //
-    std::srand(absl::ToUnixMicros(absl::Now())),  //
-    logging::InstallSignalhandler());
 
 void StripEnds(absl::string_view* data) {
   while (absl::ConsumePrefix(data, " ")) {
