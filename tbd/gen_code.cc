@@ -29,6 +29,7 @@
 
 #include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
+#include "tbd/common.h"
 #include "tbd/semantic.h"
 
 namespace tbd {
