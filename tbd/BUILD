@@ -84,6 +84,7 @@ cc_test(
     ":ast",
     ":common",
     ":ops",
+    ":semantic",
     ":test_main",
     "@com_google_googletest//:gtest",
   ],
@@ -338,6 +339,7 @@ cc_test(
     ":resolve_units",
     ":semantic",
     ":test_main",
+    "@com_google_absl//absl/memory", 
     "@com_google_googletest//:gtest",
   ],
 )
@@ -359,7 +361,6 @@ cc_test(
   srcs = ["validate_test.cc"],
   deps = [
     ":common",
-    ":evaluate",
     ":validate",
     ":test_main",
     "@com_google_absl//absl/memory", 
@@ -380,7 +381,7 @@ cc_library(
     ":ops",
     ":select_solvable",
     ":semantic",
-    "@eigen//:eigen",
+    "@com_google_absl//absl/memory", 
   ],
 )
 
@@ -416,6 +417,7 @@ cc_test(
   deps = [
     ":common",
     ":graphviz",
+    ":semantic",
     ":test_main",
     "@com_google_absl//absl/strings",
     "@com_google_googletest//:gtest",
@@ -429,6 +431,8 @@ cc_library(
   deps = [
     ":common",
     ":ops",
+    ":semantic",
+    "@com_google_absl//absl/strings",
   ],
 )
 
@@ -439,7 +443,6 @@ cc_test(
   deps = [
     ":common",
     ":gen_code",
-    ":ops",
     ":test_main",
     "@com_google_googletest//:gtest",
   ],
