@@ -27,49 +27,51 @@
 
 #include "tbd/ops.h"
 
+#include <cmath>
+
 #include "tbd/semantic.h"
 
 namespace tbd {
 
 bool DirectEvaluate::operator()(const OpAdd& o) {
-  if (!o.a->value.has_value() || !o.b->value.has_value()) return false;
-  o.r->value = *o.a->value + *o.b->value;
+  if (std::isnan(o.a->value) || std::isnan(o.b->value)) return false;
+  o.r->value = o.a->value + o.b->value;
   return true;
 }
 
 bool DirectEvaluate::operator()(const OpSub& o) {
-  if (!o.a->value.has_value() || !o.b->value.has_value()) return false;
-  o.r->value = *o.a->value - *o.b->value;
+  if (std::isnan(o.a->value) || std::isnan(o.b->value)) return false;
+  o.r->value = o.a->value - o.b->value;
   return true;
 }
 
 bool DirectEvaluate::operator()(const OpMul& o) {
-  if (!o.a->value.has_value() || !o.b->value.has_value()) return false;
-  o.r->value = *o.a->value * *o.b->value;
+  if (std::isnan(o.a->value) || std::isnan(o.b->value)) return false;
+  o.r->value = o.a->value * o.b->value;
   return true;
 }
 
 bool DirectEvaluate::operator()(const OpDiv& o) {
-  if (!o.a->value.has_value() || !o.b->value.has_value()) return false;
-  o.r->value = *o.a->value / *o.b->value;
+  if (std::isnan(o.a->value) || std::isnan(o.b->value)) return false;
+  o.r->value = o.a->value / o.b->value;
   return true;
 }
 
 bool DirectEvaluate::operator()(const OpNeg& o) {
-  if (!o.a->value.has_value()) return false;
-  o.r->value = -*o.a->value;
+  if (std::isnan(o.a->value)) return false;
+  o.r->value = -o.a->value;
   return true;
 }
 
 bool DirectEvaluate::operator()(const OpExp& o) {
-  if (!o.b->value.has_value()) return false;
-  o.r->value = std::pow(*o.b->value, o.e);
+  if (std::isnan(o.b->value)) return false;
+  o.r->value = std::pow(o.b->value, o.e);
   return true;
 }
 
 bool DirectEvaluate::operator()(const OpAssign& o) {
-  if (!o.s->value.has_value()) return false;
-  o.d->value = *o.s->value;
+  if (std::isnan(o.s->value)) return false;
+  o.d->value = o.s->value;
   return true;
 }
 
@@ -79,8 +81,8 @@ bool DirectEvaluate::operator()(const OpLoad& o) {
 }
 
 bool DirectEvaluate::operator()(const OpCheck& o) {
-  if (!o.a->value.has_value() || !o.b->value.has_value()) return false;
-  (*out_)[o.i] = *o.a->value - *o.b->value;
+  if (std::isnan(o.a->value) || std::isnan(o.b->value)) return false;
+  (*out_)[o.i] = o.a->value - o.b->value;
   return true;
 }
 

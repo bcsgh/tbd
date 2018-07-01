@@ -27,6 +27,7 @@
 
 #include "tbd/semantic.h"
 
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <utility>
@@ -151,8 +152,8 @@ std::ostream& operator<<(std::ostream& out, const SemanticDocument::Exp& node) {
   if (node.name.empty()) return out;
 
   out << node.name;
-  if (node.value.has_value()) {
-    double v = *node.value;
+  if (!std::isnan(node.value)) {
+    double v = node.value;
     if (node.unit.has_value()) v /= node.unit->scale;
     out << " = " << v;
   }

@@ -27,6 +27,8 @@
 
 #include "tbd/ops.h"
 
+#include <cmath>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "tbd/ast.h"
@@ -45,7 +47,7 @@ TEST(TestOp, VisitAdd) {
   A.value = 1;
   B.value = 2;
   EXPECT_TRUE(a.VisitOp(DirectEvaluate{nullptr, nullptr}.as_ptr()));
-  ASSERT_TRUE(R.value.has_value());
+  ASSERT_FALSE(std::isnan(R.value));
 }
 
 }  // namespace

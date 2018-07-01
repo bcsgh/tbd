@@ -49,7 +49,7 @@ bool Validate::operator()(const Equality& e) {
 }
 
 bool Validate::operator()(const LiteralValue& v) {
-  doc_->GetUnnamedNode(&v);
+  doc_->GetUnnamedNode(&v)->is_literal = true;
   return true;
 }
 

@@ -39,8 +39,8 @@ bool CodeEvaluate::BinaryOp(ExpP r, ExpP a, ExpP b, absl::string_view op) {
   if (it_a == expressions_.end()) {
     if (!a->name.empty()) {
       it_a = expressions_.emplace(a, a->name).first;
-    } else if (a->value.has_value()) {
-      it_a = expressions_.emplace(a, absl::StrCat(*a->value)).first;
+    } else if (a->is_literal) {
+      it_a = expressions_.emplace(a, absl::StrCat(a->value)).first;
     } else {
       LOG(WARNING) << "Unknown source has no name or value: "
                    << a->node->location();
@@ -51,8 +51,8 @@ bool CodeEvaluate::BinaryOp(ExpP r, ExpP a, ExpP b, absl::string_view op) {
   if (it_b == expressions_.end()) {
     if (!b->name.empty()) {
       it_b = expressions_.emplace(b, b->name).first;
-    } else if (b->value.has_value()) {
-      it_b = expressions_.emplace(b, absl::StrCat(*b->value)).first;
+    } else if (b->is_literal) {
+      it_b = expressions_.emplace(b, absl::StrCat(b->value)).first;
     } else {
       LOG(WARNING) << "Unknown source has no name or value: "
                    << b->node->location();
@@ -117,8 +117,8 @@ bool CodeEvaluate::operator()(const OpAssign& o) {
   if (it == expressions_.end()) {
     if (!o.s->name.empty()) {
       it = expressions_.emplace(o.s, o.s->name).first;
-    } else if (o.s->value.has_value()) {
-      it = expressions_.emplace(o.s, absl::StrCat(*o.s->value)).first;
+    } else if (o.s->is_literal) {
+      it = expressions_.emplace(o.s, absl::StrCat(o.s->value)).first;
     } else {
       LOG(WARNING) << "Unknown source has no name or value: "
                    << o.s->node->location();
