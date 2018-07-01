@@ -40,70 +40,69 @@ const int _i = logging::InstallSignalhandler();
 using testing::ElementsAre;
 using testing::DoubleNear;
 
-TEST(NewtonRaphson, OneDimLin) {
-  VXd exp = VXd::Constant(1, 1, -1.00000);
-  auto fn = [](VXd d) { return VXd::Constant(1, 1, d[0] + 1); };
-  // Validate that the zero is where it's expected.
-  ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
+struct NRCase {
+  VXd exp;
+  SystemFunction fn;
+  int dim;
+  int count;
+  double tol;
+};
 
-  auto res = NewtonRaphson(fn, /*dim=*/1, /*count=*/1, /*tol=*/0.001);
-  EXPECT_LT((res - exp).array().abs().maxCoeff(), 1e-5)
-      << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
-      << (res - exp).transpose() << "]";
+class NewtonRaphsonP : public ::testing::TestWithParam<NRCase> {};
+
+TEST_P(NewtonRaphsonP, Case) {
+  NRCase d = GetParam();
+  // Validate that the zero is where it's expected.
+  ASSERT_LT(d.fn(d.exp).array().abs().maxCoeff(), 1e-10);
+
+  auto res =
+      NewtonRaphson(d.fn, /*dim=*/d.dim, /*count=*/d.count, /*tol=*/d.tol);
+  EXPECT_LT((res - d.exp).array().abs().maxCoeff(), 1e-5)
+      << "[" << res.transpose() << "] != [" << d.exp.transpose() << "], ["
+      << (res - d.exp).transpose() << "]";
 }
 
-TEST(NewtonRaphson, OneDim) {
-  VXd exp = VXd::Constant(1, 1, +0.793700526);
-  auto fn = [](VXd d) { return VXd::Constant(1, 1, std::pow(d[0], 3) - 0.5); };
-  // Validate that the zero is where it's expected.
-  ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
+INSTANTIATE_TEST_CASE_P(  //
+    OneDimLin, NewtonRaphsonP,
+    ::testing::Values(  //
+        NRCase{/*exp=*/VXd::Constant(1, 1, -1.00000),
+               [](VXd d) { return VXd::Constant(1, 1, d[0] + 1); },
+               /*dim=*/1, /*count=*/1, /*tol=*/0.001}));
 
-  auto res = NewtonRaphson(fn, /*dim=*/1, /*count=*/19, /*tol=*/0.0001);
-  EXPECT_LT((res - exp).array().abs().maxCoeff(), 1e-4)
-      << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
-      << (res - exp).transpose() << "]";
-}
+INSTANTIATE_TEST_CASE_P(  //
+    OneDim, NewtonRaphsonP,
+    ::testing::Values(  //
+        NRCase{/*exp=*/VXd::Constant(1, 1, +2),
+               [](VXd d) { return VXd::Constant(1, 1, std::pow(d[0], 3) - 8); },
+               /*dim=*/1, /*count=*/17, /*tol=*/0.0001}));
 
-TEST(NewtonRaphson, TwoDimLin) {
-  VXd exp(2);
-  exp << 1, 2;
+INSTANTIATE_TEST_CASE_P(  //
+    TwoDimLin, NewtonRaphsonP,
+    ::testing::Values(  //
+        NRCase{/*exp=*/(VXd(2) << 1, 2).finished(),
+               [](VXd d) {
+                 CHECK(d.size() == 2);
+                 double a = (d[0] * 5 + d[1] * 7 - 19);
+                 double b = (d[0] * 2 + d[1] * 3 - 8);
+                 VXd r(2);
+                 r << a, b;
+                 return r;
+               },
+               /*dim=*/2, /*count=*/1, /*tol=*/0.001}));
 
-  auto fn = [](VXd d) {
-    CHECK(d.size() == 2);
-    double a = (d[0] * 5 + d[1] * 7 - 19);
-    double b = (d[0] * 2 + d[1] * 3 - 8);
-    VXd r(2);
-    r << a, b;
-    return r;
-  };
-  // Validate that the zero is where it's expected.
-  ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
-
-  auto res = NewtonRaphson(fn, /*dim=*/2, /*count=*/1, /*tol=*/0.001);
-  EXPECT_LT((res - exp).array().abs().maxCoeff(), 1e-5)
-      << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
-      << (res - exp).transpose() << "]";
-}
-
-TEST(NewtonRaphson, TwoDim) {
-  VXd exp(2);
-  exp << 1, 2;
-
-  auto fn = [](VXd d) {
-    CHECK(d.size() == 2);
-    double a = std::pow(2, d[0]) + (d[1] * d[1] * d[1] + d[1] * 10) / 2 - 16;
-    double b = (d[0] * 2 + d[1] * 3 - 8);
-    VXd r(2);
-    r << a, b;
-    return r;
-  };
-  // Validate that the zero is where it's expected.
-  ASSERT_LT(fn(exp).array().abs().maxCoeff(), 1e-10);
-
-  auto res = NewtonRaphson(fn, /*dim=*/2, /*count=*/10, /*tol=*/1e-4);
-  EXPECT_LT((res - exp).array().abs().maxCoeff(), 1e-5)
-      << "[" << res.transpose() << "] != [" << exp.transpose() << "], ["
-      << (res - exp).transpose() << "]";
-}
+INSTANTIATE_TEST_CASE_P(  //
+    TwoDim, NewtonRaphsonP,
+    ::testing::Values(  //
+        NRCase{/*exp=*/(VXd(2) << 1, 2).finished(),
+               [](VXd d) {
+                 CHECK(d.size() == 2);
+                 double a = std::pow(2, d[0]) +
+                            (d[1] * d[1] * d[1] + d[1] * 10) / 2 - 16;
+                 double b = (d[0] * 2 + d[1] * 3 - 8);
+                 VXd r(2);
+                 r << a, b;
+                 return r;
+               },
+               /*dim=*/2, /*count=*/10, /*tol=*/1e-4}));
 
 }  // namespace tbd
