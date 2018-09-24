@@ -10,22 +10,21 @@ git_repository(
 #############################################
 git_repository(
     name = "com_google_googletest",
-    # tag = "release-1.8.0",  # current as of 2018/6/30
-    commit = "1865ecaf1779c2a2f210ca3768aa030206ef74ba",  # needed to get BUILD.bazel
+    tag = "release-1.8.1",  # current as of 2018/9/23
     remote = "git://github.com/google/googletest.git",
 )
 
 #############################################
 git_repository(
     name = "com_google_absl",
-    commit = "ba8d6cf07766263723e86736f20a51c1c9c67b19",  # current as of 2018/6/30
+    commit = "8ff1374008259719b54a8cb128ef951c02da164c",  # current as of 2018/9/23
     remote = "git://github.com/abseil/abseil-cpp.git",
 )
 
 #############################################
 new_git_repository(
     name = "eigen",
-    tag = "3.3.4",  # current as of 2018/6/30
+    tag = "3.3.5",  # current as of 2018/9/23
     remote = "git://github.com/eigenteam/eigen-git-mirror.git",
     build_file = "BUILD.eigen",
 )
