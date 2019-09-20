@@ -27,6 +27,13 @@
 
 exports_files(["blank.sh"])
 
+load("@bazel_tools//tools/cpp:cc_flags_supplier.bzl", "cc_flags_supplier")
+
+cc_flags_supplier(
+    name = "cc_flags",
+    visibility = ["//visibility:public"],
+)
+
 cc_binary(
     name = "make_emebed_data",
     srcs = ["make_emebed_data.cc"],

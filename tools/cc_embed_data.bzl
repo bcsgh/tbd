@@ -61,7 +61,11 @@ def cc_embed_data(name=None, srcs=None):
     srcs = srcs,
     cmd = (
       "$(CC) $(CC_FLAGS) -nostdlib -o $(location %s) -no-pie -Xlinker -r -Wl,-b -Wl,binary $(SRCS)"
-    ) % (o)
+    ) % (o),
+    toolchains = [
+      "@bazel_tools//tools/cpp:current_cc_toolchain",
+      "@tbd//tools:cc_flags",
+    ],
   )
 
   native.cc_library(

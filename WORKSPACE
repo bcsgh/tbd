@@ -1,5 +1,7 @@
 workspace(name = "tbd")
 
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
+
 #############################################
 git_repository(
     name = "com_github_gflags_gflags",
@@ -26,5 +28,5 @@ new_git_repository(
     name = "eigen",
     tag = "3.3.5",  # current as of 2018/9/23
     remote = "git://github.com/eigenteam/eigen-git-mirror.git",
-    build_file = "BUILD.eigen",
+    build_file = "@//:BUILD.eigen",
 )
