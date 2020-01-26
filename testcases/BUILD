@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 load("//tbd:rule.bzl", "gen_tbd")
-load("//tools:graphviz.bzl", "gen_dot")
+load("@bazel_rules//graphviz:graphviz.bzl", "gen_dot")
 load("@bazel_rules//build_test:build.bzl", "build_test")
 
 ERROR_CASES = glob(["*.error.tbd"])

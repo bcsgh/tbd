@@ -2,6 +2,9 @@ workspace(name = "tbd")
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
 
+# Note:
+# local_repository(name = "...", path = "/home/...")
+
 #############################################
 git_repository(
     name = "com_github_gflags_gflags",
@@ -34,6 +37,6 @@ new_git_repository(
 #############################################
 git_repository(
     name = "bazel_rules",
-    commit = "078429ead0c7ab8cab076221f5d444bdfa1be4bb",  # current as of 2020/1/25
+    commit = "3ad21d68edbe82377032fff0e209e4af79bb0fb0",  # current as of 2020/1/25
     remote = "git://github.com/bcsgh/bazel_rules.git",
 )
