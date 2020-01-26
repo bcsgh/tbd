@@ -266,7 +266,7 @@ cc_binary(
   visibility = ["//visibility:public"],
 )
 
-load("//tools:parser.bzl", "genlex", "genyacc")
+load("@bazel_rules//parser:parser.bzl", "genlex", "genyacc")
 
 genyacc(
   name = "parser",
