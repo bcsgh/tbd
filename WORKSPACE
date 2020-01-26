@@ -37,6 +37,6 @@ new_git_repository(
 #############################################
 git_repository(
     name = "bazel_rules",
-    commit = "3ad21d68edbe82377032fff0e209e4af79bb0fb0",  # current as of 2020/1/25
+    commit = "ce4c1d49cc89995bebda145f9d3f67f3fd4a06c3",  # current as of 2020/1/26
     remote = "git://github.com/bcsgh/bazel_rules.git",
 )

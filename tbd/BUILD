@@ -25,6 +25,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+load("@bazel_rules//cc_embed_data:cc_embed_data.bzl", "cc_embed_data")
+load("@bazel_rules//parser:parser.bzl", "genlex", "genyacc")
+
 cc_library(
   name = "util",
   hdrs = ["util.h"],
@@ -230,7 +233,6 @@ cc_test(
   ],
 )
 
-load("//tools:cc_embed_data.bzl", "cc_embed_data")
 cc_embed_data(
     name = "preamble",
     srcs = ["preamble.tbd"],
@@ -266,7 +268,6 @@ cc_binary(
   visibility = ["//visibility:public"],
 )
 
-load("@bazel_rules//parser:parser.bzl", "genlex", "genyacc")
 
 genyacc(
   name = "parser",
