@@ -25,6 +25,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+load("//tbd:rule.bzl", "gen_tbd")
+load("//tools:graphviz.bzl", "gen_dot")
+load("@bazel_rules//build_test:build.bzl", "build_test")
+
 ERROR_CASES = glob(["*.error.tbd"])
 SUCCESS_CASES = glob(["*.tbd"], exclude=["*.error.tbd"])
 
@@ -41,7 +45,6 @@ test_suite(
   tests = [":" + c.replace(".error.tbd", "_failure_test") for c in ERROR_CASES],
 )
 
-load("//tbd:rule.bzl", "gen_tbd")
 [gen_tbd(
     name = "gen_" + c.replace(".", "_"),
     srcs = [c],
@@ -51,14 +54,12 @@ load("//tbd:rule.bzl", "gen_tbd")
     warnings_as_errors = True,
 ) for c in SUCCESS_CASES]
 
-load("//tools:graphviz.bzl", "gen_dot")
 [gen_dot(
     name = c.replace(".", "_") + "_png",
     src = ":" + c.replace("tbd", "dot"),
     out = c.replace("tbd", "png"),
 ) for c in SUCCESS_CASES]
 
-load("//tools:build.bzl", "build_test")
 [build_test(
     name = c.replace(".tbd", "_success_test"),
     targets = [":gen_" + c.replace(".", "_")],

@@ -25,8 +25,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-exports_files(["blank.sh"])
-
 load("@bazel_tools//tools/cpp:cc_flags_supplier.bzl", "cc_flags_supplier")
 
 cc_flags_supplier(
