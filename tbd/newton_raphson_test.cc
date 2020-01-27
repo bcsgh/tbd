@@ -30,9 +30,9 @@
 #include <cmath>
 
 #include "Eigen/Core"
+#include "glog/logging.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "tbd/common.h"
 
 namespace tbd {
 

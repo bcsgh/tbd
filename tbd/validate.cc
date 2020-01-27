@@ -28,8 +28,8 @@
 #include "tbd/validate.h"
 
 #include "gflags/gflags.h"
+#include "glog/logging.h"
 #include "tbd/ast.h"
-#include "tbd/common.h"
 #include "tbd/semantic.h"
 
 DEFINE_bool(warnings_as_errors, false, "");

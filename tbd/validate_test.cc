@@ -30,7 +30,6 @@
 #include "absl/memory/memory.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "tbd/common.h"
 
 namespace tbd {
 namespace {

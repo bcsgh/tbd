@@ -37,7 +37,6 @@
 #include "absl/base/attributes.h"
 #include "absl/memory/memory.h"
 #include "absl/strings/str_cat.h"
-#include "tbd/common.h"
 #include "tbd/dimensions.h"
 
 namespace tbd {

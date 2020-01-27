@@ -36,8 +36,8 @@
 
 #include "absl/memory/memory.h"
 #include "gflags/gflags.h"
+#include "glog/logging.h"
 #include "tbd/ast.h"
-#include "tbd/common.h"
 #include "tbd/evaluate.h"
 #include "tbd/gen_code.h"
 #include "tbd/graphviz.h"

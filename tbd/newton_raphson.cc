@@ -31,7 +31,7 @@
 
 #include "Eigen/Core"
 #include "Eigen/Geometry"
-#include "tbd/common.h"
+#include "glog/logging.h"
 
 namespace tbd {
 

@@ -37,8 +37,8 @@ cc_library(
   name = "test_main",
   srcs = ["test_main.cc"],
   deps = [
-    ":common",
     "@com_github_gflags_gflags//:gflags",
+    "@com_github_glog_glog//:glog",
     "@com_google_absl//absl/time",
     "@com_google_googletest//:gtest",
   ],
@@ -49,8 +49,8 @@ cc_library(
   srcs = ["ast.cc"],
   hdrs = ["ast.h"],
   deps = [
-    ":common",
     ":dimensions",
+    "@com_github_glog_glog//:glog",
     "@com_google_absl//absl/base:core_headers", 
     "@com_google_absl//absl/memory", 
     "@com_google_absl//absl/strings",
@@ -63,7 +63,6 @@ cc_test(
   timeout = "short",
   deps = [
     ":ast",
-    ":common",
     ":test_main",
     "@com_google_googletest//:gtest",
   ],
@@ -74,7 +73,6 @@ cc_library(
   srcs = ["ops.cc"],
   hdrs = ["ops.h"],
   deps = [
-    ":common",
     ":semantic",
     "@com_google_absl//absl/base:core_headers",
     "@eigen//:eigen",
@@ -87,7 +85,6 @@ cc_test(
   timeout = "short",
   deps = [
     ":ast",
-    ":common",
     ":ops",
     ":semantic",
     ":test_main",
@@ -101,8 +98,8 @@ cc_library(
   hdrs = ["semantic.h"],
   deps = [
     ":ast",
-    ":common",
     ":dimensions",
+    "@com_github_glog_glog//:glog",
     "@com_google_absl//absl/types:optional"
   ],
 )
@@ -113,7 +110,6 @@ cc_test(
   timeout = "short",
   deps = [
     ":ast",
-    ":common",
     ":semantic",
     ":test_main",
     "@com_google_googletest//:gtest",
@@ -125,7 +121,7 @@ cc_library(
   srcs = ["select_solvable.cc"],
   hdrs = ["select_solvable.h"],
   deps = [
-    ":common",
+    "@com_github_glog_glog//:glog",
   ],
 )
 
@@ -134,7 +130,6 @@ cc_test(
   srcs = ["select_solvable_test.cc"],
   timeout = "short",
   deps = [
-    ":common",
     ":select_solvable",
     ":test_main",
     "@com_google_absl//absl/strings",
@@ -148,7 +143,7 @@ cc_library(
   hdrs = ["newton_raphson.h"],
   copts = ["-Wno-int-in-bool-context"],  # For eigen
   deps = [
-    ":common",
+    "@com_github_glog_glog//:glog",
     "@eigen//:eigen",
   ],
 )
@@ -159,33 +154,10 @@ cc_test(
   timeout = "short",
   copts = ["-Wno-int-in-bool-context"],  # For eigen
   deps = [
-    ":common",
     ":newton_raphson",
     ":test_main",
     "@com_google_googletest//:gtest",
     "@eigen//:eigen",
-  ],
-)
-
-cc_library(
-  name = "common",
-  srcs = ["common.cc"],
-  hdrs = ["common.h"],
-  deps = [
-    "@com_google_absl//absl/debugging:stacktrace",
-    "@com_google_absl//absl/strings",
-    "@com_github_gflags_gflags//:gflags",
-  ],
-)
-
-cc_test(
-  name = "common_test",
-  srcs = ["common_test.cc"],
-  timeout = "short",
-  deps = [
-    ":common",
-    ":test_main",
-    "@com_google_googletest//:gtest",
   ],
 )
 
@@ -226,7 +198,6 @@ cc_test(
   srcs = ["parser_support_test.cc"],
   timeout = "short",
   deps = [
-    ":common",
     ":parser_support",
     ":test_main",
     "@com_google_googletest//:gtest",
@@ -244,7 +215,6 @@ cc_library(
   hdrs = ["tbd.h"],
   deps = [
     ":ast",
-    ":common",
     ":evaluate",
     ":gen_code",
     ":graphviz",
@@ -261,9 +231,9 @@ cc_binary(
   name = "tbd",
   srcs = ["tbd-main.cc"],
   deps = [
-    ":common",
     ":tbd_lib",
     "@com_github_gflags_gflags//:gflags",
+    "@com_github_glog_glog//:glog",
   ],
   visibility = ["//visibility:public"],
 )
@@ -290,7 +260,6 @@ cc_test(
   srcs = ["dimensions_test.cc"],
   timeout = "short",
   deps = [
-    ":common",
     ":dimensions",
     ":test_main",
     "@com_google_googletest//:gtest",
@@ -322,12 +291,12 @@ cc_library(
   hdrs = ["resolve_units.h"],
   deps = [
     ":ast",
-    ":common",
     ":dimensions",
     ":semantic",
     ":util",
-    "@com_google_absl//absl/strings",
     "@com_github_gflags_gflags//:gflags",
+    "@com_github_glog_glog//:glog",
+    "@com_google_absl//absl/strings",
   ],
 )
 
@@ -337,7 +306,6 @@ cc_test(
   timeout = "short",
   deps = [
     ":ast",
-    ":common",
     ":resolve_units",
     ":semantic",
     ":test_main",
@@ -352,9 +320,9 @@ cc_library(
   hdrs = ["validate.h"],
   deps = [
     ":ast",
-    ":common",
     ":semantic",
     "@com_github_gflags_gflags//:gflags",
+    "@com_github_glog_glog//:glog",
   ],
 )
 
@@ -362,7 +330,6 @@ cc_test(
   name = "validate_test",
   srcs = ["validate_test.cc"],
   deps = [
-    ":common",
     ":validate",
     ":test_main",
     "@com_google_absl//absl/memory", 
@@ -377,7 +344,6 @@ cc_library(
   copts = ["-Wno-int-in-bool-context"],  # For eigen
   deps = [
     ":ast",
-    ":common",
     ":find",
     ":newton_raphson",
     ":ops",
@@ -391,7 +357,6 @@ cc_test(
   name = "evaluate_test",
   srcs = ["evaluate_test.cc"],
   deps = [
-    ":common",
     ":evaluate",
     ":test_main",
     "@com_google_googletest//:gtest",
@@ -404,8 +369,8 @@ cc_library(
   hdrs = ["graphviz.h"],
   deps = [
     ":ast",
-    ":common",
     ":semantic",
+    "@com_github_glog_glog//:glog",
     "@com_google_absl//absl/strings",
     "@com_google_absl//absl/time",
     "@com_google_absl//absl/types:optional"
@@ -417,7 +382,6 @@ cc_test(
   srcs = ["graphviz_test.cc"],
   timeout = "short",
   deps = [
-    ":common",
     ":graphviz",
     ":semantic",
     ":test_main",
@@ -431,9 +395,9 @@ cc_library(
   srcs = ["gen_code.cc"],
   hdrs = ["gen_code.h"],
   deps = [
-    ":common",
     ":ops",
     ":semantic",
+    "@com_github_glog_glog//:glog",
     "@com_google_absl//absl/strings",
   ],
 )
@@ -443,7 +407,6 @@ cc_test(
   srcs = ["gen_code_test.cc"],
   timeout = "short",
   deps = [
-    ":common",
     ":gen_code",
     ":test_main",
     "@com_google_googletest//:gtest",

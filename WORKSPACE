@@ -14,6 +14,13 @@ git_repository(
 
 #############################################
 git_repository(
+    name = "com_github_glog_glog",
+    tag = "v0.4.0",
+    remote = "git://github.com/google/glog.git",
+)
+
+#############################################
+git_repository(
     name = "com_google_googletest",
     tag = "release-1.10.0",  # current as of 2020/1/25
     remote = "git://github.com/google/googletest.git",

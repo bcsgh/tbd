@@ -34,13 +34,13 @@
 #include <string>
 
 #include "gflags/gflags.h"
-#include "tbd/common.h"
+#include "glog/logging.h"
 
 DEFINE_string(src, "", "The file to read from");
 
 int main(int argc, char** argv) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
-  logging::InstallSignalhandler();
+  google::InitGoogleLogging(argv[0]);
 
   if (FLAGS_src.empty()) {
     LOG(ERROR) << "No --src given";

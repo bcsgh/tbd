@@ -31,8 +31,8 @@
 
 #include "absl/strings/str_cat.h"
 #include "gflags/gflags.h"
+#include "glog/logging.h"
 #include "tbd/ast.h"
-#include "tbd/common.h"
 #include "tbd/dimensions.h"
 #include "tbd/semantic.h"
 #include "tbd/util.h"

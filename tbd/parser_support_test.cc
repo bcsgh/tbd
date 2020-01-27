@@ -31,7 +31,6 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "tbd/common.h"
 
 namespace tbd {
 

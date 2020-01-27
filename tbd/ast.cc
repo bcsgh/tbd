@@ -32,6 +32,7 @@
 #include <utility>
 #include <vector>
 
+#include "glog/logging.h"
 #include "tbd/dimensions.h"
 
 namespace tbd {

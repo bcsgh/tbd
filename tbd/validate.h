@@ -29,7 +29,6 @@
 #define TBD_VALIDATE_H_
 
 #include "tbd/ast.h"
-#include "tbd/common.h"
 #include "tbd/semantic.h"
 
 namespace tbd {

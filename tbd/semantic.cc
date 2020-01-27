@@ -32,8 +32,8 @@
 #include <string>
 #include <utility>
 
+#include "glog/logging.h"
 #include "tbd/ast.h"
-#include "tbd/common.h"
 #include "tbd/dimensions.h"
 
 namespace tbd {
@@ -177,5 +177,7 @@ std::ostream& operator<<(std::ostream& out, const SemanticDocument::Exp& node) {
   out << "\n";
   return out;
 }
+
+const char* kPreamble = "<<preamble>>";
 
 }  // namespace tbd

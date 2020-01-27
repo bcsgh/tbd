@@ -32,9 +32,9 @@
 #include <utility>
 #include <vector>
 
+#include "glog/logging.h"
 #include "absl/memory/memory.h"
 #include "tbd/ast.h"
-#include "tbd/common.h"
 #include "tbd/find.h"
 #include "tbd/newton_raphson.h"
 #include "tbd/ops.h"

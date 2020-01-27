@@ -92,6 +92,9 @@ class SemanticDocument final {
 
 std::ostream& operator<<(std::ostream&, const SemanticDocument::Exp&);
 
+// The source name used when parsing the preamble
+extern const char* kPreamble;
+
 }  // namespace tbd
 
 #endif  // TBD_SEMANTIC_H_
