@@ -59,7 +59,7 @@ namespace tbd {
 bool Process(const std::string& src, const std::string& file_string) {
   Document doc;
 
-  CHECK(Parse(kPreamble, ::tbd_preamble_tbd, &doc) == 0);
+  CHECK(Parse(kPreamble, ::tbd_preamble_tbd(), &doc) == 0);
 
   if (int ret = Parse(src, file_string, &doc)) {
     LOG(ERROR) << "Parse failed with rc=" << ret;
