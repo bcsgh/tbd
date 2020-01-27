@@ -6,7 +6,7 @@ OUTPUT=$GTEST_TMP_DIR/out
 
 $EXE 1>$STDOUT 2>$STDERR \
 	--noparser_debug \
-	--nologtostderr  \
+	--nologtostderr_x  \
 	--warnings_as_errors \
 	--src=$2
 

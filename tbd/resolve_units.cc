@@ -29,15 +29,15 @@
 
 #include <cmath>
 
+#include "absl/flags/flag.h"
 #include "absl/strings/str_cat.h"
-#include "gflags/gflags.h"
 #include "glog/logging.h"
 #include "tbd/ast.h"
 #include "tbd/dimensions.h"
 #include "tbd/semantic.h"
 #include "tbd/util.h"
 
-DEFINE_int32(iteration_limit, 64, "");
+ABSL_FLAG(int32_t, iteration_limit, 64, "");
 
 namespace tbd {
 
@@ -473,7 +473,7 @@ bool ResolveUnits::operator()(const Document& d) {
 
   // Assign units to everything else.
   progress_ = true;
-  for (int pass = 0; (pass < FLAGS_iteration_limit && progress_); pass++) {
+  for (int pass = 0; (pass < absl::GetFlag(FLAGS_iteration_limit) && progress_); pass++) {
     down_ = (pass > 0);
     LOG(INFO) << (down_ ? "==== UP PASS ====" : "==== DOWN PASS ====");
     progress_ = (pass <= 1);  // At least 2 passes;

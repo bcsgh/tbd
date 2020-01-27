@@ -37,8 +37,9 @@ cc_library(
   name = "test_main",
   srcs = ["test_main.cc"],
   deps = [
-    "@com_github_gflags_gflags//:gflags",
     "@com_github_glog_glog//:glog",
+    "@com_google_absl//absl/flags:flag",
+    "@com_google_absl//absl/flags:parse",
     "@com_google_absl//absl/time",
     "@com_google_googletest//:gtest",
   ],
@@ -182,8 +183,8 @@ cc_library(
   deps = [
     ":ast",
     ":parser_support",
+    "@com_google_absl//absl/flags:flag",
     "@com_google_absl//absl/strings",
-    "@com_github_gflags_gflags//:gflags",
   ],
 )
 
@@ -222,7 +223,7 @@ cc_library(
     ":preamble",
     ":resolve_units",
     ":validate",
-    "@com_github_gflags_gflags//:gflags",
+    "@com_google_absl//absl/flags:flag",
     "@com_google_absl//absl/memory",
   ],
 )
@@ -232,8 +233,9 @@ cc_binary(
   srcs = ["tbd-main.cc"],
   deps = [
     ":tbd_lib",
-    "@com_github_gflags_gflags//:gflags",
     "@com_github_glog_glog//:glog",
+    "@com_google_absl//absl/flags:flag",
+    "@com_google_absl//absl/flags:parse",
   ],
   visibility = ["//visibility:public"],
 )
@@ -294,8 +296,8 @@ cc_library(
     ":dimensions",
     ":semantic",
     ":util",
-    "@com_github_gflags_gflags//:gflags",
     "@com_github_glog_glog//:glog",
+    "@com_google_absl//absl/flags:flag",
     "@com_google_absl//absl/strings",
   ],
 )
@@ -321,8 +323,8 @@ cc_library(
   deps = [
     ":ast",
     ":semantic",
-    "@com_github_gflags_gflags//:gflags",
     "@com_github_glog_glog//:glog",
+    "@com_google_absl//absl/flags:flag",
   ],
 )
 

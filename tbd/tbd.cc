@@ -34,8 +34,8 @@
 #include <sstream>
 #include <string>
 
+#include "absl/flags/flag.h"
 #include "absl/memory/memory.h"
-#include "gflags/gflags.h"
 #include "glog/logging.h"
 #include "tbd/ast.h"
 #include "tbd/evaluate.h"
@@ -46,13 +46,14 @@
 #include "tbd/resolve_units.h"
 #include "tbd/validate.h"
 
-DEFINE_string(graphviz_output, "",
-              "Output the sysyem of equations in GraphVis format. "
-              "Mostly for debugging");
-DEFINE_string(cpp_output, "",
-              "Output the sequnce of operation for solving for the unknowns as "
-              "C++ assignment expressions.");
-DEFINE_bool(dump_units, false, "Dump the set of know units to stdout");
+ABSL_FLAG(std::string, graphviz_output, "",
+          "Output the sysyem of equations in GraphVis format. "
+          "Mostly for debugging");
+ABSL_FLAG(std::string, cpp_output, "",
+          "Output the sequnce of operation for solving for the unknowns as "
+          "C++ assignment expressions.");
+ABSL_FLAG(bool, dump_units, false,
+          "Dump the set of know units to stdout");
 
 namespace tbd {
 
@@ -77,7 +78,7 @@ bool Process(const std::string& src, const std::string& file_string) {
     LOG(ERROR) << "Failed to resolve units for '" << src << "'";
     return false;
   }
-  if (FLAGS_dump_units) sem.LogUnits(std::cout);
+  if (absl::GetFlag(FLAGS_dump_units)) sem.LogUnits(std::cout);
 
   Evaluate eva(&sem);
   if (!doc.VisitNode(&eva)) {
@@ -85,10 +86,10 @@ bool Process(const std::string& src, const std::string& file_string) {
     return false;
   }
 
-  if (!FLAGS_graphviz_output.empty()) {
+  if (!absl::GetFlag(FLAGS_graphviz_output).empty()) {
     std::ofstream out;
-    out.open(FLAGS_graphviz_output, std::ios::out);
-    CHECK(!out.fail()) << FLAGS_graphviz_output << ": " << std::strerror(errno);
+    out.open(absl::GetFlag(FLAGS_graphviz_output), std::ios::out);
+    CHECK(!out.fail()) << absl::GetFlag(FLAGS_graphviz_output) << ": " << std::strerror(errno);
 
     if (!doc.VisitNode(RenderAsGraphViz(&sem, out).as_ptr())) {
       LOG(ERROR) << "Failed to render '" << src << "' as GraphViz";
@@ -105,10 +106,10 @@ bool Process(const std::string& src, const std::string& file_string) {
   std::sort(lines.begin(), lines.end());
   for (const auto& l : lines) std::cout << l;
 
-  if (!FLAGS_cpp_output.empty()) {
+  if (!absl::GetFlag(FLAGS_cpp_output).empty()) {
     std::ofstream out;
-    out.open(FLAGS_cpp_output, std::ios::out);
-    CHECK(!out.fail()) << FLAGS_cpp_output << ": " << std::strerror(errno);
+    out.open(absl::GetFlag(FLAGS_cpp_output), std::ios::out);
+    CHECK(!out.fail()) << absl::GetFlag(FLAGS_cpp_output) << ": " << std::strerror(errno);
 
     CodeEvaluate code(out);
     for (const auto s : eva.GetStages()) {

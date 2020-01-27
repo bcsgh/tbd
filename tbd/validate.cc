@@ -27,12 +27,12 @@
 
 #include "tbd/validate.h"
 
-#include "gflags/gflags.h"
+#include "absl/flags/flag.h"
 #include "glog/logging.h"
 #include "tbd/ast.h"
 #include "tbd/semantic.h"
 
-DEFINE_bool(warnings_as_errors, false, "");
+ABSL_FLAG(bool, warnings_as_errors, false, "");
 
 namespace tbd {
 
@@ -121,7 +121,7 @@ bool Validate::operator()(const Document& d) {
     warning = true;
   }
 
-  if (FLAGS_warnings_as_errors) error = error || warning;
+  if (absl::GetFlag(FLAGS_warnings_as_errors)) error = error || warning;
   return !error;
 }
 

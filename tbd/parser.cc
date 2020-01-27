@@ -30,13 +30,13 @@
 #include <iostream>
 #include <string>
 
+#include "absl/flags/flag.h"
 #include "absl/strings/string_view.h"
-#include "gflags/gflags.h"
 #include "tbd/gen.lexer.h"
 #include "tbd/parser_support.h"
 
 #if defined(YYDEBUG) && YYDEBUG
-DEFINE_bool(parser_debug, false, "Enable debuging of the parser");
+ABSL_FLAG(bool, parser_debug, false, "Enable debuging of the parser");
 #endif
 
 YY_DECL;  // Forward declare
@@ -58,7 +58,7 @@ int Parse(std::string filename, absl::string_view file, Document* doc) {
   {
     tbd_parser::parser p{scanner, doc};
 #if defined(YYDEBUG) && YYDEBUG
-    p.set_debug_level(FLAGS_parser_debug);
+    p.set_debug_level(absl::GetFlag(FLAGS_parser_debug));
     p.set_debug_stream(std::cout);
 #endif
     ret = p.parse();
