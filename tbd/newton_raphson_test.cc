@@ -61,21 +61,21 @@ TEST_P(NewtonRaphsonP, Case) {
       << (res - d.exp).transpose() << "]";
 }
 
-INSTANTIATE_TEST_CASE_P(  //
+INSTANTIATE_TEST_SUITE_P(  //
     OneDimLin, NewtonRaphsonP,
     ::testing::Values(  //
         NRCase{/*exp=*/VXd::Constant(1, 1, -1.00000),
                [](VXd d) { return VXd::Constant(1, 1, d[0] + 1); },
                /*dim=*/1, /*count=*/1, /*tol=*/0.001}));
 
-INSTANTIATE_TEST_CASE_P(  //
+INSTANTIATE_TEST_SUITE_P(  //
     OneDim, NewtonRaphsonP,
     ::testing::Values(  //
         NRCase{/*exp=*/VXd::Constant(1, 1, +2),
                [](VXd d) { return VXd::Constant(1, 1, std::pow(d[0], 3) - 8); },
                /*dim=*/1, /*count=*/17, /*tol=*/0.0001}));
 
-INSTANTIATE_TEST_CASE_P(  //
+INSTANTIATE_TEST_SUITE_P(  //
     TwoDimLin, NewtonRaphsonP,
     ::testing::Values(  //
         NRCase{/*exp=*/(VXd(2) << 1, 2).finished(),
@@ -89,7 +89,7 @@ INSTANTIATE_TEST_CASE_P(  //
                },
                /*dim=*/2, /*count=*/1, /*tol=*/0.001}));
 
-INSTANTIATE_TEST_CASE_P(  //
+INSTANTIATE_TEST_SUITE_P(  //
     TwoDim, NewtonRaphsonP,
     ::testing::Values(  //
         NRCase{/*exp=*/(VXd(2) << 1, 2).finished(),
