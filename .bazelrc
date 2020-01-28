@@ -1,5 +1,0 @@
-build:clang --client_env=CC=clang
-
-build:all_san --config=clang
-build:all_san -c dbg
-build:all_san --copt=-g
