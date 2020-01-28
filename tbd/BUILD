@@ -142,7 +142,6 @@ cc_library(
   name = "newton_raphson",
   srcs = ["newton_raphson.cc"],
   hdrs = ["newton_raphson.h"],
-  copts = ["-Wno-int-in-bool-context"],  # For eigen
   deps = [
     "@com_github_glog_glog//:glog",
     "@eigen//:eigen",
@@ -153,7 +152,6 @@ cc_test(
   name = "newton_raphson_test",
   srcs = ["newton_raphson_test.cc"],
   timeout = "short",
-  copts = ["-Wno-int-in-bool-context"],  # For eigen
   deps = [
     ":newton_raphson",
     ":test_main",
@@ -343,7 +341,6 @@ cc_library(
   name = "evaluate",
   srcs = ["evaluate.cc"],
   hdrs = ["evaluate.h"],
-  copts = ["-Wno-int-in-bool-context"],  # For eigen
   deps = [
     ":ast",
     ":find",
