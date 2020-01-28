@@ -331,7 +331,8 @@ class Document final : public NodeI {
   std::vector<std::unique_ptr<UnitDef>> unit_def_;
 };
 
-struct VisitNodes {
+class VisitNodes {
+ public:
   // Get the address of the object as a pointer, even if it's a temporary.
   VisitNodes* as_ptr() { return this; }
 

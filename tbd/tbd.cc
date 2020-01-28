@@ -101,7 +101,7 @@ bool Process(const std::string& src, const std::string& file_string) {
     if (node->node && node->node->location().filename == kPreamble) continue;
     std::stringstream out(std::ios_base::out);
     out << *node;
-    lines.emplace_back(std::move(out.str()));
+    lines.emplace_back(out.str());
   }
   std::sort(lines.begin(), lines.end());
   for (const auto& l : lines) std::cout << l;

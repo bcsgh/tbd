@@ -150,7 +150,8 @@ class OpCheck final : public OpI {
 
 ////////////////////////////////////////////
 
-struct VisitOps {
+class VisitOps {
+ public:
   // Get the address of the object as a pointer, even if it's a temporary.
   VisitOps* as_ptr() { return this; }
 
@@ -172,7 +173,8 @@ struct VisitOps {
 ////////////////////////////////////////////
 
 // Direct in place evaluation.
-struct DirectEvaluate final : public VisitOps {
+class DirectEvaluate final : public VisitOps {
+ public:
   DirectEvaluate(Eigen::VectorXd* in, Eigen::VectorXd* out)
       : in_(in), out_(out) {}
 
