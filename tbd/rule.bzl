@@ -25,34 +25,39 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-def gen_tbd(name=None, srcs=None, cpp=None, dot=None, out=None,
-            warnings_as_errors=False):
-  if not srcs:
-    fail("srcs must be provided")
-  if not name:
-    fail("name must be provided")
+def gen_tbd(
+        name = None,
+        srcs = None,
+        cpp = None,
+        dot = None,
+        out = None,
+        warnings_as_errors = False):
+    if not srcs:
+        fail("srcs must be provided")
+    if not name:
+        fail("name must be provided")
 
-  cmd = "$(location @tbd//tbd:tbd)"
-  if warnings_as_errors:
-    cmd += " --warnings_as_errors"
+    cmd = "$(location @tbd//tbd:tbd)"
+    if warnings_as_errors:
+        cmd += " --warnings_as_errors"
 
-  cmd += " --src=$<"
-  cmd += " > $(location " + out + ")"
+    cmd += " --src=$<"
+    cmd += " > $(location " + out + ")"
 
-  outs = [out]
+    outs = [out]
 
-  if cpp:
-    cmd += " --cpp_output=$(location " + cpp +")"
-    outs += [cpp]
+    if cpp:
+        cmd += " --cpp_output=$(location " + cpp + ")"
+        outs += [cpp]
 
-  if dot:
-    cmd += " --graphviz_output=$(location " + dot +")"
-    outs += [dot]
+    if dot:
+        cmd += " --graphviz_output=$(location " + dot + ")"
+        outs += [dot]
 
-  native.genrule(
-    name = name,
-    srcs = srcs,
-    outs = outs,
-	tools = ["@tbd//tbd:tbd"],
-    cmd = cmd,
-  )
+    native.genrule(
+        name = name,
+        srcs = srcs,
+        outs = outs,
+        tools = ["@tbd//tbd:tbd"],
+        cmd = cmd,
+    )

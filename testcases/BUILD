@@ -30,19 +30,29 @@ load("@bazel_rules//graphviz:graphviz.bzl", "gen_dot")
 load("@bazel_rules//build_test:build.bzl", "build_test")
 
 ERROR_CASES = glob(["*.error.tbd"])
-SUCCESS_CASES = glob(["*.tbd"], exclude=["*.error.tbd"])
+
+SUCCESS_CASES = glob(
+    ["*.tbd"],
+    exclude = ["*.error.tbd"],
+)
 
 [sh_test(
-  name = c.replace(".error.tbd", "_failure_test"),
-  args = ["$(location //tbd:tbd)", "$(location %s)" % c],
-  srcs = ["input_test.sh"],
-  data = ["//tbd:tbd", c],
-  timeout="short",
+    name = c.replace(".error.tbd", "_failure_test"),
+    timeout = "short",
+    srcs = ["input_test.sh"],
+    args = [
+        "$(location //tbd:tbd)",
+        "$(location %s)" % c,
+    ],
+    data = [
+        "//tbd",
+        c,
+    ],
 ) for c in ERROR_CASES]
 
 test_suite(
-  name = "failure_tests",
-  tests = [":" + c.replace(".error.tbd", "_failure_test") for c in ERROR_CASES],
+    name = "failure_tests",
+    tests = [":" + c.replace(".error.tbd", "_failure_test") for c in ERROR_CASES],
 )
 
 [gen_tbd(
@@ -66,39 +76,42 @@ test_suite(
 ) for c in SUCCESS_CASES]
 
 [sh_test(
-  name = g.replace(".", "_"),
-  args = ["$(location %s)" % g, "$(location %s)" % g.replace(".gold", ".txt")],
-  srcs = ["gold_test.sh"],
-  data = [
-      g,
-      g.replace(".gold", ".txt"),
-  ],
-  timeout="short",
+    name = g.replace(".", "_"),
+    timeout = "short",
+    srcs = ["gold_test.sh"],
+    args = [
+        "$(location %s)" % g,
+        "$(location %s)" % g.replace(".gold", ".txt"),
+    ],
+    data = [
+        g,
+        g.replace(".gold", ".txt"),
+    ],
 ) for g in glob(["*.gold"])]
 
 [sh_test(
-  name = g.replace(".", "_") + "_cpp",
-  args = [
-      "$(location %s)" % g.replace(".gold", ".gold.cpp"),
-      "$(location %s)" % g.replace(".gold", ".cpp"),
-  ],
-  srcs = ["gold_test.sh"],
-  data = [
-      g.replace(".gold", ".cpp"),
-      g.replace(".gold", ".gold.cpp"),
-  ],
-  timeout="short",
+    name = g.replace(".", "_") + "_cpp",
+    timeout = "short",
+    srcs = ["gold_test.sh"],
+    args = [
+        "$(location %s)" % g.replace(".gold", ".gold.cpp"),
+        "$(location %s)" % g.replace(".gold", ".cpp"),
+    ],
+    data = [
+        g.replace(".gold", ".cpp"),
+        g.replace(".gold", ".gold.cpp"),
+    ],
 ) for g in glob(["*.gold"])]
 
 test_suite(
-  name = "success_tests",
-  tests = [":" + c.replace(".tbd", "_success_test") for c in SUCCESS_CASES],
+    name = "success_tests",
+    tests = [":" + c.replace(".tbd", "_success_test") for c in SUCCESS_CASES],
 )
 
 filegroup(
-  name = "outputs",
-  srcs = [c.replace("tbd", "txt") for c in SUCCESS_CASES] +
-         [c.replace("tbd", "cpp") for c in SUCCESS_CASES] +
-         [c.replace("tbd", "dot") for c in SUCCESS_CASES] +
-         [c.replace("tbd", "png") for c in SUCCESS_CASES]
+    name = "outputs",
+    srcs = [c.replace("tbd", "txt") for c in SUCCESS_CASES] +
+           [c.replace("tbd", "cpp") for c in SUCCESS_CASES] +
+           [c.replace("tbd", "dot") for c in SUCCESS_CASES] +
+           [c.replace("tbd", "png") for c in SUCCESS_CASES],
 )

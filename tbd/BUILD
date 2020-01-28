@@ -29,178 +29,179 @@ load("@bazel_rules//cc_embed_data:cc_embed_data.bzl", "cc_embed_data")
 load("@bazel_rules//parser:parser.bzl", "genlex", "genyacc")
 
 cc_library(
-  name = "util",
-  hdrs = ["util.h"],
+    name = "util",
+    hdrs = ["util.h"],
 )
 
 cc_library(
-  name = "test_main",
-  srcs = ["test_main.cc"],
-  deps = [
-    "@com_github_glog_glog//:glog",
-    "@com_google_absl//absl/flags:flag",
-    "@com_google_absl//absl/flags:parse",
-    "@com_google_absl//absl/time",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "test_main",
+    srcs = ["test_main.cc"],
+    deps = [
+        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/time",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "ast",
-  srcs = ["ast.cc"],
-  hdrs = ["ast.h"],
-  deps = [
-    ":dimensions",
-    "@com_github_glog_glog//:glog",
-    "@com_google_absl//absl/base:core_headers", 
-    "@com_google_absl//absl/memory", 
-    "@com_google_absl//absl/strings",
-  ],
+    name = "ast",
+    srcs = ["ast.cc"],
+    hdrs = ["ast.h"],
+    deps = [
+        ":dimensions",
+        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+    ],
 )
 
 cc_test(
-  name = "ast_test",
-  srcs = ["ast_test.cc"],
-  timeout = "short",
-  deps = [
-    ":ast",
-    ":test_main",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "ast_test",
+    timeout = "short",
+    srcs = ["ast_test.cc"],
+    deps = [
+        ":ast",
+        ":test_main",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "ops",
-  srcs = ["ops.cc"],
-  hdrs = ["ops.h"],
-  deps = [
-    ":semantic",
-    "@com_google_absl//absl/base:core_headers",
-    "@eigen//:eigen",
-  ],
+    name = "ops",
+    srcs = ["ops.cc"],
+    hdrs = ["ops.h"],
+    deps = [
+        ":semantic",
+        "@com_google_absl//absl/base:core_headers",
+        "@eigen",
+    ],
 )
 
 cc_test(
-  name = "ops_test",
-  srcs = ["ops_test.cc"],
-  timeout = "short",
-  deps = [
-    ":ast",
-    ":ops",
-    ":semantic",
-    ":test_main",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "ops_test",
+    timeout = "short",
+    srcs = ["ops_test.cc"],
+    deps = [
+        ":ast",
+        ":ops",
+        ":semantic",
+        ":test_main",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "semantic",
-  srcs = ["semantic.cc"],
-  hdrs = ["semantic.h"],
-  deps = [
-    ":ast",
-    ":dimensions",
-    "@com_github_glog_glog//:glog",
-    "@com_google_absl//absl/types:optional"
-  ],
+    name = "semantic",
+    srcs = ["semantic.cc"],
+    hdrs = ["semantic.h"],
+    deps = [
+        ":ast",
+        ":dimensions",
+        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/types:optional",
+    ],
 )
 
 cc_test(
-  name = "semantic_test",
-  srcs = ["semantic_test.cc"],
-  timeout = "short",
-  deps = [
-    ":ast",
-    ":semantic",
-    ":test_main",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "semantic_test",
+    timeout = "short",
+    srcs = ["semantic_test.cc"],
+    deps = [
+        ":ast",
+        ":semantic",
+        ":test_main",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "select_solvable",
-  srcs = ["select_solvable.cc"],
-  hdrs = ["select_solvable.h"],
-  deps = [
-    "@com_github_glog_glog//:glog",
-  ],
+    name = "select_solvable",
+    srcs = ["select_solvable.cc"],
+    hdrs = ["select_solvable.h"],
+    deps = [
+        "@com_github_glog_glog//:glog",
+    ],
 )
 
 cc_test(
-  name = "select_solvable_test",
-  srcs = ["select_solvable_test.cc"],
-  timeout = "short",
-  deps = [
-    ":select_solvable",
-    ":test_main",
-    "@com_google_absl//absl/strings",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "select_solvable_test",
+    timeout = "short",
+    srcs = ["select_solvable_test.cc"],
+    deps = [
+        ":select_solvable",
+        ":test_main",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "newton_raphson",
-  srcs = ["newton_raphson.cc"],
-  hdrs = ["newton_raphson.h"],
-  deps = [
-    "@com_github_glog_glog//:glog",
-    "@eigen//:eigen",
-  ],
+    name = "newton_raphson",
+    srcs = ["newton_raphson.cc"],
+    hdrs = ["newton_raphson.h"],
+    deps = [
+        "@com_github_glog_glog//:glog",
+        "@eigen",
+    ],
 )
 
 cc_test(
-  name = "newton_raphson_test",
-  srcs = ["newton_raphson_test.cc"],
-  timeout = "short",
-  deps = [
-    ":newton_raphson",
-    ":test_main",
-    "@com_google_googletest//:gtest",
-    "@eigen//:eigen",
-  ],
+    name = "newton_raphson_test",
+    timeout = "short",
+    srcs = ["newton_raphson_test.cc"],
+    deps = [
+        ":newton_raphson",
+        ":test_main",
+        "@com_google_googletest//:gtest",
+        "@eigen",
+    ],
 )
 
 cc_library(
-  name = "parser_lib",
-  srcs = [
-    "parser.cc",
-    ":lexer",
-    ":parser",
-  ],
-  hdrs = [
-    "parser.h",
-    ":lexer",
-    ":parser",
-    "gen.lexer.h",
-    "gen.parser.h",
-  ],
-  copts = [ # because bison
-    "-fexceptions",
-    "-Wno-sign-compare",
-  ],
-  deps = [
-    ":ast",
-    ":parser_support",
-    "@com_google_absl//absl/flags:flag",
-    "@com_google_absl//absl/strings",
-  ],
+    name = "parser_lib",
+    srcs = [
+        "parser.cc",
+        ":lexer",
+        ":parser",
+    ],
+    hdrs = [
+        "gen.lexer.h",
+        "gen.parser.h",
+        "parser.h",
+        ":lexer",
+        ":parser",
+    ],
+    copts = [
+        # because bison
+        "-fexceptions",
+        "-Wno-sign-compare",
+    ],
+    deps = [
+        ":ast",
+        ":parser_support",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/strings",
+    ],
 )
 
 cc_library(
-  name = "parser_support",
-  srcs = ["parser_support.cc"],
-  hdrs = ["parser_support.h"],
+    name = "parser_support",
+    srcs = ["parser_support.cc"],
+    hdrs = ["parser_support.h"],
 )
 
 cc_test(
-  name = "parser_support_test",
-  srcs = ["parser_support_test.cc"],
-  timeout = "short",
-  deps = [
-    ":parser_support",
-    ":test_main",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "parser_support_test",
+    timeout = "short",
+    srcs = ["parser_support_test.cc"],
+    deps = [
+        ":parser_support",
+        ":test_main",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_embed_data(
@@ -209,205 +210,204 @@ cc_embed_data(
 )
 
 cc_library(
-  name = "tbd_lib",
-  srcs = ["tbd.cc"],
-  hdrs = ["tbd.h"],
-  deps = [
-    ":ast",
-    ":evaluate",
-    ":gen_code",
-    ":graphviz",
-    ":parser_lib",
-    ":preamble",
-    ":resolve_units",
-    ":validate",
-    "@com_google_absl//absl/flags:flag",
-    "@com_google_absl//absl/memory",
-  ],
+    name = "tbd_lib",
+    srcs = ["tbd.cc"],
+    hdrs = ["tbd.h"],
+    deps = [
+        ":ast",
+        ":evaluate",
+        ":gen_code",
+        ":graphviz",
+        ":parser_lib",
+        ":preamble",
+        ":resolve_units",
+        ":validate",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/memory",
+    ],
 )
 
 cc_binary(
-  name = "tbd",
-  srcs = ["tbd-main.cc"],
-  deps = [
-    ":tbd_lib",
-    "@com_github_glog_glog//:glog",
-    "@com_google_absl//absl/flags:flag",
-    "@com_google_absl//absl/flags:parse",
-  ],
-  visibility = ["//visibility:public"],
+    name = "tbd",
+    srcs = ["tbd-main.cc"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":tbd_lib",
+        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+    ],
 )
 
-
 genyacc(
-  name = "parser",
-  src = "parser.y",
+    name = "parser",
+    src = "parser.y",
 )
 
 genlex(
-  name = "lexer",
-  src = "lexer.l",
+    name = "lexer",
+    src = "lexer.l",
 )
 
 cc_library(
-  name = "dimensions",
-  srcs = ["dimensions.cc"],
-  hdrs = ["dimensions.h"],
+    name = "dimensions",
+    srcs = ["dimensions.cc"],
+    hdrs = ["dimensions.h"],
 )
 
 cc_test(
-  name = "dimensions_test",
-  srcs = ["dimensions_test.cc"],
-  timeout = "short",
-  deps = [
-    ":dimensions",
-    ":test_main",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "dimensions_test",
+    timeout = "short",
+    srcs = ["dimensions_test.cc"],
+    deps = [
+        ":dimensions",
+        ":test_main",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "find",
-  hdrs = ["find.h"],
-  deps = [
-    ":ast",
-  ],
+    name = "find",
+    hdrs = ["find.h"],
+    deps = [
+        ":ast",
+    ],
 )
 
 cc_test(
-  name = "find_test",
-  srcs = ["find_test.cc"],
-  timeout = "short",
-  deps = [
-    ":find",
-    ":test_main",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "find_test",
+    timeout = "short",
+    srcs = ["find_test.cc"],
+    deps = [
+        ":find",
+        ":test_main",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "resolve_units",
-  srcs = ["resolve_units.cc"],
-  hdrs = ["resolve_units.h"],
-  deps = [
-    ":ast",
-    ":dimensions",
-    ":semantic",
-    ":util",
-    "@com_github_glog_glog//:glog",
-    "@com_google_absl//absl/flags:flag",
-    "@com_google_absl//absl/strings",
-  ],
+    name = "resolve_units",
+    srcs = ["resolve_units.cc"],
+    hdrs = ["resolve_units.h"],
+    deps = [
+        ":ast",
+        ":dimensions",
+        ":semantic",
+        ":util",
+        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/strings",
+    ],
 )
 
 cc_test(
-  name = "resolve_units_test",
-  srcs = ["resolve_units_test.cc"],
-  timeout = "short",
-  deps = [
-    ":ast",
-    ":resolve_units",
-    ":semantic",
-    ":test_main",
-    "@com_google_absl//absl/memory", 
-    "@com_google_googletest//:gtest",
-  ],
+    name = "resolve_units_test",
+    timeout = "short",
+    srcs = ["resolve_units_test.cc"],
+    deps = [
+        ":ast",
+        ":resolve_units",
+        ":semantic",
+        ":test_main",
+        "@com_google_absl//absl/memory",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "validate",
-  srcs = ["validate.cc"],
-  hdrs = ["validate.h"],
-  deps = [
-    ":ast",
-    ":semantic",
-    "@com_github_glog_glog//:glog",
-    "@com_google_absl//absl/flags:flag",
-  ],
+    name = "validate",
+    srcs = ["validate.cc"],
+    hdrs = ["validate.h"],
+    deps = [
+        ":ast",
+        ":semantic",
+        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/flags:flag",
+    ],
 )
 
 cc_test(
-  name = "validate_test",
-  srcs = ["validate_test.cc"],
-  deps = [
-    ":validate",
-    ":test_main",
-    "@com_google_absl//absl/memory", 
-    "@com_google_googletest//:gtest",
-  ],
+    name = "validate_test",
+    srcs = ["validate_test.cc"],
+    deps = [
+        ":test_main",
+        ":validate",
+        "@com_google_absl//absl/memory",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "evaluate",
-  srcs = ["evaluate.cc"],
-  hdrs = ["evaluate.h"],
-  deps = [
-    ":ast",
-    ":find",
-    ":newton_raphson",
-    ":ops",
-    ":select_solvable",
-    ":semantic",
-    "@com_google_absl//absl/memory", 
-  ],
+    name = "evaluate",
+    srcs = ["evaluate.cc"],
+    hdrs = ["evaluate.h"],
+    deps = [
+        ":ast",
+        ":find",
+        ":newton_raphson",
+        ":ops",
+        ":select_solvable",
+        ":semantic",
+        "@com_google_absl//absl/memory",
+    ],
 )
 
 cc_test(
-  name = "evaluate_test",
-  srcs = ["evaluate_test.cc"],
-  deps = [
-    ":evaluate",
-    ":test_main",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "evaluate_test",
+    srcs = ["evaluate_test.cc"],
+    deps = [
+        ":evaluate",
+        ":test_main",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "graphviz",
-  srcs = ["graphviz.cc"],
-  hdrs = ["graphviz.h"],
-  deps = [
-    ":ast",
-    ":semantic",
-    "@com_github_glog_glog//:glog",
-    "@com_google_absl//absl/strings",
-    "@com_google_absl//absl/time",
-    "@com_google_absl//absl/types:optional"
-  ],
+    name = "graphviz",
+    srcs = ["graphviz.cc"],
+    hdrs = ["graphviz.h"],
+    deps = [
+        ":ast",
+        ":semantic",
+        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/time",
+        "@com_google_absl//absl/types:optional",
+    ],
 )
 
 cc_test(
-  name = "graphviz_test",
-  srcs = ["graphviz_test.cc"],
-  timeout = "short",
-  deps = [
-    ":graphviz",
-    ":semantic",
-    ":test_main",
-    "@com_google_absl//absl/strings",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "graphviz_test",
+    timeout = "short",
+    srcs = ["graphviz_test.cc"],
+    deps = [
+        ":graphviz",
+        ":semantic",
+        ":test_main",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest",
+    ],
 )
 
 cc_library(
-  name = "gen_code",
-  srcs = ["gen_code.cc"],
-  hdrs = ["gen_code.h"],
-  deps = [
-    ":ops",
-    ":semantic",
-    "@com_github_glog_glog//:glog",
-    "@com_google_absl//absl/strings",
-  ],
+    name = "gen_code",
+    srcs = ["gen_code.cc"],
+    hdrs = ["gen_code.h"],
+    deps = [
+        ":ops",
+        ":semantic",
+        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/strings",
+    ],
 )
 
 cc_test(
-  name = "gen_code_test",
-  srcs = ["gen_code_test.cc"],
-  timeout = "short",
-  deps = [
-    ":gen_code",
-    ":test_main",
-    "@com_google_googletest//:gtest",
-  ],
+    name = "gen_code_test",
+    timeout = "short",
+    srcs = ["gen_code_test.cc"],
+    deps = [
+        ":gen_code",
+        ":test_main",
+        "@com_google_googletest//:gtest",
+    ],
 )
