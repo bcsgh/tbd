@@ -32,10 +32,10 @@
 // lexer.yy.cc can't allow include lexer.yy.h so pretend it's already happened
 #define tbdHEADER_H
 
+#include "parser/parser_support.h"
 #include "tbd/ast.h"
 #include "tbd/gen.lexer.h"
 #include "tbd/gen.parser.h"
-#include "tbd/parser_support.h"
 
 typedef tbd_parser::parser::token T;
 
@@ -56,13 +56,12 @@ int tbdget_column(tbdscan_t scanner);
 extern "C" int tbdwrap(tbdscan_t scanner) { return 1; }
 
 void tbderror(tbdscan_t scanner) {
-  tbd_parser::parser::location_type *tbdget_lloc(tbdscan_t scanner );
-  char *tbdget_text(tbdscan_t scanner );
+  // Declare some functions defined in the generated code.
+  tbd_parser::parser::location_type *tbdget_lloc(tbdscan_t scanner);
+  char *tbdget_text(tbdscan_t scanner);
 
   auto &loc = *tbdget_lloc(scanner);
-  tbd::error(loc.begin.filename,
-             loc.begin.line, loc.begin.column, loc.end.line, loc.end.column,
-             tbdget_text(scanner));
+  parser_support::Error(loc, tbdget_text(scanner));
 }
 
 %}

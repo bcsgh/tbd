@@ -32,8 +32,8 @@
 
 #include "absl/flags/flag.h"
 #include "absl/strings/string_view.h"
+#include "parser/parser_support.h"
 #include "tbd/gen.lexer.h"
-#include "tbd/parser_support.h"
 
 #if defined(YYDEBUG) && YYDEBUG
 ABSL_FLAG(bool, parser_debug, false, "Enable debuging of the parser");

@@ -32,15 +32,13 @@
 
 %{
 #include "absl/memory/memory.h"
+#include "parser/parser_support.h"
 #include "tbd/ast.h"
 #include "tbd/gen.lexer.h"
-#include "tbd/parser_support.h"
 
 namespace tbd_parser {
 void parser::error(tbd_parser::location const& loc, std::string const& msg) {
-  tbd::error(loc.begin.filename,
-             loc.begin.line, loc.begin.column, loc.end.line, loc.end.column,
-             msg);
+  parser_support::Error(loc, msg);
 }
 
 using absl::WrapUnique;
