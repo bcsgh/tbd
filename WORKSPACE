@@ -9,22 +9,22 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_r
 # needed by com_github_glog_glog
 git_repository(
     name = "com_github_gflags_gflags",
-    tag = "v2.2.2",  # current as of 2020/1/25
     remote = "git://github.com/gflags/gflags.git",
+    tag = "v2.2.2",  # current as of 2020/1/25
 )
 
 #############################################
 git_repository(
     name = "com_github_glog_glog",
-    tag = "v0.4.0",
     remote = "git://github.com/google/glog.git",
+    tag = "v0.4.0",
 )
 
 #############################################
 git_repository(
     name = "com_google_googletest",
-    tag = "release-1.10.0",  # current as of 2020/1/25
     remote = "git://github.com/google/googletest.git",
+    tag = "release-1.10.0",  # current as of 2020/1/25
 )
 
 #############################################
@@ -37,9 +37,9 @@ git_repository(
 #############################################
 new_git_repository(
     name = "eigen",
-    tag = "3.3.7",  # current as of 2020/1/25
-    remote = "git://github.com/eigenteam/eigen-git-mirror.git",
     build_file = "@//:BUILD.eigen",
+    remote = "git://github.com/eigenteam/eigen-git-mirror.git",
+    tag = "3.3.7",  # current as of 2020/1/25
 )
 
 #############################################
