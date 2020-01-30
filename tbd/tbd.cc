@@ -52,8 +52,7 @@ ABSL_FLAG(std::string, graphviz_output, "",
 ABSL_FLAG(std::string, cpp_output, "",
           "Output the sequnce of operation for solving for the unknowns as "
           "C++ assignment expressions.");
-ABSL_FLAG(bool, dump_units, false,
-          "Dump the set of know units to stdout");
+ABSL_FLAG(bool, dump_units, false, "Dump the set of know units to stdout");
 
 namespace tbd {
 
@@ -89,7 +88,8 @@ bool Process(const std::string& src, const std::string& file_string) {
   if (!absl::GetFlag(FLAGS_graphviz_output).empty()) {
     std::ofstream out;
     out.open(absl::GetFlag(FLAGS_graphviz_output), std::ios::out);
-    CHECK(!out.fail()) << absl::GetFlag(FLAGS_graphviz_output) << ": " << std::strerror(errno);
+    CHECK(!out.fail()) << absl::GetFlag(FLAGS_graphviz_output) << ": "
+                       << std::strerror(errno);
 
     if (!doc.VisitNode(RenderAsGraphViz(&sem, out).as_ptr())) {
       LOG(ERROR) << "Failed to render '" << src << "' as GraphViz";
@@ -109,7 +109,8 @@ bool Process(const std::string& src, const std::string& file_string) {
   if (!absl::GetFlag(FLAGS_cpp_output).empty()) {
     std::ofstream out;
     out.open(absl::GetFlag(FLAGS_cpp_output), std::ios::out);
-    CHECK(!out.fail()) << absl::GetFlag(FLAGS_cpp_output) << ": " << std::strerror(errno);
+    CHECK(!out.fail()) << absl::GetFlag(FLAGS_cpp_output) << ": "
+                       << std::strerror(errno);
 
     CodeEvaluate code(out);
     for (const auto s : eva.GetStages()) {

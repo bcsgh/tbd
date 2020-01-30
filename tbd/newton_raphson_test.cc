@@ -36,8 +36,8 @@
 
 namespace tbd {
 
-using testing::ElementsAre;
 using testing::DoubleNear;
+using testing::ElementsAre;
 
 struct NRCase {
   VXd exp;

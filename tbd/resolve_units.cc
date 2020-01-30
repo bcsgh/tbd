@@ -473,7 +473,8 @@ bool ResolveUnits::operator()(const Document& d) {
 
   // Assign units to everything else.
   progress_ = true;
-  for (int pass = 0; (pass < absl::GetFlag(FLAGS_iteration_limit) && progress_); pass++) {
+  auto iteration_limit = absl::GetFlag(FLAGS_iteration_limit);
+  for (int pass = 0; (pass < iteration_limit && progress_); pass++) {
     down_ = (pass > 0);
     LOG(INFO) << (down_ ? "==== UP PASS ====" : "==== DOWN PASS ====");
     progress_ = (pass <= 1);  // At least 2 passes;
