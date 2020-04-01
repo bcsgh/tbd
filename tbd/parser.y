@@ -95,6 +95,9 @@ int tbd_parserlex(tbd_parser::parser::semantic_type* o,
   double fp;
   int32_t i;
 }
+// Define destructor for things that aren't pointers or are not new'ed.
+%destructor {  } <i> <fp> <doc>;
+%destructor { delete $$; } <*>;
 
 %type <doc> input;
 
