@@ -85,19 +85,21 @@ int main(int argc, char** argv) {
   std::string file_string(std::istreambuf_iterator<char>(in), {});
   in.close();
 
-  auto processed = tbd::Process(absl::GetFlag(FLAGS_src), file_string);
+  auto processed = tbd::ProcessInput(absl::GetFlag(FLAGS_src), file_string);
   if (!processed) return 1;
 
   if (absl::GetFlag(FLAGS_dump_units)) processed->sem.LogUnits(std::cout);
 
   if (!absl::GetFlag(FLAGS_graphviz_output).empty() &&
       !RenderGraphViz(absl::GetFlag(FLAGS_graphviz_output), *processed)) {
-    LOG(ERROR) << "Failed to render '" << absl::GetFlag(FLAGS_src) << "' as GraphViz";
+    LOG(ERROR) << "Failed to render '" << absl::GetFlag(FLAGS_src)
+               << "' as GraphViz";
   }
 
   if (!absl::GetFlag(FLAGS_cpp_output).empty() &&
       !RenderCpp(absl::GetFlag(FLAGS_cpp_output), *processed)) {
-    LOG(ERROR) << "Failed to render '" << absl::GetFlag(FLAGS_src) << "' as C++";
+    LOG(ERROR) << "Failed to render '" << absl::GetFlag(FLAGS_src)
+               << "' as C++";
   }
 
   for (const auto& l : tbd::GetValues(absl::GetFlag(FLAGS_src), *processed)) {

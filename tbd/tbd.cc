@@ -50,7 +50,8 @@
 
 namespace tbd {
 
-std::unique_ptr<FullDocument> Process(const std::string& src, const std::string& file_string) {
+std::unique_ptr<FullDocument> ProcessInput(const std::string& src,
+                                           const std::string& file_string) {
   auto ret = absl::make_unique<FullDocument>();
 
   CHECK(Parse(kPreamble, ::tbd_preamble_tbd(), &ret->doc) == 0);
@@ -85,7 +86,8 @@ bool RenderGraphViz(const std::string& sink, FullDocument &full) {
   return full.doc.VisitNode(RenderAsGraphViz(&full.sem, out).as_ptr());
 }
 
-std::vector<std::string> GetValues(const std::string &sink, FullDocument &full) {
+std::vector<std::string> GetValues(const std::string &sink,
+                                   FullDocument &full) {
   std::vector<std::string> lines;
   for (const auto* node : full.sem.nodes()) {
     if (node->node && node->node->location().filename == kPreamble) continue;

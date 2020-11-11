@@ -45,7 +45,8 @@ struct FullDocument {
   Evaluate eva;
 };
 
-std::unique_ptr<FullDocument> Process(const std::string &src, const std::string &file_string);
+std::unique_ptr<FullDocument> ProcessInput(const std::string &src,
+                                           const std::string &file_string);
 
 bool RenderGraphViz(const std::string& sink, FullDocument &full);
 bool RenderCpp(const std::string &src, FullDocument &full);
