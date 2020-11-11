@@ -44,96 +44,86 @@
 #include "tbd/parser.h"
 #include "tbd/preamble_emebed_data.h"
 #include "tbd/resolve_units.h"
+#include "tbd/semantic.h"
 #include "tbd/validate.h"
 
-ABSL_FLAG(std::string, graphviz_output, "",
-          "Output the sysyem of equations in GraphVis format. "
-          "Mostly for debugging");
-ABSL_FLAG(std::string, cpp_output, "",
-          "Output the sequnce of operation for solving for the unknowns as "
-          "C++ assignment expressions.");
-ABSL_FLAG(bool, dump_units, false, "Dump the set of know units to stdout");
 
 namespace tbd {
 
-bool Process(const std::string& src, const std::string& file_string) {
-  Document doc;
+std::unique_ptr<FullDocument> Process(const std::string& src, const std::string& file_string) {
+  auto ret = absl::make_unique<FullDocument>();
 
-  CHECK(Parse(kPreamble, ::tbd_preamble_tbd(), &doc) == 0);
+  CHECK(Parse(kPreamble, ::tbd_preamble_tbd(), &ret->doc) == 0);
 
-  if (int ret = Parse(src, file_string, &doc)) {
-    LOG(ERROR) << "Parse failed with rc=" << ret;
-    return false;
+  if (int rc = Parse(src, file_string, &ret->doc)) {
+    LOG(ERROR) << "Parse failed with rc=" << rc;
+    return nullptr;
   }
 
-  SemanticDocument sem;
-
-  if (!doc.VisitNode(Validate(&sem).as_ptr())) {
+  if (!ret->doc.VisitNode(Validate(&ret->sem).as_ptr())) {
     LOG(ERROR) << "Failed to validate '" << src << "'";
-    return false;
+    return nullptr;
   }
 
-  if (!doc.VisitNode(ResolveUnits(&sem).as_ptr())) {
+  if (!ret->doc.VisitNode(ResolveUnits(&ret->sem).as_ptr())) {
     LOG(ERROR) << "Failed to resolve units for '" << src << "'";
-    return false;
+    return nullptr;
   }
-  if (absl::GetFlag(FLAGS_dump_units)) sem.LogUnits(std::cout);
 
-  Evaluate eva(&sem);
-  if (!doc.VisitNode(&eva)) {
+  if (!ret->doc.VisitNode(&ret->eva)) {
     LOG(ERROR) << "Failed to Evaluate values for '" << src << "'";
-    return false;
+    return nullptr;
   }
+  return ret;
+}
 
-  if (!absl::GetFlag(FLAGS_graphviz_output).empty()) {
-    std::ofstream out;
-    out.open(absl::GetFlag(FLAGS_graphviz_output), std::ios::out);
-    CHECK(!out.fail()) << absl::GetFlag(FLAGS_graphviz_output) << ": "
-                       << std::strerror(errno);
+bool RenderGraphViz(const std::string& sink, FullDocument &full) {
+  std::ofstream out;
+  out.open(sink, std::ios::out);
+  CHECK(!out.fail()) << sink << ": " << std::strerror(errno);
 
-    if (!doc.VisitNode(RenderAsGraphViz(&sem, out).as_ptr())) {
-      LOG(ERROR) << "Failed to render '" << src << "' as GraphViz";
-    }
-  }
+  return full.doc.VisitNode(RenderAsGraphViz(&full.sem, out).as_ptr());
+}
 
+std::vector<std::string> GetValues(const std::string &sink, FullDocument &full) {
   std::vector<std::string> lines;
-  for (const auto* node : sem.nodes()) {
+  for (const auto* node : full.sem.nodes()) {
     if (node->node && node->node->location().filename == kPreamble) continue;
     std::stringstream out(std::ios_base::out);
     out << *node;
     lines.emplace_back(out.str());
   }
   std::sort(lines.begin(), lines.end());
-  for (const auto& l : lines) std::cout << l;
+  return lines;
+}
 
-  if (!absl::GetFlag(FLAGS_cpp_output).empty()) {
-    std::ofstream out;
-    out.open(absl::GetFlag(FLAGS_cpp_output), std::ios::out);
-    CHECK(!out.fail()) << absl::GetFlag(FLAGS_cpp_output) << ": "
-                       << std::strerror(errno);
+bool RenderCpp(const std::string &sink, FullDocument &full) {
+  std::ofstream out;
+  out.open(sink, std::ios::out);
+  CHECK(!out.fail()) << sink << ": " << std::strerror(errno);
 
-    CodeEvaluate code(out);
-    for (const auto s : eva.GetStages()) {
-      out << "// Simple\n";
-      for (const auto& op : s->direct_ops) {
-        if (!op->VisitOp(&code)) {
-          LOG(ERROR) << "Error generateding C++ for opertion at "
-                     << op->location();
-        }
+  bool success = true;
+  CodeEvaluate code(out);
+  for (const auto s : full.eva.GetStages()) {
+    out << "// Simple\n";
+    for (const auto& op : s->direct_ops) {
+      if (!op->VisitOp(&code)) {
+        LOG(ERROR) << "Error generateding C++ for opertion at "
+                   << op->location();
+        success = false;
       }
-      out << "// system\n";
-      for (const auto& op : s->solve_ops) {
-        if (!op->VisitOp(&code)) {
-          LOG(ERROR) << "Error generateding C++ for opertion at "
-                     << op->location();
-        }
+    }
+    out << "// system\n";
+    for (const auto& op : s->solve_ops) {
+      if (!op->VisitOp(&code)) {
+        LOG(ERROR) << "Error generateding C++ for opertion at "
+                   << op->location();
+        success = false;
       }
     }
   }
 
-  std::cout << std::endl;
-
-  return true;
+  return success;
 }
 
 }  // namespace tbd

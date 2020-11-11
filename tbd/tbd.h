@@ -28,11 +28,29 @@
 #ifndef TBD_TBD_H_
 #define TBD_TBD_H_
 
+#include <memory>
 #include <string>
+
+#include "tbd/ast.h"
+#include "tbd/evaluate.h"
+#include "tbd/semantic.h"
 
 namespace tbd {
 
-bool Process(const std::string &src, const std::string &file_string);
+struct FullDocument {
+  FullDocument() : eva(&sem) {}
+
+  Document doc;
+  SemanticDocument sem;
+  Evaluate eva;
+};
+
+std::unique_ptr<FullDocument> Process(const std::string &src, const std::string &file_string);
+
+bool RenderGraphViz(const std::string& sink, FullDocument &full);
+bool RenderCpp(const std::string &src, FullDocument &full);
+
+std::vector<std::string> GetValues(const std::string &src, FullDocument &full);
 
 }  // namespace tbd
 

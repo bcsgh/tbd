@@ -40,6 +40,14 @@
 
 ABSL_FLAG(std::string, src, "", "The file to read from");
 
+ABSL_FLAG(std::string, graphviz_output, "",
+          "Output the sysyem of equations in GraphVis format. "
+          "Mostly for debugging");
+ABSL_FLAG(std::string, cpp_output, "",
+          "Output the sequnce of operation for solving for the unknowns as "
+          "C++ assignment expressions.");
+ABSL_FLAG(bool, dump_units, false, "Dump the set of know units to stdout");
+
 // TODO: Dump this once absl get logging.
 ABSL_FLAG(bool, alsologtostderr_x, false,
           "log messages go to stderr in addition to logfiles");
@@ -77,5 +85,25 @@ int main(int argc, char** argv) {
   std::string file_string(std::istreambuf_iterator<char>(in), {});
   in.close();
 
-  return tbd::Process(absl::GetFlag(FLAGS_src), file_string) ? 0 : 1;
+  auto processed = tbd::Process(absl::GetFlag(FLAGS_src), file_string);
+  if (!processed) return 1;
+
+  if (absl::GetFlag(FLAGS_dump_units)) processed->sem.LogUnits(std::cout);
+
+  if (!absl::GetFlag(FLAGS_graphviz_output).empty() &&
+      !RenderGraphViz(absl::GetFlag(FLAGS_graphviz_output), *processed)) {
+    LOG(ERROR) << "Failed to render '" << absl::GetFlag(FLAGS_src) << "' as GraphViz";
+  }
+
+  if (!absl::GetFlag(FLAGS_cpp_output).empty() &&
+      !RenderCpp(absl::GetFlag(FLAGS_cpp_output), *processed)) {
+    LOG(ERROR) << "Failed to render '" << absl::GetFlag(FLAGS_src) << "' as C++";
+  }
+
+  for (const auto& l : tbd::GetValues(absl::GetFlag(FLAGS_src), *processed)) {
+    std::cout << l;
+  }
+  std::cout << std::endl;
+
+  return 0;
 }
