@@ -31,10 +31,10 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 
-#include "absl/flags/flag.h"
 #include "absl/memory/memory.h"
 #include "glog/logging.h"
 #include "tbd/ast.h"
@@ -44,7 +44,6 @@
 #include "tbd/parser.h"
 #include "tbd/preamble_emebed_data.h"
 #include "tbd/resolve_units.h"
-#include "tbd/semantic.h"
 #include "tbd/validate.h"
 
 

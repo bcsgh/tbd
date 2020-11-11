@@ -196,6 +196,7 @@ cc_library(
     name = "tbd_lib",
     srcs = ["tbd.cc"],
     hdrs = ["tbd.h"],
+    visibility = ["//visibility:public"],
     deps = [
         ":ast",
         ":evaluate",
@@ -204,8 +205,9 @@ cc_library(
         ":parser_lib",
         ":preamble",
         ":resolve_units",
+        ":semantic",
         ":validate",
-        "@com_google_absl//absl/flags:flag",
+        "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/memory",
     ],
 )
