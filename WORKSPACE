@@ -10,28 +10,32 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_r
 git_repository(
     name = "com_github_gflags_gflags",
     remote = "git://github.com/gflags/gflags.git",
-    tag = "v2.2.2",  # current as of 2020/1/25
+    commit = "827c769e5fc98e0f2a34c47cef953cc6328abced",  # current as of 2020/11/12
+    shallow_since = "1604052972 +0000",
 )
 
 #############################################
 git_repository(
     name = "com_github_glog_glog",
     remote = "git://github.com/google/glog.git",
-    tag = "v0.4.0",
+    commit = "c8f8135a5720aee7de8328b42e4c43f8aa2e60aa",  # current as of 2020/11/12
+    shallow_since = "1601711556 +0200",
 )
 
 #############################################
 git_repository(
     name = "com_google_googletest",
     remote = "git://github.com/google/googletest.git",
-    tag = "release-1.10.0",  # current as of 2020/1/25
+    commit = "0e202cdbe36b87b4fb68de2b5295a794a10c5cf8",  # current as of 2020/11/12
+    shallow_since = "1605205962 -0500",
 )
 
 #############################################
 git_repository(
     name = "com_google_absl",
-    commit = "44427702614d7b86b064ba06a390f5eb2f85dbf6",  # current as of 2020/1/25
     remote = "git://github.com/abseil/abseil-cpp.git",
+    commit = "0453e1653372fd719557aa70eaad34f691e0d5ae",  # current as of 2020/11/12
+    shallow_since = "1605107847 -0500",
 )
 
 #############################################
@@ -39,12 +43,14 @@ new_git_repository(
     name = "eigen",
     build_file = "@//:BUILD.eigen",
     remote = "git://github.com/eigenteam/eigen-git-mirror.git",
-    tag = "3.3.7",  # current as of 2020/1/25
+    commit = "36b95962756c1fce8e29b1f8bc45967f30773c00",  # current as of 2020/11/12
+    shallow_since = "1575476533 +0100",
 )
 
 #############################################
 git_repository(
     name = "bazel_rules",
-    commit = "327b56205204c2517ed50a3fec64dc5841479a64",  # current as of 2020/1/28
     remote = "git://github.com/bcsgh/bazel_rules.git",
+    commit = "c9d0b0de8d27f414ea402c62a90a71660c9795e4",  # current as of 2020/11/12
+    #shallow_since = "1605160622 -0800",
 )
