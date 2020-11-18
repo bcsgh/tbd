@@ -60,6 +60,21 @@ DECLARE_bool(alsologtostderr);
 DECLARE_bool(logtostderr);
 DECLARE_int32(v);
 
+class StreamSink : public tbd::ProcessOutput, public tbd::UnitsOutput {
+ public:
+  StreamSink(std::ostream& o) : out(o) {}
+
+  void Error(const std::string &str) const override {
+    out << str << "\n";
+  }
+  void Output(const std::string &name, const tbd::Unit& unit) const override {
+    out << name << " = " << unit << "\n";
+  }
+
+ private:
+  std::ostream& out;
+};
+
 int main(int argc, char** argv) {
   auto args = absl::ParseCommandLine(argc, argv);
   // Forward flags to glog (it doesn't use absl::Flags).
@@ -85,10 +100,12 @@ int main(int argc, char** argv) {
   std::string file_string(std::istreambuf_iterator<char>(in), {});
   in.close();
 
-  auto processed = tbd::ProcessInput(absl::GetFlag(FLAGS_src), file_string);
+  StreamSink out(std::cout);
+
+  auto processed = tbd::ProcessInput(absl::GetFlag(FLAGS_src), file_string, out);
   if (!processed) return 1;
 
-  if (absl::GetFlag(FLAGS_dump_units)) processed->sem.LogUnits(std::cout);
+  if (absl::GetFlag(FLAGS_dump_units)) processed->sem.LogUnits(out);
 
   if (!absl::GetFlag(FLAGS_graphviz_output).empty() &&
       !RenderGraphViz(absl::GetFlag(FLAGS_graphviz_output), *processed)) {
@@ -102,7 +119,7 @@ int main(int argc, char** argv) {
                << "' as C++";
   }
 
-  for (const auto& l : tbd::GetValues(absl::GetFlag(FLAGS_src), *processed)) {
+  for (const auto& l : tbd::GetValues(*processed)) {
     std::cout << l;
   }
   std::cout << std::endl;

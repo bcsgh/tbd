@@ -36,6 +36,18 @@
 namespace tbd {
 namespace {
 
+class StreamSink : public tbd::UnitsOutput {
+ public:
+  StreamSink(std::ostream& o) : out(o) {}
+
+  void Output(const std::string &name, const Unit& unit) const override {
+    out << name << " = " << unit << "\n";
+  }
+
+ private:
+  std::ostream& out;
+};
+
 TEST(SemanticDocument, Basic) {
   SemanticDocument doc;
 
@@ -65,7 +77,7 @@ TEST(SemanticDocument, Dump) {
 
   SemanticDocument doc;
   std::stringstream out(std::ios_base::out);
-  doc.LogUnits(out);
+  doc.LogUnits(StreamSink(out));
 
   EXPECT_THAT(out.str(), HasSubstr("A = 1[A]\n"));
   EXPECT_THAT(out.str(), HasSubstr("K = 1[K]\n"));

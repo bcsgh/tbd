@@ -31,6 +31,7 @@
 #include <string>
 
 #include "absl/flags/flag.h"
+#include "absl/strings/str_format.h"
 #include "absl/strings/string_view.h"
 #include "parser/parser_support.h"
 #include "tbd/gen.lexer.h"
@@ -47,16 +48,21 @@ int tbdlex(tbd_parser::parser::semantic_type* stype,
 
 namespace tbd {
 
-int Parse(std::string filename, absl::string_view file, Document* doc) {
+int Parse(std::string filename, absl::string_view file,
+          std::function<void(const std::string&)> outp, Document* doc) {
+  parser_support::ScannerExtra extra;
+  extra.filename = &filename;
+  extra.outp = outp;
+
   tbdscan_t scanner;
   tbdlex_init(&scanner);
   auto buffer_state = tbd_scan_bytes(file.data(), file.size(), scanner);
   tbdset_lineno(1, scanner);
   tbdset_column(1, scanner);
-  tbdset_extra(&filename, scanner);
+  tbdset_extra(&extra, scanner);
   int ret = 0;
   {
-    tbd_parser::parser p{scanner, doc};
+    tbd_parser::parser p{scanner, doc, &extra};
 #if defined(YYDEBUG) && YYDEBUG
     p.set_debug_level(absl::GetFlag(FLAGS_parser_debug));
     p.set_debug_stream(std::cout);

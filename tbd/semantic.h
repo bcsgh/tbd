@@ -40,13 +40,18 @@
 
 namespace tbd {
 
+class UnitsOutput {
+ public:
+  virtual void Output(const std::string &name, const Unit&) const = 0;
+};
+
 class SemanticDocument final {
  public:
   SemanticDocument();
 
   bool AddUnit(const std::string& name, Unit u);
   const Unit* LookupUnit(const std::string& name) const;
-  void LogUnits(std::ostream&) const;
+  void LogUnits(const UnitsOutput&) const;
 
   struct Exp {
     std::string name;

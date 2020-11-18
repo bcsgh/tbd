@@ -45,8 +45,10 @@ int tbdget_column(tbdscan_t scanner);
     auto* loc = tbdget_lloc(yyscanner);              \
     int line = tbdget_lineno(yyscanner);             \
     int col = tbdget_column(yyscanner);              \
-    auto fn = (std::string*)tbdget_extra(yyscanner); \
-    loc->begin.filename = loc->end.filename = fn;    \
+    auto e = (parser_support::ScannerExtra*)         \
+        tbdget_extra(yyscanner);                     \
+    loc->begin.filename = loc->end.filename =        \
+        e->filename;                                 \
     loc->begin.line = loc->end.line = line;          \
     loc->begin.column = col;                         \
     loc->end.column = col + yyleng;                  \
@@ -58,10 +60,12 @@ extern "C" int tbdwrap(tbdscan_t scanner) { return 1; }
 void tbderror(tbdscan_t scanner) {
   // Declare some functions defined in the generated code.
   tbd_parser::parser::location_type *tbdget_lloc(tbdscan_t scanner);
+  void *tbdget_extra(tbdscan_t scanner);
   char *tbdget_text(tbdscan_t scanner);
 
   auto &loc = *tbdget_lloc(scanner);
-  parser_support::Error(loc, tbdget_text(scanner));
+  auto e = (parser_support::ScannerExtra*)tbdget_extra(scanner);
+  parser_support::Error(loc, tbdget_text(scanner), e);
 }
 
 %}

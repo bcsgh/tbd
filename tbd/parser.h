@@ -28,6 +28,7 @@
 #ifndef TBD_PARSER_H_
 #define TBD_PARSER_H_
 
+#include <functional>
 #include <string>
 
 #include "absl/strings/string_view.h"
@@ -35,7 +36,8 @@
 
 namespace tbd {
 
-int Parse(std::string filename, absl::string_view file, Document* doc);
+int Parse(std::string filename, absl::string_view file,
+          std::function<void(const std::string&)> oupt, Document* doc);
 
 }  // namespace tbd
 

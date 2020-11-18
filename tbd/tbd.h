@@ -45,13 +45,23 @@ struct FullDocument {
   Evaluate eva;
 };
 
+class ProcessOutput {
+ public:
+  template <class... T>
+  void Error(const T... t) const {
+    Error(absl::StrCat(t...));
+  }
+  virtual void Error(const std::string &str) const = 0;
+};
+
 std::unique_ptr<FullDocument> ProcessInput(const std::string &src,
-                                           const std::string &file_string);
+                                           const std::string &file_string,
+                                           const ProcessOutput& out);
 
 bool RenderGraphViz(const std::string& sink, FullDocument &full);
 bool RenderCpp(const std::string &src, FullDocument &full);
 
-std::vector<std::string> GetValues(const std::string &src, FullDocument &full);
+std::vector<std::string> GetValues(FullDocument &full);
 
 }  // namespace tbd
 

@@ -55,9 +55,9 @@ const Unit* SemanticDocument::LookupUnit(const std::string& name) const {
   return &i->second;
 }
 
-void SemanticDocument::LogUnits(std::ostream& out) const {
+void SemanticDocument::LogUnits(const UnitsOutput& out) const {
   for (const auto& unit : units_) {
-    out << unit.first << " = " << unit.second << "\n";
+    out.Output(unit.first, unit.second);
   }
 }
 

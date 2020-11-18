@@ -36,7 +36,6 @@
 #include <string>
 
 #include "absl/memory/memory.h"
-#include "glog/logging.h"
 #include "tbd/ast.h"
 #include "tbd/evaluate.h"
 #include "tbd/gen_code.h"
@@ -50,28 +49,30 @@
 namespace tbd {
 
 std::unique_ptr<FullDocument> ProcessInput(const std::string& src,
-                                           const std::string& file_string) {
+                                           const std::string& file_string,
+                                           const ProcessOutput& out) {
+  auto outp = [&out](const std::string &s) { out.Error(s); };
   auto ret = absl::make_unique<FullDocument>();
 
-  CHECK(Parse(kPreamble, ::tbd_preamble_tbd(), &ret->doc) == 0);
+  CHECK(Parse(kPreamble, ::tbd_preamble_tbd(), outp, &ret->doc) == 0);
 
-  if (int rc = Parse(src, file_string, &ret->doc)) {
-    LOG(ERROR) << "Parse failed with rc=" << rc;
+  if (int rc = Parse(src, file_string, outp, &ret->doc)) {
+    out.Error("Parse failed with rc=", rc);
     return nullptr;
   }
 
   if (!ret->doc.VisitNode(Validate(&ret->sem).as_ptr())) {
-    LOG(ERROR) << "Failed to validate '" << src << "'";
+    out.Error("Failed to validate '", src, "'");
     return nullptr;
   }
 
   if (!ret->doc.VisitNode(ResolveUnits(&ret->sem).as_ptr())) {
-    LOG(ERROR) << "Failed to resolve units for '" << src << "'";
+    out.Error("Failed to resolve units for '", src, "'");
     return nullptr;
   }
 
   if (!ret->doc.VisitNode(&ret->eva)) {
-    LOG(ERROR) << "Failed to Evaluate values for '" << src << "'";
+    out.Error("Failed to Evaluate values for '", src, "'");
     return nullptr;
   }
   return ret;
@@ -85,8 +86,7 @@ bool RenderGraphViz(const std::string& sink, FullDocument &full) {
   return full.doc.VisitNode(RenderAsGraphViz(&full.sem, out).as_ptr());
 }
 
-std::vector<std::string> GetValues(const std::string &sink,
-                                   FullDocument &full) {
+std::vector<std::string> GetValues(FullDocument &full) {
   std::vector<std::string> lines;
   for (const auto* node : full.sem.nodes()) {
     if (node->node && node->node->location().filename == kPreamble) continue;
