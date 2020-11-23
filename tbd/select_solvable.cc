@@ -85,8 +85,7 @@ bool FindSolution(std::map<int, std::set<int>>& from_to,  //
 
       // Map the larger values to the smaller ones.
       const int a = *eq.second.begin(), b = *eq.second.rbegin();
-      equ_mapping[b] = std::min(equ_mapping[b], a);
-      equ_mapping[a] = std::min(equ_mapping[a], equ_mapping[b]);
+      equ_mapping[b] = equ_mapping[a] = std::min(equ_mapping[a], equ_mapping[b]);
     }
 
     // Compress everything to the smallest value in each set
