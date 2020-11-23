@@ -27,6 +27,7 @@
 
 #include "tbd/select_solvable.h"
 
+#include "absl/strings/str_join.h"
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
 #include "absl/strings/strip.h"
@@ -56,22 +57,23 @@ TEST_P(SelectSolvable, FindCase) {
 
   std::vector<absl::string_view> rows =
       absl::StrSplit(data, '\n', absl::SkipEmpty());
+  std::set<int> row_length;
   for (absl::string_view& row : rows) {
     StripEnds(&row);
-    ASSERT_EQ(row.length(), rows.size()) << "'" << row << "'";
+    row_length.insert(row.length());
   }
+  ASSERT_EQ(row_length.size(), 1)
+      << "Different length rows: " << absl::StrJoin(row_length, ", ");
+  ASSERT_EQ(rows[0].size(), rows.size());
 
   // Generate a shuffle (to enshure that presentation order doesn't matter).
-  std::vector<int> r_shuf, c_shuf;
+  std::vector<int> r_shuf(rows.size()), c_shuf(rows[0].size());
   std::set<int> used;
-  for (int i = rows.size(); i; i--) {
-    int n;
-    while (!used.insert(n = std::rand() & 0x1f).second) {
-    }
-    r_shuf.push_back(n);
-    while (!used.insert(n = std::rand() & 0x1f).second) {
-    }
-    c_shuf.push_back(n);
+  for (auto &n : r_shuf) {
+    while (!used.insert(n = std::rand() & 0x1f).second) {}
+  }
+  for (auto &n : c_shuf) {
+    while (!used.insert(n = std::rand() & 0x1f).second) {}
   }
 
   // Populate the from-to mapping using the shuffle
