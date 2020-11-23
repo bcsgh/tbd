@@ -44,7 +44,13 @@ void StripEnds(absl::string_view* data) {
   }
 }
 
-void Go(int size_found, absl::string_view data) {
+using SSV = std::pair<int, const char*>;
+using testing::Values;
+class SelectSolvable : public testing::TestWithParam<SSV> {};
+
+TEST_P(SelectSolvable, FindCase) {
+  int size_found = GetParam().first;
+  absl::string_view data = GetParam().second;
   // Extract the mapping.
   StripEnds(&data);
 
@@ -92,57 +98,52 @@ void Go(int size_found, absl::string_view data) {
   EXPECT_THAT(c_result, testing::ElementsAreArray(c_exp));
 }
 
-TEST(SelectSolvable, Bad) {
+INSTANTIATE_TEST_SUITE_P(Bad, SelectSolvable,
   // This should never be needed, but check that one-unknown gets picked.
-  Go(1, R"(
+  Values(SSV(1, R"(
     100
     011
     011
-  )");
-}
+  )")));
 
-TEST(SelectSolvable, MinimalDeg1Case) {
+INSTANTIATE_TEST_SUITE_P(MinimalDeg1Case, SelectSolvable,
   // The minimal case.
-  Go(2, R"(
+  Values(SSV(2, R"(
     11
     11
-  )");
-}
+  )")));
 
-TEST(SelectSolvable, NonMinimalDeg1Case) {
+INSTANTIATE_TEST_SUITE_P(NonMinimalDeg1Case, SelectSolvable,
   // A non-minimal 1 degree of freedom case.
-  Go(3, R"(
+  Values(SSV(3, R"(
     110
     101
     011
-  )");
-}
+  )")));
 
-TEST(SelectSolvable, Deg1SmallDeg1) {
+INSTANTIATE_TEST_SUITE_P(Deg1SmallDeg1, SelectSolvable,
   // A two 1 degree cases of different sizes, return the smaller one.
-  Go(2, R"(
+  Values(SSV(2, R"(
     11000
     11000
     00110
     00101
     00011
-  )");
-}
+  )")));
 
-TEST(SelectSolvable, Deg2In4) {
+INSTANTIATE_TEST_SUITE_P(Deg2In4, SelectSolvable,
   // A 3 degree case that yeilds a sub set.
-  Go(3, R"(
+  Values(SSV(3, R"(
     1110
     1110
     1110
     1001
-  )");
-}
+  )")));
 
-TEST(SelectSolvable, Odd) {
+INSTANTIATE_TEST_SUITE_P(Odd, SelectSolvable,
   // A case with some equations-of-two-varables that reduce
   // some of-three's into of-two's and make things solvable
-  Go(5, R"(
+  Values(SSV(5, R"(
     11000000
     11100000
     10110000
@@ -151,24 +152,22 @@ TEST(SelectSolvable, Odd) {
     00000111
     00000111
     00000111
-  )");
-}
+  )")));
 
-TEST(SelectSolvable, Deg1Deg2) {
+INSTANTIATE_TEST_SUITE_P(Deg1Deg2, SelectSolvable,
   // A case with both a 1 and 3 degree set.
-  Go(2, R"(
+  Values(SSV(2, R"(
     11000
     11000
     00111
     00111
     00111
-  )");
-}
+  )")));
 
-TEST(SelectSolvable, Deg1In4Deg2In3) {
+INSTANTIATE_TEST_SUITE_P(Deg1In4Deg2In3, SelectSolvable,
   // A case with a 1 degree, 4 part set
   // and a 3 degree, 3 parts set.
-  Go(4, R"(
+  Values(SSV(4, R"(
     1100000
     0110000
     0011000
@@ -176,8 +175,7 @@ TEST(SelectSolvable, Deg1In4Deg2In3) {
     0000111
     0000111
     0000111
-  )");
-}
+  )")));
 
 }  // namespace
 }  // namespace tbd
