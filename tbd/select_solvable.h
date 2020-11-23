@@ -35,8 +35,8 @@ namespace tbd {
 /////////////////////////////////////////////////////////////
 // The primary point of this library is to take a mapping from a set of
 // equations and the undefined variables they refer to and find a “small”
-// sub-set of those questions that should be solvable insolation, i.e. where the
-// number of equations equals the number of unknowns.
+// sub-set of those questions that should be solvable in insolation, i.e. where
+// the number of equations equals the number of unknowns.
 //
 // This is somewhat complicated by the fact we don’t want the smallest set of
 // equations but rather the smallest set of “free variables” (a.k.a. the
