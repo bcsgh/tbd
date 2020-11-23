@@ -64,7 +64,7 @@ TEST_P(SelectSolvable, FindCase) {
   }
   ASSERT_EQ(row_length.size(), 1)
       << "Different length rows: " << absl::StrJoin(row_length, ", ");
-  ASSERT_EQ(rows[0].size(), rows.size());
+  ASSERT_GE(rows[0].size(), rows.size());
 
   // Generate a shuffle (to enshure that presentation order doesn't matter).
   std::vector<int> r_shuf(rows.size()), c_shuf(rows[0].size());
@@ -94,7 +94,8 @@ TEST_P(SelectSolvable, FindCase) {
 
   std::set<int> r_result, c_result;
 
-  ASSERT_TRUE(FindSolution<>(from_to, &r_result, &c_result));
+  const bool success = (size_found > 0);
+  EXPECT_EQ(success, FindSolution<>(from_to, &r_result, &c_result));
 
   EXPECT_THAT(r_result, testing::ElementsAreArray(r_exp));
   EXPECT_THAT(c_result, testing::ElementsAreArray(c_exp));
@@ -177,6 +178,29 @@ INSTANTIATE_TEST_SUITE_P(Deg1In4Deg2In3, SelectSolvable,
     0000111
     0000111
     0000111
+  )")));
+
+INSTANTIATE_TEST_SUITE_P(PartialSolvable, SelectSolvable,
+  // A un-sovable equation and a solvable 3 degree, 3 parts set.
+  Values(SSV(2, R"(
+    1100
+    1100
+    0011
+  )")));
+
+INSTANTIATE_TEST_SUITE_P(MutipleUnsolvable, SelectSolvable,
+  // A two un-sovable equations.
+  Values(SSV(0, R"(
+    1100
+    0011
+  )")));
+
+INSTANTIATE_TEST_SUITE_P(ComplexUnsolvable, SelectSolvable,
+  // A two un-sovable equations.
+  Values(SSV(0, R"(
+    1100
+    0110
+    0011
   )")));
 
 }  // namespace

@@ -47,8 +47,6 @@ bool FindSolution(std::map<int, std::set<int>>& from_to,  //
       e.insert(i.first);
       v.insert(i.second.begin(), i.second.end());
     }
-    // Inputs are symmetric
-    CHECK(e.size() == v.size()) << e.size() << "!=" << v.size();
     // Inputs are compact
     CHECK(*e.begin() == 0) << *e.begin();
     CHECK(*v.begin() == 0) << *v.begin();
