@@ -523,40 +523,41 @@ bool Evaluate::operator()(const Document& d) {
     // Select a small system to solve.
     std::set<ExpressionNode const*, StableNodeCompare> exp_result;
     std::set<std::string> var_result;
-    CHECK(FindSolution(all, &exp_result, &var_result))
-        << "Failed to select solvable set";
+    if(!FindSolution(all, &exp_result, &var_result)) {
+       LOG(WARNING) << "Failed to select solvable set";
+    } else {
+      // Find the involved expressions
+      Find<ExpressionNode> find;
+      for (auto const* e : exp_result) (void)e->VisitNode(&find);
 
-    // Find the involved expressions
-    Find<ExpressionNode> find;
-    for (auto const* e : exp_result) (void)e->VisitNode(&find);
+      // Collect the unresolved into exp_result.
+      std::vector<ExpressionNode const*> exp_bits_v =
+          find.NodesWhere([this, exp_result](const ExpressionNode* n) {
+            return !doc_->TryGetNode(n)->resolved;
+          });
+      exp_result.insert(exp_bits_v.begin(), exp_bits_v.end());
 
-    // Collect the unresolved into exp_result.
-    std::vector<ExpressionNode const*> exp_bits_v =
-        find.NodesWhere([this, exp_result](const ExpressionNode* n) {
-          return !doc_->TryGetNode(n)->resolved;
-        });
-    exp_result.insert(exp_bits_v.begin(), exp_bits_v.end());
+      ops_ = &stage.solve_ops;  // Switch the output
+      allow_conflict_ = true;   // Emit OpCheck
+      in_idx_ = out_idx_ = 0;   // Starting in and out at zero
+      while (!var_result.empty()) {
+        // Pick a variable.
+        auto pick = var_result.begin();
+        auto node = doc_->TryGetNamedNode(*pick);
+        var_result.erase(pick);
+        if (node->equ_processed) continue;
 
-    ops_ = &stage.solve_ops;  // Switch the output
-    allow_conflict_ = true;   // Emit OpCheck
-    in_idx_ = out_idx_ = 0;   // Starting in and out at zero
-    while (!var_result.empty()) {
-      // Pick a variable.
-      auto pick = var_result.begin();
-      auto node = doc_->TryGetNamedNode(*pick);
-      var_result.erase(pick);
-      if (node->equ_processed) continue;
+        // "Resolve" the picked var.
+        node->resolved = true;
+        node->equ_processed = true;
+        ops_->emplace_back(absl::make_unique<OpLoad>(node, in_idx_++));
 
-      // "Resolve" the picked var.
-      node->resolved = true;
-      node->equ_processed = true;
-      ops_->emplace_back(absl::make_unique<OpLoad>(node, in_idx_++));
-
-      // Figure out what else that pins.
-      DirectEvaluateNodes(&exp_result);
+        // Figure out what else that pins.
+        DirectEvaluateNodes(&exp_result);
+      }
+      CHECK(in_idx_ == out_idx_) << in_idx_ << "!=" << out_idx_;
+      stage.count = in_idx_;
     }
-    CHECK(in_idx_ == out_idx_) << in_idx_ << "!=" << out_idx_;
-    stage.count = in_idx_;
   }
 
   // Run the evaluation plan.

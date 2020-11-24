@@ -1,0 +1,6 @@
+E = 8.9401e+16;	// [J] testcases/partial.tbd:1
+a;	// testcases/partial.tbd:7
+b;	// testcases/partial.tbd:7
+c = 2.99e+08;	// [m/s] testcases/partial.tbd:3
+m = 1;	// [kg] testcases/partial.tbd:2
+
