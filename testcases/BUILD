@@ -90,18 +90,18 @@ test_suite(
 ) for g in glob(["*.gold"])]
 
 [sh_test(
-    name = g.replace(".", "_") + "_cpp",
+    name = g.replace(".gold.", "") + "_cpp",
     timeout = "short",
     srcs = ["gold_test.sh"],
     args = [
-        "$(location %s)" % g.replace(".gold", ".gold.cpp"),
-        "$(location %s)" % g.replace(".gold", ".cpp"),
+        "$(location %s)" % g,
+        "$(location %s)" % g.replace(".gold.cpp", ".cpp"),
     ],
     data = [
-        g.replace(".gold", ".cpp"),
-        g.replace(".gold", ".gold.cpp"),
+        g.replace(".gold.cpp", ".cpp"),
+        g,
     ],
-) for g in glob(["*.gold"])]
+) for g in glob(["*.gold.cpp"])]
 
 test_suite(
     name = "success_tests",
