@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
   std::string file_string(std::istreambuf_iterator<char>(in), {});
   in.close();
 
-  StreamSink out(std::cout);
+  StreamSink out(std::cerr);
 
   auto processed = tbd::ProcessInput(absl::GetFlag(FLAGS_src), file_string, out);
   if (!processed) return 1;
