@@ -40,9 +40,10 @@
 
 namespace tbd {
 
-class Evaluate final : public VisitNodes {
+class Evaluate final : public VisitNodesWithErrors {
  public:
-  Evaluate(SemanticDocument* doc) : doc_(doc){};
+  Evaluate(SemanticDocument* doc, ErrorSink e)
+      : VisitNodesWithErrors(e), doc_(doc) {}
 
   struct Stage {
     // The ops that directly solve for the parts where that works for.

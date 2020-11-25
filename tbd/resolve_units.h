@@ -36,9 +36,10 @@
 
 namespace tbd {
 
-class ResolveUnits final : public VisitNodes {
+class ResolveUnits final : public VisitNodesWithErrors {
  public:
-  ResolveUnits(SemanticDocument* doc) : doc_(doc){};
+  ResolveUnits(SemanticDocument* doc, ErrorSink e)
+      : VisitNodesWithErrors(e), doc_(doc) {}
 
  private:
   bool operator()(const UnitExp&) override;

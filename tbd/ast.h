@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -103,25 +104,6 @@ class NodeI {
 struct StableNodeCompare {
   bool operator()(NodeI const* l, NodeI const* r);
 };
-
-/////////////////////////////
-// A helper for creating error messages.
-class ErrorMessage {
- public:
-  ErrorMessage(const char* file, int line, const NodeI& n)
-      : ErrorMessage(file, line, n.location()) {}
-  ErrorMessage(const char* file, int line, const Loc& l) {
-#ifndef NDEBUG
-    get() << "(" << file << ":" << line << ") ";
-#endif  // NDEBUG
-    get() << l << ": ";
-  }
-  ~ErrorMessage() { get() << std::endl; }
-
-  std::ostream& get() { return std::cerr; }
-};
-
-#define SYM_ERROR(x) ErrorMessage(__FILE__, __LINE__, (x)).get()
 
 class ExpressionNode : public NodeI {
  public:
@@ -355,6 +337,50 @@ class VisitNodes {
   template <class T>
   bool operator()(const T&) = delete;
 };
+
+// A Visitor that can emmit errors.
+class VisitNodesWithErrors : public VisitNodes {
+ public:
+  using ErrorSink = std::function<void(const std::string&)>;
+  VisitNodesWithErrors(ErrorSink e) : sink_(e) {}
+
+  static void DefaultSink(const std::string& e) {
+    std::cerr << e << std::flush;
+  }
+
+ private:
+  friend class ErrorMessage;
+  ErrorSink sink_;
+};
+
+class VisitNodesWithErrors;
+
+/////////////////////////////
+// A helper for creating error messages.
+class ErrorMessage {
+ public:
+  ErrorMessage(const char* file, int line, VisitNodesWithErrors* v, const NodeI& n)
+      : ErrorMessage(file, line, v, n.location()) {}
+  ErrorMessage(const char* file, int line, VisitNodesWithErrors* v, const Loc& l)
+     : visitor_(v) {
+#ifndef NDEBUG
+    get() << "(" << file << ":" << line << ") ";
+#endif  // NDEBUG
+    get() << l << ": ";
+  }
+  ~ErrorMessage() {
+    str_ << "\n";
+    visitor_->sink_(str_.str());
+  }
+
+  std::ostream& get() { return str_; }
+
+ private:
+  std::stringstream str_;
+  VisitNodesWithErrors* visitor_;
+};
+
+#define SYM_ERROR(x) ErrorMessage(__FILE__, __LINE__, this, (x)).get()
 
 }  // namespace tbd
 

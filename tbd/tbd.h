@@ -38,7 +38,7 @@
 namespace tbd {
 
 struct FullDocument {
-  FullDocument() : eva(&sem) {}
+  FullDocument(Evaluate::ErrorSink outp) : eva(&sem, outp) {}
 
   Document doc;
   SemanticDocument sem;

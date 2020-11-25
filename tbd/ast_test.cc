@@ -57,9 +57,35 @@ TEST(TestNodeI, Basic) {
   EXPECT_EQ(node.source_line(), 123);
 }
 
+class TestVisitor : public VisitNodesWithErrors {
+ public:
+  using VisitNodesWithErrors::VisitNodesWithErrors;
+
+  bool operator()(const UnitExp&) { return false; }
+  bool operator()(const UnitDef&) { return false; }
+  bool operator()(const Equality&) { return false; }
+  bool operator()(const LiteralValue&) { return false; }
+  bool operator()(const NamedValue&) { return false; }
+  bool operator()(const PowerExp&) { return false; }
+  bool operator()(const ProductExp&) { return false; }
+  bool operator()(const QuotientExp&) { return false; }
+  bool operator()(const SumExp&) { return false; }
+  bool operator()(const DifExp&) { return false; }
+  bool operator()(const NegativeExp&) { return false; }
+  bool operator()(const Define&) { return false; }
+  bool operator()(const Specification&) { return false; }
+  bool operator()(const Document&) { return false; }
+};
+
 TEST(TestErrorMessage, Basic) {
-  // TODO capture and check the result
-  ErrorMessage(__FILE__, __LINE__, TestNode{loc{}}).get() << "Boo";
+  std::string err;
+  TestVisitor sink([&err](const std::string& e) { err += e; });
+  ErrorMessage(__FILE__, __LINE__, &sink, TestNode{loc{}}).get() << "Boo";
+  EXPECT_EQ(err,
+#ifndef NDEBUG
+            "(tbd/ast_test.cc:83) "
+#endif  // NDEBUG
+            "foo:123:[456,456]: Boo\n");
 }
 
 }  // namespace

@@ -33,9 +33,10 @@
 
 namespace tbd {
 
-class Validate final : public VisitNodes {
+class Validate final : public VisitNodesWithErrors {
  public:
-  Validate(SemanticDocument* doc) : doc_(doc) {}
+  Validate(SemanticDocument* doc, ErrorSink e)
+      : VisitNodesWithErrors(e), doc_(doc) {}
 
  private:
   bool Process(const BinaryExpression&);

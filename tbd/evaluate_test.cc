@@ -34,7 +34,7 @@ namespace tbd {
 
 TEST(Evaluate, Smoke) {
   SemanticDocument doc;
-  Evaluate roots{&doc};
+  Evaluate roots{&doc, Evaluate::DefaultSink};
 }
 
 TEST(FindUnsolvedRoots, Smoke) {

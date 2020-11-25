@@ -56,7 +56,7 @@ TEST_F(ResolveUnitsTest, Smoke) {
   EXPECT_EQ(sem.LookupUnit("y"), nullptr);
   EXPECT_EQ(sem.LookupUnit("z"), nullptr);
 
-  ResolveUnits ru(&sem);
+  ResolveUnits ru(&sem, ResolveUnits::DefaultSink);
 
   Loc l;
   doc.AddUnitDefinition(absl::make_unique<UnitDef>(

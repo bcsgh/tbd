@@ -52,7 +52,7 @@ std::unique_ptr<FullDocument> ProcessInput(const std::string& src,
                                            const std::string& file_string,
                                            const ProcessOutput& out) {
   auto outp = [&out](const std::string &s) { out.Error(s); };
-  auto ret = absl::make_unique<FullDocument>();
+  auto ret = absl::make_unique<FullDocument>(outp);
 
   CHECK(Parse(kPreamble, ::tbd_preamble_tbd(), outp, &ret->doc) == 0);
 
@@ -61,12 +61,12 @@ std::unique_ptr<FullDocument> ProcessInput(const std::string& src,
     return nullptr;
   }
 
-  if (!ret->doc.VisitNode(Validate(&ret->sem).as_ptr())) {
+  if (!ret->doc.VisitNode(Validate(&ret->sem, outp).as_ptr())) {
     out.Error("Failed to validate '", src, "'");
     return nullptr;
   }
 
-  if (!ret->doc.VisitNode(ResolveUnits(&ret->sem).as_ptr())) {
+  if (!ret->doc.VisitNode(ResolveUnits(&ret->sem, outp).as_ptr())) {
     out.Error("Failed to resolve units for '", src, "'");
     return nullptr;
   }

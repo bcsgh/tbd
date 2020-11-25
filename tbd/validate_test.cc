@@ -51,7 +51,7 @@ TEST(Validate, TODO) {
   NegativeExp neg{Loc{}, Make(e)};
 
   SemanticDocument doc;
-  Validate val{&doc};
+  Validate val{&doc, &Validate::DefaultSink};
 
   const ExpressionNode* all[] = {&equ, &pow, &mul, &div, &add, &sub, &neg};
 
