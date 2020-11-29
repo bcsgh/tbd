@@ -1,0 +1,8 @@
+A = 1;	// [m] testcases/unresolvable_units.tbd:6
+a = 1;	// [s] testcases/unresolvable_units.tbd:4
+b = 1;	// [m,s^-1] testcases/unresolvable_units.tbd:1
+c = 1;	// [s] testcases/unresolvable_units.tbd:1
+d = 1;	// [m,s^-1] testcases/unresolvable_units.tbd:3
+f = 1;	// [s] testcases/unresolvable_units.tbd:5
+g = 1;	// [m,s^-1] testcases/unresolvable_units.tbd:7
+

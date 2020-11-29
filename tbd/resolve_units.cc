@@ -113,18 +113,16 @@ bool ResolveUnits::operator()(const Equality& e) {
 
   if (!down_) return true;
 
-  if (!l->dim.has_value()) {
-    CHECK(r->dim.has_value());
+  if (!l->dim.has_value() && r->dim.has_value()) {
     l->dim = *r->dim;
     progress_ = true;
     LOG(INFO) << "=< " << e.location();
-  } else if (!r->dim.has_value()) {
-    CHECK(l->dim.has_value());
+  } else if (l->dim.has_value() && !r->dim.has_value()) {
     r->dim = *l->dim;
     progress_ = true;
     LOG(INFO) << "=> " << e.location();
   } else {
-    LOG(FATAL);
+    LOG(FATAL) << "Expected unreachable";
   }
 
   return true;
@@ -209,22 +207,18 @@ bool ResolveUnits::operator()(const ProductExp& p) {
 
   if (!n->dim.has_value()) return true;
 
-  CHECK(l->dim.has_value() != r->dim.has_value());
+  CHECK(!l->dim.has_value() || !r->dim.has_value());
 
   if (!down_) return true;
 
-  if (!r->dim.has_value()) {
-    CHECK(l->dim.has_value());
+  if (l->dim.has_value() && !r->dim.has_value()) {
     r->dim = *n->dim / *l->dim;
     progress_ = true;
     LOG(INFO) << "*> " << p.location();
-  } else if (!l->dim.has_value()) {
-    CHECK(r->dim.has_value());
+  } else if (!l->dim.has_value() && r->dim.has_value()) {
     l->dim = *n->dim / *r->dim;
     progress_ = true;
     LOG(INFO) << "*< " << p.location();
-  } else {
-    LOG(FATAL);
   }
 
   return true;
@@ -259,22 +253,18 @@ bool ResolveUnits::operator()(const QuotientExp& q) {
 
   if (!n->dim.has_value()) return true;
 
-  CHECK(l->dim.has_value() != r->dim.has_value());
+  CHECK(!l->dim.has_value() || !r->dim.has_value());
 
   if (!down_) return true;
 
-  if (!r->dim.has_value()) {
-    CHECK(l->dim.has_value());
+  if (l->dim.has_value() && !r->dim.has_value()) {
     r->dim = *l->dim / *n->dim;
     progress_ = true;
     LOG(INFO) << "/> " << q.location();
-  } else if (!l->dim.has_value()) {
-    CHECK(r->dim.has_value());
+  } else if (!l->dim.has_value() && r->dim.has_value()) {
     l->dim = *r->dim * *n->dim;
     progress_ = true;
     LOG(INFO) << "/< " << q.location();
-  } else {
-    LOG(FATAL);
   }
 
   return true;
@@ -313,7 +303,7 @@ bool ResolveUnits::operator()(const SumExp& s) {
     }
   }
 
-  CHECK(n->dim.has_value());
+  CHECK(n->dim.has_value()) << "Expected unreachable";
   if (l->dim.has_value() && r->dim.has_value()) return true;
 
   if (!down_) return true;
@@ -323,7 +313,7 @@ bool ResolveUnits::operator()(const SumExp& s) {
     progress_ = true;
     LOG(INFO) << "+< " << s.location();
   } else {
-    CHECK(*l->dim == *n->dim);
+    CHECK(*l->dim == *n->dim) << "Expected unreachable";
   }
 
   if (!r->dim.has_value()) {
@@ -331,7 +321,7 @@ bool ResolveUnits::operator()(const SumExp& s) {
     progress_ = true;
     LOG(INFO) << "+> " << s.location();
   } else {
-    CHECK(*r->dim == *n->dim);
+    CHECK(*r->dim == *n->dim) << "Expected unreachable";
   }
 
   return true;
@@ -371,25 +361,25 @@ bool ResolveUnits::operator()(const DifExp& d) {
     }
   }
 
-  CHECK(n->dim.has_value());
+  CHECK(n->dim.has_value()) << "Expected unreachable";
   if (l->dim.has_value() && r->dim.has_value()) return true;
 
   if (!down_) return true;
 
   if (!l->dim.has_value()) {
-    LOG(INFO) << "-< " << d.location();
     l->dim = *n->dim;
     progress_ = true;
+    LOG(INFO) << "-< " << d.location();
   } else {
-    CHECK(*l->dim == *n->dim);
+    CHECK(*l->dim == *n->dim) << "Expected unreachable";
   }
 
   if (!r->dim.has_value()) {
-    LOG(INFO) << "-> " << d.location();
     r->dim = *n->dim;
     progress_ = true;
+    LOG(INFO) << "-> " << d.location();
   } else {
-    CHECK(*r->dim == *n->dim);
+    CHECK(*r->dim == *n->dim) << "Expected unreachable";
   }
 
   return true;

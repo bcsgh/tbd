@@ -1,0 +1,7 @@
+A = 3;	// [m^2] testcases/units_problem.tbd:1
+B = 4;	// [m^2] testcases/units_problem.tbd:2
+C = 5;	// [m^2] testcases/units_problem.tbd:3
+x;	// [m] testcases/units_problem.tbd:7
+y = 6;	// [m] testcases/units_problem.tbd:7
+z = 8;	// [m] testcases/units_problem.tbd:8
+
