@@ -42,9 +42,9 @@ git_repository(
 new_git_repository(
     name = "eigen",
     build_file = "@//:BUILD.eigen",
-    commit = "36b95962756c1fce8e29b1f8bc45967f30773c00",  # current as of 2020/11/12 MOVE
-    shallow_since = "1575476533 +0100",
-    remote = "git://github.com/eigenteam/eigen-git-mirror.git",
+    commit = "68f69414f7d358deac4876ede5be15e990da496b",
+    shallow_since = "1606531936 -0700",
+    remote = "https://gitlab.com/libeigen/eigen.git",
 )
 
 #############################################
