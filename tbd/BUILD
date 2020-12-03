@@ -238,6 +238,9 @@ cc_library(
     name = "dimensions",
     srcs = ["dimensions.cc"],
     hdrs = ["dimensions.h"],
+    deps = [
+        "@com_google_absl//absl/strings",
+    ],
 )
 
 cc_test(

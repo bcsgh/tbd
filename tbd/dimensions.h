@@ -32,6 +32,8 @@
 #include <ostream>
 #include <string>
 
+#include "absl/strings/str_cat.h"
+
 namespace tbd {
 
 // https://stackoverflow.com/a/11336172/1343
@@ -60,6 +62,14 @@ class Dimension {
   friend ::std::ostream& operator<<(::std::ostream& os, const Dimension& d);
   std::string to_str() const;
 
+  std::string l() const { return L_.ToString(); }
+  std::string m() const { return M_.ToString(); }
+  std::string t() const { return T_.ToString(); }
+  std::string i() const { return I_.ToString(); }
+  std::string k() const { return K_.ToString(); }
+  std::string n() const { return N_.ToString(); }
+  std::string j() const { return J_.ToString(); }
+
  private:
   struct D {
     // A rational number type.
@@ -84,9 +94,13 @@ class Dimension {
     friend bool operator==(D l, D r) { return (l.n_ * r.d_) == (r.n_ * l.d_); }
     friend bool operator!=(D l, D r) { return !(l == r); }
 
+    std::string ToString() const {
+      if (d_ == 0 || d_ == 1) return absl::StrCat(n_);
+      return absl::StrCat("(", n_, "/", d_, ")");
+    }
+
     friend ::std::ostream& operator<<(::std::ostream& os, const D& d) {
-      if (d.d_ == 0 || d.d_ == 1) return os << d.n_;
-      return os << "(" << d.n_ << "/" << d.d_ << ")";
+      return os <<d.ToString();
     }
 
    private:
