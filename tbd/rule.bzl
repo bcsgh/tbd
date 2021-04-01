@@ -25,6 +25,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+"""Bazel/skylark rules to process .tbd files."""
+
 def gen_tbd(
         name = None,
         srcs = None,
@@ -32,6 +34,7 @@ def gen_tbd(
         dot = None,
         out = None,
         warnings_as_errors = False):
+    """Process a .tbd file."""
     if not srcs:
         fail("srcs must be provided")
     if not name:
@@ -48,11 +51,11 @@ def gen_tbd(
 
     if cpp:
         cmd += " --cpp_output=$(location " + cpp + ")"
-        outs += [cpp]
+        outs.append(cpp)
 
     if dot:
         cmd += " --graphviz_output=$(location " + dot + ")"
-        outs += [dot]
+        outs.append(dot)
 
     native.genrule(
         name = name,
