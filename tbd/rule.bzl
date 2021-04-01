@@ -34,7 +34,16 @@ def gen_tbd(
         dot = None,
         out = None,
         warnings_as_errors = False):
-    """Process a .tbd file."""
+    """Process a .tbd file.
+
+    Args:
+      name: The target name.
+      srcs: The input file.
+      cpp: If set, generate a C++ implementation at the give location.
+      dot: If set, generate a graphviz depiction at the give location.
+      out: Output the resolved values at the give location.
+      warnings_as_errors: Fail on warnings.
+    """
     if not srcs:
         fail("srcs must be provided")
     if not name:
