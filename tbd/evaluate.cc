@@ -472,7 +472,7 @@ bool Evaluate::DirectEvaluateNodes(
   return made_progress;
 }
 
-bool Evaluate::operator()(const Document& d) {
+bool Evaluate::operator()(const Document& doc) {
   // Collect the set of expressions.
   std::set<const ExpressionNode*, StableNodeCompare> nodes;
   for (auto* exp : doc_->nodes()) {
@@ -480,7 +480,7 @@ bool Evaluate::operator()(const Document& d) {
   }
 
   // Processes all values on defines first.
-  for (auto d : d.defines()) {
+  for (auto d : doc.defines()) {
     CHECK(d->VisitNode(this)) << d;
     CHECK(nodes.erase(static_cast<const ExpressionNode*>(d)) == 1) << d;
   }
@@ -516,7 +516,7 @@ bool Evaluate::operator()(const Document& d) {
     LOG(INFO) << "Finding solvable systems";
 
     FindUnsolvedRoots roots{doc_};
-    for (const auto* e : d.equality()) (void)e->VisitNode(&roots);
+    for (const auto* e : doc.equality()) (void)e->VisitNode(&roots);
     const auto& all = roots.Unsolved();
     LOG(INFO) << "Found " << all.size() << " unresolved components.";
 

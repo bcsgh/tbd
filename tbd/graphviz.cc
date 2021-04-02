@@ -173,10 +173,10 @@ bool RenderAsGraphViz::operator()(const Define& d) {
   return true;
 }
 
-bool RenderAsGraphViz::operator()(const Document& d) {
-  for (auto e : d.equality())
+bool RenderAsGraphViz::operator()(const Document& doc) {
+  for (auto e : doc.equality())
     if (!e->VisitNode(this)) return false;
-  for (auto d : d.defines())
+  for (auto d : doc.defines())
     if (!d->VisitNode(this)) return false;
   return true;
 }
