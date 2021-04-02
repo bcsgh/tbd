@@ -74,7 +74,7 @@ bool ResolveUnits::operator()(const UnitExp& exp) {
 
 bool ResolveUnits::operator()(const UnitDef& unit) {
   bool error = false;
-  if (const auto u = doc_->LookupUnit(unit.name())) {
+  if (doc_->LookupUnit(unit.name())) {
     SYM_ERROR(unit) << "Unit '" << unit.name() << "' already defined at TODO";
     error = true;
   }
@@ -443,20 +443,20 @@ bool ResolveUnits::operator()(const Specification& s) {
   return true;
 }
 
-bool ResolveUnits::operator()(const Document& d) {
+bool ResolveUnits::operator()(const Document& doc) {
   // Collect the set of units.
   bool error = false;
-  for (auto ud : d.unit_definition())
+  for (auto ud : doc.unit_definition())
     if (!ud->VisitNode(this)) error = true;
 
   if (error) return false;
 
   // Assign units to the named/defined values.
-  for (auto d : d.defines())
+  for (auto d : doc.defines())
     if (!d->VisitNode(this)) error = true;
 
   // Assign units to the named specs.
-  for (auto s : d.specs())
+  for (auto s : doc.specs())
     if (!s->VisitNode(this)) error = true;
 
   if (error) return false;
@@ -468,7 +468,7 @@ bool ResolveUnits::operator()(const Document& d) {
     down_ = (pass > 0);
     LOG(INFO) << (down_ ? "==== UP PASS ====" : "==== DOWN PASS ====");
     progress_ = (pass <= 1);  // At least 2 passes;
-    for (auto e : d.equality()) {
+    for (auto e : doc.equality()) {
       if (!e->VisitNode(this)) error = true;
     }
     if (error) return false;
