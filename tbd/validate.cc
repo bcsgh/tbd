@@ -102,13 +102,13 @@ bool Validate::operator()(const Specification& s) {
   return true;
 }
 
-bool Validate::operator()(const Document& d) {
+bool Validate::operator()(const Document& doc) {
   bool error = false;
-  for (auto d : d.defines())
+  for (auto d : doc.defines())
     if (!d->VisitNode(this)) error = true;
-  for (auto d : d.specs())
+  for (auto d : doc.specs())
     if (!d->VisitNode(this)) error = true;
-  for (auto e : d.equality())
+  for (auto e : doc.equality())
     if (!e->VisitNode(this)) error = true;
 
   bool warning = false;
