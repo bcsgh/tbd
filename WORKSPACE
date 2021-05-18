@@ -41,7 +41,7 @@ git_repository(
 #############################################
 new_git_repository(
     name = "eigen",
-    build_file = "@//:BUILD.eigen",
+    build_file = "@//:extern/BUILD.eigen",
     commit = "9b51dc7972c9f64727e9c8e8db0c60aaf9aae532",  # current as of 2021/02/17
     remote = "https://gitlab.com/libeigen/eigen.git",
     shallow_since = "1613584163 +0000",
