@@ -62,8 +62,8 @@ class Evaluate final : public VisitNodesWithErrors {
   }
 
  private:
-  bool operator()(const UnitExp&) override { LOG(FATAL); }
-  bool operator()(const UnitDef&) override { LOG(FATAL); }
+  bool operator()(const UnitExp&) override { LOG(FATAL); return false; }
+  bool operator()(const UnitDef&) override { LOG(FATAL); return false; }
 
   bool operator()(const Equality&) override;
   bool operator()(const LiteralValue&) override;
