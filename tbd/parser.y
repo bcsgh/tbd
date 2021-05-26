@@ -68,7 +68,7 @@ int tbd_parserlex(tbd_parser::parser::semantic_type* o,
 }  // namespace
 
 %}
-%name-prefix "tbd_parser"
+%define api.prefix {tbd_parser}
 %param {tbdscan_t scanner}
 %parse-param { tbd::Document *result }
 %parse-param { parser_support::ScannerExtra* extra }
