@@ -102,7 +102,7 @@ class NodeI {
 };
 
 struct StableNodeCompare {
-  bool operator()(NodeI const* l, NodeI const* r);
+  bool operator()(NodeI const* l, NodeI const* r) const;
 };
 
 class ExpressionNode : public NodeI {

@@ -76,7 +76,7 @@ Loc Join(std::vector<Loc> loc) {
   return ret;
 }
 
-bool StableNodeCompare::operator()(NodeI const* l, NodeI const* r) {
+bool StableNodeCompare::operator()(NodeI const* l, NodeI const* r) const {
   auto& loc_l = l->location();
   auto& loc_r = r->location();
   return loc_l == loc_r ? (l < r) : (loc_l < loc_r);
