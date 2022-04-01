@@ -111,8 +111,8 @@ NamedValue::NamedValue(Loc loc, std::unique_ptr<std::string> s)
 NamedValue::NamedValue(Loc loc, std::string s)
     : ExpressionNode(loc), name_(std::move(s)) {}
 
-PowerExp::PowerExp(Loc loc, std::unique_ptr<ExpressionNode> b, int e)
-    : ExpressionNode(Join(loc, b->location())), b_(std::move(b)), e_(e) {}
+PowerExp::PowerExp(Loc loc, std::unique_ptr<ExpressionNode> b, int e, bool positive)
+    : ExpressionNode(Join(loc, b->location())), b_(std::move(b)), e_(e), positive_(positive) {}
 
 BinaryExpression::BinaryExpression(std::unique_ptr<ExpressionNode> l,
                                    std::unique_ptr<ExpressionNode> r)

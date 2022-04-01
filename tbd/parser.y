@@ -157,8 +157,9 @@ DefUnit : '[' ID ']' DEF Num '[' Unit ']' ';' { $$ = new UnitDef(Join(@1, @9), W
 Equ : AddExp '=' AddExp ';' { $$ = new Equality(@4, WrapUnique($1), WrapUnique($3)); }
     ;
 
-ExpExp : PriExp          { $$ = $1; }
-       | PriExp '^' Int  { $$ = new PowerExp(@3, WrapUnique($1), $3); }
+ExpExp : PriExp              { $$ = $1; }
+       | PriExp '^' Int      { $$ = new PowerExp(@3, WrapUnique($1), $3, false); }
+       | PriExp '^' '+' Int  { $$ = new PowerExp(@3, WrapUnique($1), $4, true); }
        ;
 
 MulExp : MulExp '*' ExpExp  { $$ = new ProductExp(WrapUnique($1), WrapUnique($3)); }

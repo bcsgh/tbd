@@ -1,0 +1,6 @@
+D = 1000;	// [mi] testcases/bug-001.tbd:2
+Dh = 804672;	// [m] testcases/bug-001.tbd:4
+T = 1.90967;	// [min] testcases/bug-001.tbd:6
+Th = 57.29;	// [s] testcases/bug-001.tbd:5
+a = 490.332;	// [m,s^-2] testcases/bug-001.tbd:1
+

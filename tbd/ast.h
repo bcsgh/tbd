@@ -207,14 +207,16 @@ class PowerExp final : public ExpressionNode {
   ABSL_MUST_USE_RESULT bool Visit(VisitNodes*) const override;
 
  public:
-  PowerExp(Loc loc, std::unique_ptr<ExpressionNode> b, int e);
+  PowerExp(Loc loc, std::unique_ptr<ExpressionNode> b, int e, bool positive);
 
   ExpressionNode* base() const { return b_.get(); }
   int exp() const { return e_; }
+  bool force_positive() const { return positive_; }
 
  private:
   std::unique_ptr<ExpressionNode> b_;
   int e_;
+  bool positive_ = false;
 };
 
 class ProductExp final : public BinaryExpression {

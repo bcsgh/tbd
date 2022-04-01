@@ -148,14 +148,14 @@ bool Evaluate::operator()(const PowerExp& e) {
 
   if (exp->resolved) {
     CHECK(!b->resolved);
-    if (e.exp() % 2 == 1) {
+    if (e.force_positive() || e.exp() % 2 == 1) {
       ops_->emplace_back(absl::make_unique<OpExp>(b, exp, 1.0 / e.exp()));
       exp->equ_processed = true;
       b->resolved = true;
       progress_ = true;
       return true;
     } else {
-      LOG(INFO) << "^ " << exp->resolved << b->resolved;
+      LOG(INFO) << "^ " << exp->resolved << "," << b->resolved;
     }
   }
 
