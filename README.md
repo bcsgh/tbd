@@ -51,7 +51,16 @@ I'm still working on things so there are some things that are know to not work f
 
 - Dependent systems of equations: Currently only direct propagation is well supported.
   A Newton-Raphson solver for systems of equations is implemented, but not well tested.
-- Even roots: To avoid dealing with the +/- issue, only odd roots are solved for.
+- Even roots: To avoid dealing with the +/- issue, only odd roots are solved for by default.
+  As a workaround, an even power with a `+` prefixed will solve for the root and assume a positive value.
+  This is a **HACK**.
+
+```
+E := 1 [J];
+W := 1 [kg];
+E1 = W * V^2 / 2;   // E1 will not be solved for.
+E2 = W * V^+2 / 2;  // E2 will be solved for.
+```
 
 ## Future work
 
