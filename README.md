@@ -49,7 +49,8 @@ With the exception of unit definitions, the order in which statements are define
 
 I'm still working on things so there are some things that are know to not work fully yet:
 
-- Dependent systems of equations: Currently only direct propagation is supported.
+- Dependent systems of equations: Currently only direct propagation is well supported.
+  A Newton-Raphson solver for systems of equations is implemented, but not well tested.
 - Even roots: To avoid dealing with the +/- issue, only odd roots are solved for.
 
 ## Future work
