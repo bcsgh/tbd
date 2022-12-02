@@ -30,8 +30,9 @@
 #include <cmath>
 
 #include "absl/flags/flag.h"
+#include "absl/log/check.h"
+#include "absl/log/log.h"
 #include "absl/strings/str_cat.h"
-#include "glog/logging.h"
 #include "tbd/ast.h"
 #include "tbd/dimensions.h"
 #include "tbd/semantic.h"

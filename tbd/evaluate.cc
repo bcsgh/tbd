@@ -32,8 +32,9 @@
 #include <utility>
 #include <vector>
 
+#include "absl/log/check.h"
+#include "absl/log/log.h"
 #include "absl/memory/memory.h"
-#include "glog/logging.h"
 #include "tbd/ast.h"
 #include "tbd/find.h"
 #include "tbd/newton_raphson.h"

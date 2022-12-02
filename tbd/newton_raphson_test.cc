@@ -30,7 +30,7 @@
 #include <cmath>
 
 #include "Eigen/Core"
-#include "glog/logging.h"
+#include "absl/log/check.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 

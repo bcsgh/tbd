@@ -33,7 +33,8 @@
 #include <utility>
 #include <vector>
 
-#include "glog/logging.h"
+#include "absl/log/log.h"
+#include "absl/log/check.h"
 
 namespace tbd {
 

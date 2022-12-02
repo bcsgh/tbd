@@ -30,10 +30,10 @@
 #include <iostream>
 #include <set>
 
+#include "absl/log/check.h"
 #include "absl/strings/str_cat.h"
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
-#include "glog/logging.h"
 #include "tbd/ast.h"
 #include "tbd/semantic.h"
 

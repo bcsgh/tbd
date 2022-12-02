@@ -37,9 +37,10 @@ cc_library(
     name = "test_main",
     srcs = ["test_main.cc"],
     deps = [
-        "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/log:initialize",
+        "@com_google_absl//absl/log:log",
         "@com_google_absl//absl/time",
         "@com_google_googletest//:gtest",
     ],
@@ -51,8 +52,8 @@ cc_library(
     hdrs = ["ast.h"],
     deps = [
         ":dimensions",
-        "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/log:check",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/strings",
     ],
@@ -100,7 +101,8 @@ cc_library(
     deps = [
         ":ast",
         ":dimensions",
-        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/log:log",
         "@com_google_absl//absl/types:optional",
     ],
 )
@@ -122,7 +124,8 @@ cc_library(
     srcs = ["select_solvable.cc"],
     hdrs = ["select_solvable.h"],
     deps = [
-        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/log:log",
     ],
 )
 
@@ -143,7 +146,8 @@ cc_library(
     srcs = ["newton_raphson.cc"],
     hdrs = ["newton_raphson.h"],
     deps = [
-        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/log:log",
         "@eigen",
     ],
 )
@@ -155,6 +159,7 @@ cc_test(
     deps = [
         ":newton_raphson",
         ":test_main",
+        "@com_google_absl//absl/log:check",
         "@com_google_googletest//:gtest",
         "@eigen",
     ],
@@ -207,7 +212,8 @@ cc_library(
         ":resolve_units",
         ":semantic",
         ":validate",
-        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/log:log",
         "@com_google_absl//absl/memory",
     ],
 )
@@ -218,9 +224,10 @@ cc_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":tbd_lib",
-        "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/log:initialize",
+        "@com_google_absl//absl/log:log",
     ],
 )
 
@@ -282,8 +289,9 @@ cc_library(
         ":dimensions",
         ":semantic",
         ":util",
-        "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/log:log",
         "@com_google_absl//absl/strings",
     ],
 )
@@ -309,8 +317,8 @@ cc_library(
     deps = [
         ":ast",
         ":semantic",
-        "@com_github_glog_glog//:glog",
         "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/log:check",
     ],
 )
 
@@ -357,7 +365,7 @@ cc_library(
     deps = [
         ":ast",
         ":semantic",
-        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/log:check",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/time",
         "@com_google_absl//absl/types:optional",
@@ -384,7 +392,8 @@ cc_library(
     deps = [
         ":ops",
         ":semantic",
-        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/log:check",
+        "@com_google_absl//absl/log:log",
         "@com_google_absl//absl/strings",
     ],
 )

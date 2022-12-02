@@ -35,6 +35,8 @@
 #include <sstream>
 #include <string>
 
+#include "absl/log/check.h"
+#include "absl/log/log.h"
 #include "absl/memory/memory.h"
 #include "tbd/ast.h"
 #include "tbd/evaluate.h"

@@ -33,7 +33,7 @@
 #include <set>
 #include <vector>
 
-#include "glog/logging.h"
+#include "absl/log/log.h"
 #include "tbd/ast.h"
 #include "tbd/ops.h"
 #include "tbd/semantic.h"
