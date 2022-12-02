@@ -62,3 +62,6 @@ I'm still working on things so there are some things that are know to not work f
 - Optimization:
   - Merging of equivalent expression sub trees.
   - Conversion between repeated `+` and `*` and between repeated `*` and `^`.
+
+## Setup (for development)
+To configure the git hooks, run `./.git_hooks/setup.sh`
