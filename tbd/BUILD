@@ -267,6 +267,29 @@ cc_test(
 )
 
 cc_library(
+    name = "dimensions_simplfy",
+    srcs = ["dimensions_simplfy.cc"],
+    hdrs = ["dimensions_simplfy.h"],
+    deps = [
+        ":dimensions",
+        "@eigen",
+    ],
+)
+
+cc_test(
+    name = "dimensions_simplfy_test",
+    timeout = "short",
+    srcs = ["dimensions_simplfy_test.cc"],
+    deps = [
+        ":dimensions_simplfy",
+        ":test_main",
+        "@com_github_glog_glog//:glog",
+        "@com_google_absl//absl/strings",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+cc_library(
     name = "find",
     hdrs = ["find.h"],
     deps = [

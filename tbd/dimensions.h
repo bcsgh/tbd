@@ -35,6 +35,10 @@
 #include "absl/strings/str_cat.h"
 
 namespace tbd {
+class Dimension;
+namespace test_impl {
+const std::vector<Dimension>& Classes();
+}
 
 // https://stackoverflow.com/a/11336172/1343
 
@@ -62,15 +66,6 @@ class Dimension {
   friend ::std::ostream& operator<<(::std::ostream& os, const Dimension& d);
   std::string to_str() const;
 
-  std::string l() const { return L_.ToString(); }
-  std::string m() const { return M_.ToString(); }
-  std::string t() const { return T_.ToString(); }
-  std::string i() const { return I_.ToString(); }
-  std::string k() const { return K_.ToString(); }
-  std::string n() const { return N_.ToString(); }
-  std::string j() const { return J_.ToString(); }
-
- private:
   struct D {
     // A rational number type.
     // Note this type more or less ignores division by zero.
@@ -93,6 +88,8 @@ class Dimension {
 
     friend bool operator==(D l, D r) { return (l.n_ * r.d_) == (r.n_ * l.d_); }
     friend bool operator!=(D l, D r) { return !(l == r); }
+
+    explicit operator double() const { return n_ * 1.0 / d_; }
 
     std::string ToString() const {
       if (d_ == 0 || d_ == 1) return absl::StrCat(n_);
@@ -121,6 +118,17 @@ class Dimension {
 
     int n_ = 0, d_ = 1;
   };
+
+  const D l() const { return L_; }
+  const D m() const { return M_; }
+  const D t() const { return T_; }
+  const D i() const { return I_; }
+  const D k() const { return K_; }
+  const D n() const { return N_; }
+  const D j() const { return J_; }
+
+ private:
+  friend const std::vector<Dimension>& test_impl::Classes();
 
   Dimension(int l, int m, int t, int i, int k, int n, int j)
       : L_(l, 1), M_(m, 1), T_(t, 1), I_(i, 1), K_(k, 1), N_(n, 1), J_(j, 1) {}
