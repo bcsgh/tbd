@@ -49,7 +49,7 @@ def gen_tbd(
     if not name:
         fail("name must be provided")
 
-    cmd = "$(location @tbd//tbd:tbd)"
+    cmd = "$(location @com_github_bcsgh_tbd//tbd:tbd)"
     if warnings_as_errors:
         cmd += " --warnings_as_errors"
 
@@ -70,6 +70,6 @@ def gen_tbd(
         name = name,
         srcs = srcs,
         outs = outs,
-        tools = ["@tbd//tbd:tbd"],
+        tools = ["@com_github_bcsgh_tbd//tbd:tbd"],
         cmd = cmd,
     )
