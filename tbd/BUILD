@@ -25,8 +25,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-load("@bazel_rules//cc_embed_data:cc_embed_data.bzl", "cc_embed_data")
-load("@bazel_rules//parser:parser.bzl", "genlex", "genyacc")
+load("@com_github_bcsgh_cc_embed_data//cc_embed_data:cc_embed_data.bzl", "cc_embed_data")
+load("@com_github_bcsgh_parser_rules//parser:parser.bzl", "genlex", "genyacc")
 
 cc_library(
     name = "util",
@@ -37,12 +37,12 @@ cc_library(
     name = "test_main",
     srcs = ["test_main.cc"],
     deps = [
-        "@com_google_absl//absl/flags:flag",
-        "@com_google_absl//absl/flags:parse",
-        "@com_google_absl//absl/log:initialize",
-        "@com_google_absl//absl/log:log",
-        "@com_google_absl//absl/time",
-        "@com_google_googletest//:gtest",
+        "@abseil-cpp//absl/flags:flag",
+        "@abseil-cpp//absl/flags:parse",
+        "@abseil-cpp//absl/log:initialize",
+        "@abseil-cpp//absl/log:log",
+        "@abseil-cpp//absl/time",
+        "@googletest//:gtest",
     ],
 )
 
@@ -52,10 +52,10 @@ cc_library(
     hdrs = ["ast.h"],
     deps = [
         ":dimensions",
-        "@com_google_absl//absl/base:core_headers",
-        "@com_google_absl//absl/log:check",
-        "@com_google_absl//absl/memory",
-        "@com_google_absl//absl/strings",
+        "@abseil-cpp//absl/base:core_headers",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/memory",
+        "@abseil-cpp//absl/strings",
     ],
 )
 
@@ -66,7 +66,7 @@ cc_test(
     deps = [
         ":ast",
         ":test_main",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 
@@ -76,7 +76,7 @@ cc_library(
     hdrs = ["ops.h"],
     deps = [
         ":semantic",
-        "@com_google_absl//absl/base:core_headers",
+        "@abseil-cpp//absl/base:core_headers",
         "@eigen",
     ],
 )
@@ -90,7 +90,7 @@ cc_test(
         ":ops",
         ":semantic",
         ":test_main",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 
@@ -101,9 +101,9 @@ cc_library(
     deps = [
         ":ast",
         ":dimensions",
-        "@com_google_absl//absl/log:check",
-        "@com_google_absl//absl/log:log",
-        "@com_google_absl//absl/types:optional",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/log:log",
+        "@abseil-cpp//absl/types:optional",
     ],
 )
 
@@ -115,7 +115,7 @@ cc_test(
         ":ast",
         ":semantic",
         ":test_main",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 
@@ -124,8 +124,8 @@ cc_library(
     srcs = ["select_solvable.cc"],
     hdrs = ["select_solvable.h"],
     deps = [
-        "@com_google_absl//absl/log:check",
-        "@com_google_absl//absl/log:log",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/log:log",
     ],
 )
 
@@ -136,8 +136,8 @@ cc_test(
     deps = [
         ":select_solvable",
         ":test_main",
-        "@com_google_absl//absl/strings",
-        "@com_google_googletest//:gtest",
+        "@abseil-cpp//absl/strings",
+        "@googletest//:gtest",
     ],
 )
 
@@ -146,8 +146,8 @@ cc_library(
     srcs = ["newton_raphson.cc"],
     hdrs = ["newton_raphson.h"],
     deps = [
-        "@com_google_absl//absl/log:check",
-        "@com_google_absl//absl/log:log",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/log:log",
         "@eigen",
     ],
 )
@@ -159,9 +159,9 @@ cc_test(
     deps = [
         ":newton_raphson",
         ":test_main",
-        "@com_google_absl//absl/log:check",
-        "@com_google_googletest//:gtest",
+        "@abseil-cpp//absl/log:check",
         "@eigen",
+        "@googletest//:gtest",
     ],
 )
 
@@ -186,9 +186,9 @@ cc_library(
     ],
     deps = [
         ":ast",
-        "@bazel_rules//parser:parser_support",
-        "@com_google_absl//absl/flags:flag",
-        "@com_google_absl//absl/strings",
+        "@abseil-cpp//absl/flags:flag",
+        "@abseil-cpp//absl/strings",
+        "@com_github_bcsgh_parser_rules//parser:parser_support",
     ],
 )
 
@@ -212,9 +212,9 @@ cc_library(
         ":resolve_units",
         ":semantic",
         ":validate",
-        "@com_google_absl//absl/log:check",
-        "@com_google_absl//absl/log:log",
-        "@com_google_absl//absl/memory",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/log:log",
+        "@abseil-cpp//absl/memory",
     ],
 )
 
@@ -224,10 +224,10 @@ cc_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":tbd_lib",
-        "@com_google_absl//absl/flags:flag",
-        "@com_google_absl//absl/flags:parse",
-        "@com_google_absl//absl/log:initialize",
-        "@com_google_absl//absl/log:log",
+        "@abseil-cpp//absl/flags:flag",
+        "@abseil-cpp//absl/flags:parse",
+        "@abseil-cpp//absl/log:initialize",
+        "@abseil-cpp//absl/log:log",
     ],
 )
 
@@ -251,7 +251,7 @@ cc_library(
     srcs = ["dimensions.cc"],
     hdrs = ["dimensions.h"],
     deps = [
-        "@com_google_absl//absl/strings",
+        "@abseil-cpp//absl/strings",
     ],
 )
 
@@ -262,7 +262,7 @@ cc_test(
     deps = [
         ":dimensions",
         ":test_main",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 
@@ -281,7 +281,7 @@ cc_test(
     deps = [
         ":find",
         ":test_main",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 
@@ -294,10 +294,10 @@ cc_library(
         ":dimensions",
         ":semantic",
         ":util",
-        "@com_google_absl//absl/flags:flag",
-        "@com_google_absl//absl/log:check",
-        "@com_google_absl//absl/log:log",
-        "@com_google_absl//absl/strings",
+        "@abseil-cpp//absl/flags:flag",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/log:log",
+        "@abseil-cpp//absl/strings",
     ],
 )
 
@@ -310,8 +310,8 @@ cc_test(
         ":resolve_units",
         ":semantic",
         ":test_main",
-        "@com_google_absl//absl/memory",
-        "@com_google_googletest//:gtest",
+        "@abseil-cpp//absl/memory",
+        "@googletest//:gtest",
     ],
 )
 
@@ -322,8 +322,8 @@ cc_library(
     deps = [
         ":ast",
         ":semantic",
-        "@com_google_absl//absl/flags:flag",
-        "@com_google_absl//absl/log:check",
+        "@abseil-cpp//absl/flags:flag",
+        "@abseil-cpp//absl/log:check",
     ],
 )
 
@@ -333,8 +333,8 @@ cc_test(
     deps = [
         ":test_main",
         ":validate",
-        "@com_google_absl//absl/memory",
-        "@com_google_googletest//:gtest",
+        "@abseil-cpp//absl/memory",
+        "@googletest//:gtest",
     ],
 )
 
@@ -349,7 +349,7 @@ cc_library(
         ":ops",
         ":select_solvable",
         ":semantic",
-        "@com_google_absl//absl/memory",
+        "@abseil-cpp//absl/memory",
     ],
 )
 
@@ -359,7 +359,7 @@ cc_test(
     deps = [
         ":evaluate",
         ":test_main",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
 
@@ -370,10 +370,10 @@ cc_library(
     deps = [
         ":ast",
         ":semantic",
-        "@com_google_absl//absl/log:check",
-        "@com_google_absl//absl/strings",
-        "@com_google_absl//absl/time",
-        "@com_google_absl//absl/types:optional",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/strings",
+        "@abseil-cpp//absl/time",
+        "@abseil-cpp//absl/types:optional",
     ],
 )
 
@@ -385,8 +385,8 @@ cc_test(
         ":graphviz",
         ":semantic",
         ":test_main",
-        "@com_google_absl//absl/strings",
-        "@com_google_googletest//:gtest",
+        "@abseil-cpp//absl/strings",
+        "@googletest//:gtest",
     ],
 )
 
@@ -397,9 +397,9 @@ cc_library(
     deps = [
         ":ops",
         ":semantic",
-        "@com_google_absl//absl/log:check",
-        "@com_google_absl//absl/log:log",
-        "@com_google_absl//absl/strings",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/log:log",
+        "@abseil-cpp//absl/strings",
     ],
 )
 
@@ -410,6 +410,6 @@ cc_test(
     deps = [
         ":gen_code",
         ":test_main",
-        "@com_google_googletest//:gtest",
+        "@googletest//:gtest",
     ],
 )
