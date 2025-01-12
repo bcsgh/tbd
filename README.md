@@ -27,7 +27,7 @@ New units can be defined:
 ```
 [furlong]   := 660 [ft];
 [firkin]    := 90  [lb];
-[fortnight] := 336 [hr];	
+[fortnight] := 336 [hr];
 ```
 
 Equations use (more or less) standard C grammar:
@@ -62,6 +62,43 @@ I'm still working on things so there are some things that are know to not work f
 - Optimization:
   - Merging of equivalent expression sub trees.
   - Conversion between repeated `+` and `*` and between repeated `*` and `^`.
+
+
+# Bazel/skylark rules to process .tbd files.
+
+## `MODULE.bazel`
+
+```
+bazel_dep(
+    name = "com_github_bcsgh_tbd",
+    version = ...,
+)
+```
+
+<a id="gen_tbd"></a>
+
+## gen_tbd
+
+<pre>
+load("@com_github_bcsgh_tbd//tbd:rule.bzl", "gen_tbd")
+
+gen_tbd(<a href="#gen_tbd-name">name</a>, <a href="#gen_tbd-srcs">srcs</a>, <a href="#gen_tbd-cpp">cpp</a>, <a href="#gen_tbd-dot">dot</a>, <a href="#gen_tbd-out">out</a>, <a href="#gen_tbd-warnings_as_errors">warnings_as_errors</a>)
+</pre>
+
+Process a .tbd file.
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="gen_tbd-name"></a>name |  The target name.   |  `None` |
+| <a id="gen_tbd-srcs"></a>srcs |  The input file.   |  `None` |
+| <a id="gen_tbd-cpp"></a>cpp |  If set, generate a C++ implementation at the give location.   |  `None` |
+| <a id="gen_tbd-dot"></a>dot |  If set, generate a graphviz depiction at the give location.   |  `None` |
+| <a id="gen_tbd-out"></a>out |  Output the resolved values at the give location.   |  `None` |
+| <a id="gen_tbd-warnings_as_errors"></a>warnings_as_errors |  Fail on warnings.   |  `False` |
+
 
 ## Setup (for development)
 To configure the git hooks, run `./.git_hooks/setup.sh`

@@ -25,7 +25,18 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-"""Bazel/skylark rules to process .tbd files."""
+"""
+# Bazel/skylark rules to process .tbd files.
+
+## `MODULE.bazel`
+
+```
+bazel_dep(
+    name = "com_github_bcsgh_tbd",
+    version = ...,
+)
+```
+"""
 
 def gen_tbd(
         name = None,
