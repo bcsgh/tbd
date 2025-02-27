@@ -5,32 +5,27 @@ module(
 
 bazel_dep(
     name = "abseil-cpp",
-    version = "20250127.0"
+    version = "20250127.0",
 )
-
 bazel_dep(
     name = "com_github_bcsgh_build_test",
     version = "0.0.1",
 )
-
 bazel_dep(
     name = "com_github_bcsgh_cc_embed_data",
     version = "0.0.3",
 )
-
 bazel_dep(
     name = "com_github_bcsgh_graphviz",
     version = "0.0.1",
 )
-
 bazel_dep(
     name = "com_github_bcsgh_parser_rules",
     version = "0.0.2",
 )
-
 bazel_dep(
     name = "eigen",
-    version = "4.0.0-20241125.bcr.1"
+    version = "4.0.0-20241125.bcr.1",
 )
 
 bazel_dep(
@@ -43,7 +38,6 @@ bazel_dep(
     name = "rules_cc",
     version = "0.1.1",
 )
-
 bazel_dep(
     name = "rules_shell",
     version = "0.4.0",

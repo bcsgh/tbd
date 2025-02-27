@@ -25,10 +25,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-load("//tbd:rule.bzl", "gen_tbd")
-load("@com_github_bcsgh_graphviz//graphviz:graphviz.bzl", "gen_dot")
 load("@com_github_bcsgh_build_test//build_test:build.bzl", "build_test")
+load("@com_github_bcsgh_graphviz//graphviz:graphviz.bzl", "gen_dot")
 load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load("//tbd:rule.bzl", "gen_tbd")
 
 ERROR_CASES = glob(["*.error.tbd"])
 
