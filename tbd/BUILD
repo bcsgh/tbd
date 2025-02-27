@@ -29,6 +29,9 @@ exports_files(["rule.bzl"])
 
 load("@com_github_bcsgh_cc_embed_data//cc_embed_data:cc_embed_data.bzl", "cc_embed_data")
 load("@com_github_bcsgh_parser_rules//parser:parser.bzl", "genlex", "genyacc")
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 cc_library(
     name = "util",

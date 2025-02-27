@@ -28,6 +28,7 @@
 load("//tbd:rule.bzl", "gen_tbd")
 load("@com_github_bcsgh_graphviz//graphviz:graphviz.bzl", "gen_dot")
 load("@com_github_bcsgh_build_test//build_test:build.bzl", "build_test")
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 
 ERROR_CASES = glob(["*.error.tbd"])
 
