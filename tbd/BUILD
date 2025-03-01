@@ -39,19 +39,6 @@ cc_library(
 )
 
 cc_library(
-    name = "test_main",
-    srcs = ["test_main.cc"],
-    deps = [
-        "@abseil-cpp//absl/flags:flag",
-        "@abseil-cpp//absl/flags:parse",
-        "@abseil-cpp//absl/log:initialize",
-        "@abseil-cpp//absl/log:log",
-        "@abseil-cpp//absl/time",
-        "@googletest//:gtest",
-    ],
-)
-
-cc_library(
     name = "ast",
     srcs = ["ast.cc"],
     hdrs = ["ast.h"],
@@ -70,7 +57,7 @@ cc_test(
     srcs = ["ast_test.cc"],
     deps = [
         ":ast",
-        ":test_main",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -94,7 +81,7 @@ cc_test(
         ":ast",
         ":ops",
         ":semantic",
-        ":test_main",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -119,7 +106,7 @@ cc_test(
     deps = [
         ":ast",
         ":semantic",
-        ":test_main",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -140,8 +127,8 @@ cc_test(
     srcs = ["select_solvable_test.cc"],
     deps = [
         ":select_solvable",
-        ":test_main",
         "@abseil-cpp//absl/strings",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -163,8 +150,8 @@ cc_test(
     srcs = ["newton_raphson_test.cc"],
     deps = [
         ":newton_raphson",
-        ":test_main",
         "@abseil-cpp//absl/log:check",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@eigen",
         "@googletest//:gtest",
     ],
@@ -266,7 +253,7 @@ cc_test(
     srcs = ["dimensions_test.cc"],
     deps = [
         ":dimensions",
-        ":test_main",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -285,7 +272,7 @@ cc_test(
     srcs = ["find_test.cc"],
     deps = [
         ":find",
-        ":test_main",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -314,8 +301,8 @@ cc_test(
         ":ast",
         ":resolve_units",
         ":semantic",
-        ":test_main",
         "@abseil-cpp//absl/memory",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -336,9 +323,9 @@ cc_test(
     name = "validate_test",
     srcs = ["validate_test.cc"],
     deps = [
-        ":test_main",
         ":validate",
         "@abseil-cpp//absl/memory",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -363,7 +350,7 @@ cc_test(
     srcs = ["evaluate_test.cc"],
     deps = [
         ":evaluate",
-        ":test_main",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -389,8 +376,8 @@ cc_test(
     deps = [
         ":graphviz",
         ":semantic",
-        ":test_main",
         "@abseil-cpp//absl/strings",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
@@ -414,7 +401,7 @@ cc_test(
     srcs = ["gen_code_test.cc"],
     deps = [
         ":gen_code",
-        ":test_main",
+        "@com_github_bcsgh_test_base//test_base:test_main",
         "@googletest//:gtest",
     ],
 )
