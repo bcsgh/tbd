@@ -25,8 +25,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef TBD_VALIDATE_H_
-#define TBD_VALIDATE_H_
+#ifndef TBD_FIND_H_
+#define TBD_FIND_H_
 
 #include <functional>
 #include <type_traits>
@@ -124,4 +124,4 @@ class Find final : public VisitNodes {
 
 }  // namespace tbd
 
-#endif  // TBD_VALIDATE_H_
+#endif  // TBD_FIND_H_

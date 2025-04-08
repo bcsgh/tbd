@@ -43,7 +43,7 @@ bool FindSolution(std::map<int, std::set<int>>& from_to,  //
   // Validate inputs
   {
     std::set<int> e, v;
-    for (const auto i : from_to) {
+    for (const auto &i : from_to) {
       CHECK(!i.second.empty());
       e.insert(i.first);
       v.insert(i.second.begin(), i.second.end());
